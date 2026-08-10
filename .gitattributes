@@ -1,0 +1,1 @@
+tools/gnm/work/gnm-official-head.glb filter=lfs diff=lfs merge=lfs -text

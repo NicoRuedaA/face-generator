@@ -1,0 +1,2232 @@
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/CHANGELOG.md /mnt/data/sports-face-mvp-phase1/CHANGELOG.md
+--- /tmp/sports-face-mvp-v01/CHANGELOG.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/CHANGELOG.md	2026-08-05 07:12:20.608721541 +0000
+@@ -0,0 +1,21 @@
++# Changelog
++
++## 0.2.0 — Fase 1 / FaceDNA v2
++
++- Separada identidad permanente de apariencia mutable.
++- Añadidos estilos etiquetados y registro de especificaciones.
++- Añadidos IDs lógicos de assets.
++- Añadidas variables reservadas para orejas, mandíbula y proporción facial.
++- Implementadas reglas de compatibilidad y máscara canónica de campos inactivos.
++- Añadido código SF2 con checksum.
++- Añadida migración automática desde SF1.
++- Aleatoriedad estable derivada por rasgo.
++- Presentación y edad conservan la identidad.
++- Añadidas pruebas de 1.000 perfiles.
++- Añadida documentación de auditoría, formato, migración y aceptación.
++
++## 0.1.0 — MVP inicial
++
++- Bitfield facial de 32 bits.
++- Render Canvas provisional.
++- Semilla, editor, envejecimiento, galería y exportación PNG.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/CLEAN_ROOM_SPEC.md /mnt/data/sports-face-mvp-phase1/CLEAN_ROOM_SPEC.md
+--- /tmp/sports-face-mvp-v01/CLEAN_ROOM_SPEC.md	2026-08-04 22:40:05.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/CLEAN_ROOM_SPEC.md	2026-08-05 07:09:15.749237089 +0000
+@@ -1,76 +1,86 @@
+-# Especificación funcional neutral para la reimplementación final
++# Especificación funcional neutral para una implementación final independiente
+ 
+-Este documento describe el comportamiento observable que debe conservar una futura implementación independiente. No prescribe lenguaje, algoritmos internos, offsets de bits ni estructura de clases.
++Este documento describe comportamiento observable. No prescribe offsets, tablas, algoritmos, nombres de funciones ni estructura de clases del MVP o de OpenTTD.
+ 
+ ## Objetivo
+ 
+-Generar retratos 2D reproducibles de jugadores ficticios, adecuados para interfaces de gestión deportiva, sin almacenar una imagen por jugador.
++Generar retratos 2D reproducibles de jugadores ficticios sin almacenar una imagen original por jugador.
+ 
+-## Entrada mínima
++## Perfil funcional
+ 
+ Un perfil debe contener:
+ 
+ - versión del formato;
+-- identificador o semilla estable;
+-- identidad facial inmutable;
++- etiqueta estable del estilo visual;
++- semilla o identificador estable;
++- identidad facial permanente;
++- apariencia mutable;
+ - edad actual;
+ - presentación visual;
+ - colores de equipación.
+ 
+-La identidad debe representar, como mínimo:
++### Identidad permanente mínima
+ 
+ - forma de cabeza;
+ - tono de piel;
+-- ojos;
++- ojos y color de ojos;
+ - cejas;
+ - nariz;
+ - boca;
+-- peinado;
+-- color de pelo;
++- orejas;
++- mandíbula y proporciones;
++- marcas congénitas opcionales.
++
++### Apariencia mutable mínima
++
++- peinado y visibilidad del pelo;
++- color del pelo;
+ - barba o vello facial;
+-- accesorios opcionales y marcas faciales.
++- gafas;
++- cicatrices u otras marcas adquiridas.
+ 
+-La representación final puede ser un bitfield, bytes, JSON compacto u otro formato. No tiene que conservar los offsets ni el código del MVP.
++La representación puede ser bytes, bitfields, JSON compacto u otro formato. No debe copiar los offsets o tablas de este prototipo.
+ 
+-## Salida
++## Estilos y assets
+ 
+-- Retrato cuadrado de referencia: 512 × 512 píxeles.
+-- Fondo, cuello, equipación y cabeza en capas separables.
+-- Resultado rasterizable a PNG o WebP.
+-- Misma versión + misma identidad + misma edad = mismos píxeles, salvo cambios expresamente versionados.
++- Cada estilo debe tener un identificador persistente.
++- Cada variante debe resolverse mediante un ID lógico de asset.
++- Los archivos y coordenadas de atlas pueden cambiar sin modificar el ID lógico.
++- Reordenar o eliminar IDs requiere una migración versionada.
++- Las paletas deben estar desacopladas de la forma y poder afectar grupos de capas.
+ 
+ ## Reglas funcionales
+ 
+-1. La generación inicial debe ser determinista.
+-2. Cambiar la edad no puede alterar la estructura facial permanente.
+-3. El envejecimiento puede modificar arrugas, canas, entradas y densidad de barba.
+-4. Las variables opcionales deben poder activarse y desactivarse.
+-5. Los colores deben estar desacoplados de la geometría de los assets.
+-6. Las combinaciones deben pasar por reglas de compatibilidad.
+-7. El perfil debe poder exportarse como un código de texto y reconstruirse sin pérdida.
+-8. El render debe ser suficientemente barato para generarse al crear un jugador y guardarse en caché.
+-
+-## Controles necesarios para el prototipo final
+-
+-- nueva identidad;
+-- aplicar semilla;
+-- cambiar edad;
+-- editar cada categoría visual;
+-- cambiar equipación;
+-- importar/exportar identidad;
+-- exportar retrato;
+-- mostrar una galería de identidades para evaluar diversidad.
++1. La generación inicial es determinista.
++2. Añadir una categoría futura no debe cambiar obligatoriamente los rasgos existentes de una misma versión.
++3. Cambiar edad o presentación no altera la identidad permanente.
++4. El envejecimiento puede cambiar sombreado, arrugas, canas y densidad visual.
++5. Las opciones pueden activar o desactivar otros componentes.
++6. Los campos sin efecto visual se eliminan de la representación canónica.
++7. Las combinaciones pasan por reglas explícitas de compatibilidad.
++8. El perfil se exporta como texto y se reconstruye sin pérdida.
++9. El lector puede migrar al menos la versión inmediatamente anterior.
++10. El render es suficientemente barato para generarse al crear un jugador y guardarse en caché.
++
++## Salida
++
++- Retrato cuadrado; referencia inicial: 512 × 512 píxeles.
++- Fondo, equipación, cuello, cabeza, rasgos, pelo y accesorios en capas ordenadas.
++- Resultado rasterizable a PNG o WebP.
++- Misma versión + mismo perfil = mismos píxeles, salvo cambios de renderer expresamente versionados.
+ 
+ ## Pruebas de aceptación
+ 
+-- 1.000 identidades distintas no producen errores de render.
+-- Una identidad exportada e importada mantiene todos sus atributos.
+-- Generar dos veces la misma identidad produce el mismo hash de imagen.
+-- Envejecer cinco años mantiene cabeza, ojos, nariz y boca.
+-- Desactivar el pelo elimina todas sus capas dependientes.
+-- No aparecen valores fuera del catálogo de assets.
+-- El render de una identidad individual cumple el presupuesto de rendimiento definido por el motor del juego.
++- 1.000 identidades no producen errores.
++- Exportar e importar conserva los atributos.
++- La misma identidad produce el mismo hash de salida.
++- Envejecer conserva los rasgos permanentes.
++- Cambiar presentación conserva los rasgos permanentes.
++- Desactivar una capa elimina sus dependencias.
++- No existen selectores fuera del catálogo.
++- Los guardados de la versión anterior se migran.
++- Sustituir el gráfico asociado a un ID no requiere modificar el perfil.
+ 
+-## Separación recomendada
++## Separación organizativa
+ 
+-Para una reimplementación independiente sólida, el equipo que escriba el código final debería recibir únicamente este documento, ejemplos de entradas/salidas y requisitos visuales. No debería consultar el código de OpenTTD ni el código fuente de este MVP. Esta recomendación es organizativa y no sustituye asesoramiento jurídico.
++Para sostener una reimplementación independiente, el equipo final debería recibir esta especificación, pruebas de caja negra y ejemplos de entrada/salida, sin consultar el código GPL estudiado ni este prototipo. La conveniencia y suficiencia de ese proceso debe revisarse jurídicamente antes de publicar.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/README.md /mnt/data/sports-face-mvp-phase1/README.md
+--- /tmp/sports-face-mvp-v01/README.md	2026-08-04 22:40:06.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/README.md	2026-08-05 07:09:15.747988780 +0000
+@@ -1,17 +1,21 @@
+-# Sports Face MVP
++# Sports Face MVP — Fase 1 / FaceDNA v2
+ 
+ ![Vista previa del generador](preview.png)
+ 
+ MVP web autónomo para validar un generador de retratos 2D destinado a un juego de gestión deportiva.
+ 
+-## Qué demuestra
++## Resultado de la fase 1
+ 
+-- ADN facial compacto en un entero de 32 bits.
+-- Variables de tipo `sprite`, `palette` y `toggle`.
+-- Semilla determinista y código facial importable/exportable.
+-- Composición por capas con gráficos vectoriales provisionales propios.
+-- Editor de rasgos, equipación, galería, exportación PNG y envejecimiento.
+-- Separación entre identidad permanente (`faceBits`) y estado mutable (`age`, equipación).
++- FaceDNA v2 con estilo etiquetado.
++- Identidad permanente y apariencia mutable en palabras separadas.
++- Semilla estable por rasgo: añadir campos nuevos no tiene por qué cambiar los anteriores.
++- Variables declarativas de tipo `sprite`, `palette`, `toggle` y `morph`.
++- Dependencias entre rasgos y limpieza de campos inactivos.
++- IDs lógicos de assets, independientes de nombres de archivos.
++- Código facial SF2 canónico con checksum.
++- Lectura y migración automática de códigos SF1.
++- Editor, equipación, galería, exportación PNG y envejecimiento.
++- Pruebas de creación, validación y serialización sobre 1.000 perfiles.
+ 
+ ## Ejecutar
+ 
+@@ -25,26 +29,40 @@
+ 
+ No requiere instalación ni dependencias externas.
+ 
++## Pruebas
++
++```bash
++npm test
++```
++
+ ## Arquitectura
+ 
+-- `src/face-model.js`: bitfield, variables, PRNG, códigos faciales y perfiles.
++- `src/face-model.js`: FaceDNA v2, perfiles, PRNG, compatibilidad, códigos y migración.
+ - `src/renderer.js`: renderizador Canvas 2D y assets vectoriales provisionales.
+ - `src/app.js`: interfaz y controles.
++- `docs/PHASE1_OPENTTD_AUDIT.md`: decisiones tomadas tras revisar OpenTTD.
++- `docs/FACE_DNA_V2_SPEC.md`: formato del perfil y del código SF2.
++- `docs/MIGRATION_SF1_TO_SF2.md`: reglas de compatibilidad con el MVP anterior.
++- `docs/ACCEPTANCE_PHASE1.md`: criterios y evidencia de aceptación.
++
++## Influencia de OpenTTD
+ 
+-La arquitectura toma como referencia funcional el generador de caras de compañía de OpenTTD, especialmente la representación compacta mediante variables de sprite, paleta y toggles. No contiene sprites de OpenTTD. Los gráficos provisionales se dibujaron específicamente para este MVP.
++La fase revisa el generador de caras de empresa de OpenTTD, especialmente:
+ 
+-## Licencia temporal
++- estilos etiquetados;
++- variables compactas;
++- sprites, paletas y toggles;
++- variables activas;
++- enmascarado canónico;
++- códigos faciales y compatibilidad anterior;
++- orden de dibujado por capas.
+ 
+-Este prototipo se distribuye bajo GPL-2.0-only. Consulta `LICENSE` y `THIRD_PARTY_NOTICES.md`.
++El código JavaScript y los gráficos provisionales de este MVP son nuevos. No contiene sprites de OpenTTD. El prototipo se mantiene bajo GPL-2.0-only por ser una herramienta experimental informada directamente por el estudio de ese código.
+ 
+-Si el producto final debe ser propietario, este repositorio no debe incorporarse directamente. La implementación definitiva debería partir de una especificación funcional neutral y código/recursos nuevos. Una defensa de *clean-room* sólida normalmente requiere que quien implemente la versión nueva no haya estudiado el código GPL original ni este port; consulta a un profesional para decisiones de licencia.
++## Próxima fase
+ 
+-## Próximos pasos recomendados
++La fase 2A sustituirá progresivamente el render fijo por plantillas SVG, guías y deformación paramétrica, tomando `alec-deason/face_generator` como referencia técnica y DiceBear como referencia de API y estilos declarativos.
+ 
+-1. Sustituir los vectores provisionales por un atlas artístico consistente.
+-2. Añadir landmarks y deformación SVG por cuadriláteros.
+-3. Generar familias morfológicas a partir de GNM offline.
+-4. Incorporar reglas de compatibilidad y probabilidades por edad.
+-5. Versionar el ADN facial y añadir pruebas de regresión visual.
++## Producto final
+ 
+-La futura reimplementación puede partir de `CLEAN_ROOM_SPEC.md` sin consultar el código de este prototipo.
++Este repositorio no debe incorporarse directamente a un producto propietario. La implementación definitiva deberá utilizar una especificación neutral revisada, código nuevo y assets propios. Consulta `CLEAN_ROOM_SPEC.md`; esta recomendación no sustituye asesoramiento jurídico.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/THIRD_PARTY_NOTICES.md /mnt/data/sports-face-mvp-phase1/THIRD_PARTY_NOTICES.md
+--- /tmp/sports-face-mvp-v01/THIRD_PARTY_NOTICES.md	2026-08-04 22:37:34.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/THIRD_PARTY_NOTICES.md	2026-08-05 07:09:15.750472887 +0000
+@@ -1,14 +1,13 @@
+-# Third-party notices
++# Third-party notices and research references
+ 
+ ## OpenTTD
+ 
+-- Project: OpenTTD
+-- Repository: https://github.com/OpenTTD/OpenTTD
+-- Relevant reference files:
+-  - `src/company_manager_face.h`
+-  - `src/table/company_face.h`
+-- License: GNU General Public License version 2 (`GPL-2.0-only`)
++This temporary prototype was informed by studying the company-manager face functionality in OpenTTD, including its labelled face styles, compact variables, active-variable masking, palette application, rendering order, face-code formatting and legacy parsing.
+ 
+-This temporary MVP is informed by OpenTTD's company-manager face architecture: compact bit fields, ordered visual variables, palette variables and toggles. It does not include OpenTTD's original sprites.
++OpenTTD is licensed under the GNU General Public License version 2. This prototype is distributed under GPL-2.0-only. No OpenTTD sprite artwork is included.
+ 
+-Copyright remains with the respective OpenTTD contributors.
++Project: https://github.com/OpenTTD/OpenTTD
++
++## Placeholder artwork
++
++The Canvas paths, palettes and visual placeholders in this package were created for this MVP and are not copied from OpenTTD or the other avatar repositories discussed during research.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/ACCEPTANCE_PHASE1.md /mnt/data/sports-face-mvp-phase1/docs/ACCEPTANCE_PHASE1.md
+--- /tmp/sports-face-mvp-v01/docs/ACCEPTANCE_PHASE1.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/ACCEPTANCE_PHASE1.md	2026-08-05 07:08:34.976341999 +0000
+@@ -0,0 +1,30 @@
++# Aceptación de la fase 1
++
++## Estado
++
++| Criterio | Estado | Evidencia |
++|---|---|---|
++| Misma semilla, mismo perfil | Aprobado | Test determinista |
++| Edad no altera identidad | Aprobado | Comparación de `identityBits` |
++| Presentación no altera identidad | Aprobado | Test de presentación |
++| Assets desacoplados de archivos | Aprobado para MVP | `ASSET_CATALOGS` con IDs lógicos |
++| Códigos antiguos siguen funcionando | Aprobado | Migración SF1 → SF2 |
++| Variables inactivas se canonicalizan | Aprobado | Tests de calvicie/barba/color |
++| Validación masiva | Aprobado | 1.000 perfiles creados, validados y serializados |
++| Sin material de OpenTTD | Aprobado para gráficos | Assets Canvas propios; el prototipo sigue GPL por su propósito experimental |
++
++## Puerta de salida
++
++La fase 1 se considera terminada cuando:
++
++```bash
++npm test
++```
++
++finaliza con:
++
++```text
++FaceDNA v2 model tests passed
++```
++
++La revisión visual no forma parte de esta fase; se abordará con el renderizador SVG, GNM y el pipeline de assets.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/BASELINE_V01.md /mnt/data/sports-face-mvp-phase1/docs/BASELINE_V01.md
+--- /tmp/sports-face-mvp-v01/docs/BASELINE_V01.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/BASELINE_V01.md	2026-08-05 07:12:20.607652823 +0000
+@@ -0,0 +1,9 @@
++# Baseline congelado — MVP 0.1
++
++La fase 1 parte del paquete original entregado antes de introducir FaceDNA v2.
++
++- Archivo: `sports-face-mvp.zip`
++- SHA-256: `2e158055bb4faa9c78baa2b9aa79814d55b8f45096352b28b179a26f41859712`
++- Vista previa SHA-256: `a8918aa3a9e531000f4ab4d40280128af30a2faf6ff1f1c1e31fdf44c8bbad0f`
++
++La existencia de este baseline permite comparar migraciones SF1, regresiones visuales y cambios de comportamiento.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/FACE_DNA_V2_SPEC.md /mnt/data/sports-face-mvp-phase1/docs/FACE_DNA_V2_SPEC.md
+--- /tmp/sports-face-mvp-v01/docs/FACE_DNA_V2_SPEC.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/FACE_DNA_V2_SPEC.md	2026-08-05 07:08:34.974474398 +0000
+@@ -0,0 +1,82 @@
++# FaceDNA v2 — especificación del prototipo
++
++## Perfil
++
++```json
++{
++  "version": 2,
++  "style": "sports/default-v2",
++  "seed": 123456789,
++  "identityBits": 0,
++  "appearanceBits": 0,
++  "age": 24,
++  "presentation": "neutral",
++  "kit": {
++    "primary": "#166534",
++    "secondary": "#f8fafc"
++  }
++}
++```
++
++## Dominios
++
++### Identidad permanente
++
++- cabeza;
++- piel;
++- ojos;
++- cejas;
++- nariz;
++- boca;
++- pecas;
++- color de ojos;
++- orejas;
++- mandíbula;
++- proporción facial.
++
++La edad y la presentación no pueden modificar `identityBits`.
++
++### Apariencia mutable
++
++- peinado;
++- barba;
++- color de pelo;
++- pelo visible;
++- gafas;
++- cicatriz.
++
++## Código de texto
++
++Formato:
++
++```text
++SF2~<style>~<identity36>~<appearance36>~<seed36>~<age36>~<presentation>~<primary>~<secondary>~<checksum>
++```
++
++El código se genera desde un perfil canónico:
++
++- valores inválidos se normalizan;
++- campos inactivos se ponen a cero;
++- el checksum cubre todos los campos anteriores;
++- el estilo debe existir en el registro.
++
++## Compatibilidad
++
++El lector acepta:
++
++- `SF2`: lectura directa;
++- `SF1`: migración al estilo `sports/default-v2`.
++
++Los campos nuevos de SF2 que no existen en SF1 se generan de forma determinista desde la semilla.
++
++## Estabilidad de assets
++
++Los enteros compactos se traducen a IDs lógicos mediante catálogos congelados. Un ID puede recibir arte nuevo sin alterar el FaceDNA. Reordenar el catálogo sí sería un cambio incompatible y requiere nueva versión o migración.
++
++## Reglas actuales
++
++- pelo oculto ⇒ peinado cero;
++- pelo oculto + sin barba ⇒ color de pelo inactivo y cero;
++- pelo oculto + barba ⇒ el color sigue activo;
++- menor de 18 años ⇒ barba limitada a las variantes juveniles del MVP;
++- edad válida: 16–60.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/MIGRATION_SF1_TO_SF2.md /mnt/data/sports-face-mvp-phase1/docs/MIGRATION_SF1_TO_SF2.md
+--- /tmp/sports-face-mvp-v01/docs/MIGRATION_SF1_TO_SF2.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/MIGRATION_SF1_TO_SF2.md	2026-08-05 07:08:34.975422941 +0000
+@@ -0,0 +1,47 @@
++# Migración SF1 → SF2
++
++## Objetivo
++
++Conservar las caras creadas con la versión 0.1 del MVP mientras se introduce la separación entre identidad y apariencia.
++
++## Rasgos preservados literalmente
++
++- cabeza;
++- piel;
++- ojos;
++- cejas;
++- nariz;
++- boca;
++- pelo;
++- barba;
++- color de pelo;
++- gafas;
++- pecas;
++- visibilidad del pelo;
++- cicatriz.
++
++## Rasgos nuevos
++
++Se obtienen de la semilla de manera determinista:
++
++- color de ojos;
++- forma de orejas;
++- mandíbula;
++- proporción facial.
++
++## Datos externos preservados
++
++- semilla;
++- edad;
++- presentación;
++- colores de equipación.
++
++## Comportamiento
++
++1. `parseFaceCode` detecta el prefijo `SF1-`.
++2. Verifica el checksum antiguo.
++3. Extrae los selectores antiguos.
++4. Construye `identityBits` y `appearanceBits`.
++5. Aplica reglas de compatibilidad.
++6. Devuelve un perfil de versión 2.
++7. `formatFaceCode` lo exporta como `SF2~...`.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/PHASE1_OPENTTD_AUDIT.md /mnt/data/sports-face-mvp-phase1/docs/PHASE1_OPENTTD_AUDIT.md
+--- /tmp/sports-face-mvp-v01/docs/PHASE1_OPENTTD_AUDIT.md	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/PHASE1_OPENTTD_AUDIT.md	2026-08-05 07:08:34.973410143 +0000
+@@ -0,0 +1,101 @@
++# Fase 1 — auditoría del generador facial de OpenTTD
++
++## Alcance
++
++Esta fase estudia el comportamiento del generador de caras de empresa de OpenTTD para mejorar el MVP temporal. El prototipo continúa bajo GPL-2.0-only y no debe incorporarse directamente al producto final propietario.
++
++Archivos de OpenTTD revisados:
++
++- `src/company_manager_face.h`
++- `src/table/company_face.h`
++- `src/company_cmd.cpp`
++- `src/company_gui.cpp`
++
++## Ideas adoptadas en el MVP
++
++### 1. Estilos etiquetados
++
++OpenTTD no trata una cara como un único esquema universal: mantiene especificaciones de estilo identificadas por una etiqueta. FaceDNA v2 introduce `style: "sports/default-v2"` y un registro `FACE_STYLE_SPECS`.
++
++Beneficio: en el futuro se podrán añadir estilos, catálogos o direcciones artísticas sin reinterpretar silenciosamente los guardados existentes.
++
++### 2. Variables declarativas
++
++Cada rasgo declara:
++
++- tipo (`sprite`, `palette`, `toggle` o `morph`);
++- dominio (`identity` o `appearance`);
++- posición y longitud en su palabra compacta;
++- número de valores válidos;
++- dependencias o capas afectadas.
++
++Beneficio: el editor, la validación, la serialización y el render pueden consultar una única especificación.
++
++### 3. Variables activas e inactivas
++
++Los toggles pueden desactivar otros rasgos. FaceDNA v2 elimina de la representación canónica los valores que no tienen efecto visual. Ejemplo: cuando el pelo está oculto, el selector de peinado se limpia. El color de pelo se conserva si todavía existe barba.
++
++Beneficio: dos caras visualmente equivalentes producen un único código canónico y no quedan datos basura en los guardados.
++
++### 4. Paletas desacopladas de las formas
++
++Las paletas se vinculan a grupos de capas. FaceDNA v2 registra, por ejemplo, que `hairColor` afecta pelo, barba y cejas, mientras que `skin` afecta cabeza, orejas, cuello, nariz y boca.
++
++Beneficio: se puede sustituir arte sin multiplicar cada forma por cada color.
++
++### 5. Código facial canónico y migración
++
++OpenTTD enmascara los bits inactivos antes de crear el código facial y conserva compatibilidad con formatos anteriores. El MVP ahora:
++
++- exporta `SF2`;
++- valida checksum, estilo, rangos y colores;
++- acepta los códigos `SF1` del MVP anterior;
++- migra SF1 a FaceDNA v2;
++- vuelve a exportar el resultado migrado como SF2.
++
++### 6. Cambio cíclico en el editor
++
++Los selectores pueden avanzar o retroceder con wrap-around. FaceDNA v2 incorpora `changeFeature(profile, key, delta)`.
++
++### 7. Separación entre selección, paleta y dibujado
++
++El orden de capas y los enlaces de paleta están declarados en el estilo, en lugar de quedar implícitos únicamente en el renderizador.
++
++## Mejoras deliberadas respecto al patrón estudiado
++
++### Identidad y apariencia en palabras separadas
++
++La identidad permanente no comparte palabra con peinado, barba, gafas o cicatrices. Esto impide que envejecer o cambiar la presentación regenere accidentalmente la estructura facial.
++
++### Aleatoriedad estable por rasgo
++
++Cada rasgo usa un flujo derivado de `semilla + dominio + clave`. Añadir una variable nueva o reordenar la tabla no cambia automáticamente los rasgos ya existentes.
++
++### IDs lógicos de assets
++
++El FaceDNA selecciona IDs estables como `head/oval` o `hair/fade-01`, no nombres de archivo ni coordenadas de atlas. El gráfico asociado a un ID puede reemplazarse sin modificar el guardado.
++
++### Reglas de compatibilidad explícitas
++
++Las correcciones quedan registradas por identificadores, por ejemplo:
++
++- `hair-cleared-when-hidden`;
++- `youth-beard-capped`;
++- `inactive-cleared:<rasgo>`.
++
++## Decisiones que no se trasladan al producto final
++
++- No se reutilizarán sprites de OpenTTD.
++- No se copiarán tablas, offsets ni identificadores.
++- No se incorporará este prototipo GPL al ejecutable comercial.
++- La futura implementación deberá partir de una especificación neutral revisada y assets propios.
++
++## Resultado de la fase
++
++- FaceDNA v2 con dos palabras de 32 bits.
++- Estilo etiquetado y registrable.
++- Código SF2 canónico.
++- Migración automática de SF1.
++- IDs estables de assets.
++- Compatibilidad y validación declarativas.
++- Pruebas sobre 1.000 perfiles.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/phase1-v01-to-v02.patch /mnt/data/sports-face-mvp-phase1/docs/phase1-v01-to-v02.patch
+--- /tmp/sports-face-mvp-v01/docs/phase1-v01-to-v02.patch	1970-01-01 00:00:00.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/docs/phase1-v01-to-v02.patch	2026-08-05 07:13:05.127100615 +0000
+@@ -0,0 +1,561 @@
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/CHANGELOG.md /mnt/data/sports-face-mvp-phase1/CHANGELOG.md
++--- /tmp/sports-face-mvp-v01/CHANGELOG.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/CHANGELOG.md	2026-08-05 07:12:20.608721541 +0000
++@@ -0,0 +1,21 @@
+++# Changelog
+++
+++## 0.2.0 — Fase 1 / FaceDNA v2
+++
+++- Separada identidad permanente de apariencia mutable.
+++- Añadidos estilos etiquetados y registro de especificaciones.
+++- Añadidos IDs lógicos de assets.
+++- Añadidas variables reservadas para orejas, mandíbula y proporción facial.
+++- Implementadas reglas de compatibilidad y máscara canónica de campos inactivos.
+++- Añadido código SF2 con checksum.
+++- Añadida migración automática desde SF1.
+++- Aleatoriedad estable derivada por rasgo.
+++- Presentación y edad conservan la identidad.
+++- Añadidas pruebas de 1.000 perfiles.
+++- Añadida documentación de auditoría, formato, migración y aceptación.
+++
+++## 0.1.0 — MVP inicial
+++
+++- Bitfield facial de 32 bits.
+++- Render Canvas provisional.
+++- Semilla, editor, envejecimiento, galería y exportación PNG.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/CLEAN_ROOM_SPEC.md /mnt/data/sports-face-mvp-phase1/CLEAN_ROOM_SPEC.md
++--- /tmp/sports-face-mvp-v01/CLEAN_ROOM_SPEC.md	2026-08-04 22:40:05.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/CLEAN_ROOM_SPEC.md	2026-08-05 07:09:15.749237089 +0000
++@@ -1,76 +1,86 @@
++-# Especificación funcional neutral para la reimplementación final
+++# Especificación funcional neutral para una implementación final independiente
++ 
++-Este documento describe el comportamiento observable que debe conservar una futura implementación independiente. No prescribe lenguaje, algoritmos internos, offsets de bits ni estructura de clases.
+++Este documento describe comportamiento observable. No prescribe offsets, tablas, algoritmos, nombres de funciones ni estructura de clases del MVP o de OpenTTD.
++ 
++ ## Objetivo
++ 
++-Generar retratos 2D reproducibles de jugadores ficticios, adecuados para interfaces de gestión deportiva, sin almacenar una imagen por jugador.
+++Generar retratos 2D reproducibles de jugadores ficticios sin almacenar una imagen original por jugador.
++ 
++-## Entrada mínima
+++## Perfil funcional
++ 
++ Un perfil debe contener:
++ 
++ - versión del formato;
++-- identificador o semilla estable;
++-- identidad facial inmutable;
+++- etiqueta estable del estilo visual;
+++- semilla o identificador estable;
+++- identidad facial permanente;
+++- apariencia mutable;
++ - edad actual;
++ - presentación visual;
++ - colores de equipación.
++ 
++-La identidad debe representar, como mínimo:
+++### Identidad permanente mínima
++ 
++ - forma de cabeza;
++ - tono de piel;
++-- ojos;
+++- ojos y color de ojos;
++ - cejas;
++ - nariz;
++ - boca;
++-- peinado;
++-- color de pelo;
+++- orejas;
+++- mandíbula y proporciones;
+++- marcas congénitas opcionales.
+++
+++### Apariencia mutable mínima
+++
+++- peinado y visibilidad del pelo;
+++- color del pelo;
++ - barba o vello facial;
++-- accesorios opcionales y marcas faciales.
+++- gafas;
+++- cicatrices u otras marcas adquiridas.
++ 
++-La representación final puede ser un bitfield, bytes, JSON compacto u otro formato. No tiene que conservar los offsets ni el código del MVP.
+++La representación puede ser bytes, bitfields, JSON compacto u otro formato. No debe copiar los offsets o tablas de este prototipo.
++ 
++-## Salida
+++## Estilos y assets
++ 
++-- Retrato cuadrado de referencia: 512 × 512 píxeles.
++-- Fondo, cuello, equipación y cabeza en capas separables.
++-- Resultado rasterizable a PNG o WebP.
++-- Misma versión + misma identidad + misma edad = mismos píxeles, salvo cambios expresamente versionados.
+++- Cada estilo debe tener un identificador persistente.
+++- Cada variante debe resolverse mediante un ID lógico de asset.
+++- Los archivos y coordenadas de atlas pueden cambiar sin modificar el ID lógico.
+++- Reordenar o eliminar IDs requiere una migración versionada.
+++- Las paletas deben estar desacopladas de la forma y poder afectar grupos de capas.
++ 
++ ## Reglas funcionales
++ 
++-1. La generación inicial debe ser determinista.
++-2. Cambiar la edad no puede alterar la estructura facial permanente.
++-3. El envejecimiento puede modificar arrugas, canas, entradas y densidad de barba.
++-4. Las variables opcionales deben poder activarse y desactivarse.
++-5. Los colores deben estar desacoplados de la geometría de los assets.
++-6. Las combinaciones deben pasar por reglas de compatibilidad.
++-7. El perfil debe poder exportarse como un código de texto y reconstruirse sin pérdida.
++-8. El render debe ser suficientemente barato para generarse al crear un jugador y guardarse en caché.
++-
++-## Controles necesarios para el prototipo final
++-
++-- nueva identidad;
++-- aplicar semilla;
++-- cambiar edad;
++-- editar cada categoría visual;
++-- cambiar equipación;
++-- importar/exportar identidad;
++-- exportar retrato;
++-- mostrar una galería de identidades para evaluar diversidad.
+++1. La generación inicial es determinista.
+++2. Añadir una categoría futura no debe cambiar obligatoriamente los rasgos existentes de una misma versión.
+++3. Cambiar edad o presentación no altera la identidad permanente.
+++4. El envejecimiento puede cambiar sombreado, arrugas, canas y densidad visual.
+++5. Las opciones pueden activar o desactivar otros componentes.
+++6. Los campos sin efecto visual se eliminan de la representación canónica.
+++7. Las combinaciones pasan por reglas explícitas de compatibilidad.
+++8. El perfil se exporta como texto y se reconstruye sin pérdida.
+++9. El lector puede migrar al menos la versión inmediatamente anterior.
+++10. El render es suficientemente barato para generarse al crear un jugador y guardarse en caché.
+++
+++## Salida
+++
+++- Retrato cuadrado; referencia inicial: 512 × 512 píxeles.
+++- Fondo, equipación, cuello, cabeza, rasgos, pelo y accesorios en capas ordenadas.
+++- Resultado rasterizable a PNG o WebP.
+++- Misma versión + mismo perfil = mismos píxeles, salvo cambios de renderer expresamente versionados.
++ 
++ ## Pruebas de aceptación
++ 
++-- 1.000 identidades distintas no producen errores de render.
++-- Una identidad exportada e importada mantiene todos sus atributos.
++-- Generar dos veces la misma identidad produce el mismo hash de imagen.
++-- Envejecer cinco años mantiene cabeza, ojos, nariz y boca.
++-- Desactivar el pelo elimina todas sus capas dependientes.
++-- No aparecen valores fuera del catálogo de assets.
++-- El render de una identidad individual cumple el presupuesto de rendimiento definido por el motor del juego.
+++- 1.000 identidades no producen errores.
+++- Exportar e importar conserva los atributos.
+++- La misma identidad produce el mismo hash de salida.
+++- Envejecer conserva los rasgos permanentes.
+++- Cambiar presentación conserva los rasgos permanentes.
+++- Desactivar una capa elimina sus dependencias.
+++- No existen selectores fuera del catálogo.
+++- Los guardados de la versión anterior se migran.
+++- Sustituir el gráfico asociado a un ID no requiere modificar el perfil.
++ 
++-## Separación recomendada
+++## Separación organizativa
++ 
++-Para una reimplementación independiente sólida, el equipo que escriba el código final debería recibir únicamente este documento, ejemplos de entradas/salidas y requisitos visuales. No debería consultar el código de OpenTTD ni el código fuente de este MVP. Esta recomendación es organizativa y no sustituye asesoramiento jurídico.
+++Para sostener una reimplementación independiente, el equipo final debería recibir esta especificación, pruebas de caja negra y ejemplos de entrada/salida, sin consultar el código GPL estudiado ni este prototipo. La conveniencia y suficiencia de ese proceso debe revisarse jurídicamente antes de publicar.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/README.md /mnt/data/sports-face-mvp-phase1/README.md
++--- /tmp/sports-face-mvp-v01/README.md	2026-08-04 22:40:06.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/README.md	2026-08-05 07:09:15.747988780 +0000
++@@ -1,17 +1,21 @@
++-# Sports Face MVP
+++# Sports Face MVP — Fase 1 / FaceDNA v2
++ 
++ ![Vista previa del generador](preview.png)
++ 
++ MVP web autónomo para validar un generador de retratos 2D destinado a un juego de gestión deportiva.
++ 
++-## Qué demuestra
+++## Resultado de la fase 1
++ 
++-- ADN facial compacto en un entero de 32 bits.
++-- Variables de tipo `sprite`, `palette` y `toggle`.
++-- Semilla determinista y código facial importable/exportable.
++-- Composición por capas con gráficos vectoriales provisionales propios.
++-- Editor de rasgos, equipación, galería, exportación PNG y envejecimiento.
++-- Separación entre identidad permanente (`faceBits`) y estado mutable (`age`, equipación).
+++- FaceDNA v2 con estilo etiquetado.
+++- Identidad permanente y apariencia mutable en palabras separadas.
+++- Semilla estable por rasgo: añadir campos nuevos no tiene por qué cambiar los anteriores.
+++- Variables declarativas de tipo `sprite`, `palette`, `toggle` y `morph`.
+++- Dependencias entre rasgos y limpieza de campos inactivos.
+++- IDs lógicos de assets, independientes de nombres de archivos.
+++- Código facial SF2 canónico con checksum.
+++- Lectura y migración automática de códigos SF1.
+++- Editor, equipación, galería, exportación PNG y envejecimiento.
+++- Pruebas de creación, validación y serialización sobre 1.000 perfiles.
++ 
++ ## Ejecutar
++ 
++@@ -25,26 +29,40 @@
++ 
++ No requiere instalación ni dependencias externas.
++ 
+++## Pruebas
+++
+++```bash
+++npm test
+++```
+++
++ ## Arquitectura
++ 
++-- `src/face-model.js`: bitfield, variables, PRNG, códigos faciales y perfiles.
+++- `src/face-model.js`: FaceDNA v2, perfiles, PRNG, compatibilidad, códigos y migración.
++ - `src/renderer.js`: renderizador Canvas 2D y assets vectoriales provisionales.
++ - `src/app.js`: interfaz y controles.
+++- `docs/PHASE1_OPENTTD_AUDIT.md`: decisiones tomadas tras revisar OpenTTD.
+++- `docs/FACE_DNA_V2_SPEC.md`: formato del perfil y del código SF2.
+++- `docs/MIGRATION_SF1_TO_SF2.md`: reglas de compatibilidad con el MVP anterior.
+++- `docs/ACCEPTANCE_PHASE1.md`: criterios y evidencia de aceptación.
+++
+++## Influencia de OpenTTD
++ 
++-La arquitectura toma como referencia funcional el generador de caras de compañía de OpenTTD, especialmente la representación compacta mediante variables de sprite, paleta y toggles. No contiene sprites de OpenTTD. Los gráficos provisionales se dibujaron específicamente para este MVP.
+++La fase revisa el generador de caras de empresa de OpenTTD, especialmente:
++ 
++-## Licencia temporal
+++- estilos etiquetados;
+++- variables compactas;
+++- sprites, paletas y toggles;
+++- variables activas;
+++- enmascarado canónico;
+++- códigos faciales y compatibilidad anterior;
+++- orden de dibujado por capas.
++ 
++-Este prototipo se distribuye bajo GPL-2.0-only. Consulta `LICENSE` y `THIRD_PARTY_NOTICES.md`.
+++El código JavaScript y los gráficos provisionales de este MVP son nuevos. No contiene sprites de OpenTTD. El prototipo se mantiene bajo GPL-2.0-only por ser una herramienta experimental informada directamente por el estudio de ese código.
++ 
++-Si el producto final debe ser propietario, este repositorio no debe incorporarse directamente. La implementación definitiva debería partir de una especificación funcional neutral y código/recursos nuevos. Una defensa de *clean-room* sólida normalmente requiere que quien implemente la versión nueva no haya estudiado el código GPL original ni este port; consulta a un profesional para decisiones de licencia.
+++## Próxima fase
++ 
++-## Próximos pasos recomendados
+++La fase 2A sustituirá progresivamente el render fijo por plantillas SVG, guías y deformación paramétrica, tomando `alec-deason/face_generator` como referencia técnica y DiceBear como referencia de API y estilos declarativos.
++ 
++-1. Sustituir los vectores provisionales por un atlas artístico consistente.
++-2. Añadir landmarks y deformación SVG por cuadriláteros.
++-3. Generar familias morfológicas a partir de GNM offline.
++-4. Incorporar reglas de compatibilidad y probabilidades por edad.
++-5. Versionar el ADN facial y añadir pruebas de regresión visual.
+++## Producto final
++ 
++-La futura reimplementación puede partir de `CLEAN_ROOM_SPEC.md` sin consultar el código de este prototipo.
+++Este repositorio no debe incorporarse directamente a un producto propietario. La implementación definitiva deberá utilizar una especificación neutral revisada, código nuevo y assets propios. Consulta `CLEAN_ROOM_SPEC.md`; esta recomendación no sustituye asesoramiento jurídico.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/THIRD_PARTY_NOTICES.md /mnt/data/sports-face-mvp-phase1/THIRD_PARTY_NOTICES.md
++--- /tmp/sports-face-mvp-v01/THIRD_PARTY_NOTICES.md	2026-08-04 22:37:34.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/THIRD_PARTY_NOTICES.md	2026-08-05 07:09:15.750472887 +0000
++@@ -1,14 +1,13 @@
++-# Third-party notices
+++# Third-party notices and research references
++ 
++ ## OpenTTD
++ 
++-- Project: OpenTTD
++-- Repository: https://github.com/OpenTTD/OpenTTD
++-- Relevant reference files:
++-  - `src/company_manager_face.h`
++-  - `src/table/company_face.h`
++-- License: GNU General Public License version 2 (`GPL-2.0-only`)
+++This temporary prototype was informed by studying the company-manager face functionality in OpenTTD, including its labelled face styles, compact variables, active-variable masking, palette application, rendering order, face-code formatting and legacy parsing.
++ 
++-This temporary MVP is informed by OpenTTD's company-manager face architecture: compact bit fields, ordered visual variables, palette variables and toggles. It does not include OpenTTD's original sprites.
+++OpenTTD is licensed under the GNU General Public License version 2. This prototype is distributed under GPL-2.0-only. No OpenTTD sprite artwork is included.
++ 
++-Copyright remains with the respective OpenTTD contributors.
+++Project: https://github.com/OpenTTD/OpenTTD
+++
+++## Placeholder artwork
+++
+++The Canvas paths, palettes and visual placeholders in this package were created for this MVP and are not copied from OpenTTD or the other avatar repositories discussed during research.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/ACCEPTANCE_PHASE1.md /mnt/data/sports-face-mvp-phase1/docs/ACCEPTANCE_PHASE1.md
++--- /tmp/sports-face-mvp-v01/docs/ACCEPTANCE_PHASE1.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/docs/ACCEPTANCE_PHASE1.md	2026-08-05 07:08:34.976341999 +0000
++@@ -0,0 +1,30 @@
+++# Aceptación de la fase 1
+++
+++## Estado
+++
+++| Criterio | Estado | Evidencia |
+++|---|---|---|
+++| Misma semilla, mismo perfil | Aprobado | Test determinista |
+++| Edad no altera identidad | Aprobado | Comparación de `identityBits` |
+++| Presentación no altera identidad | Aprobado | Test de presentación |
+++| Assets desacoplados de archivos | Aprobado para MVP | `ASSET_CATALOGS` con IDs lógicos |
+++| Códigos antiguos siguen funcionando | Aprobado | Migración SF1 → SF2 |
+++| Variables inactivas se canonicalizan | Aprobado | Tests de calvicie/barba/color |
+++| Validación masiva | Aprobado | 1.000 perfiles creados, validados y serializados |
+++| Sin material de OpenTTD | Aprobado para gráficos | Assets Canvas propios; el prototipo sigue GPL por su propósito experimental |
+++
+++## Puerta de salida
+++
+++La fase 1 se considera terminada cuando:
+++
+++```bash
+++npm test
+++```
+++
+++finaliza con:
+++
+++```text
+++FaceDNA v2 model tests passed
+++```
+++
+++La revisión visual no forma parte de esta fase; se abordará con el renderizador SVG, GNM y el pipeline de assets.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/BASELINE_V01.md /mnt/data/sports-face-mvp-phase1/docs/BASELINE_V01.md
++--- /tmp/sports-face-mvp-v01/docs/BASELINE_V01.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/docs/BASELINE_V01.md	2026-08-05 07:12:20.607652823 +0000
++@@ -0,0 +1,9 @@
+++# Baseline congelado — MVP 0.1
+++
+++La fase 1 parte del paquete original entregado antes de introducir FaceDNA v2.
+++
+++- Archivo: `sports-face-mvp.zip`
+++- SHA-256: `2e158055bb4faa9c78baa2b9aa79814d55b8f45096352b28b179a26f41859712`
+++- Vista previa SHA-256: `a8918aa3a9e531000f4ab4d40280128af30a2faf6ff1f1c1e31fdf44c8bbad0f`
+++
+++La existencia de este baseline permite comparar migraciones SF1, regresiones visuales y cambios de comportamiento.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/FACE_DNA_V2_SPEC.md /mnt/data/sports-face-mvp-phase1/docs/FACE_DNA_V2_SPEC.md
++--- /tmp/sports-face-mvp-v01/docs/FACE_DNA_V2_SPEC.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/docs/FACE_DNA_V2_SPEC.md	2026-08-05 07:08:34.974474398 +0000
++@@ -0,0 +1,82 @@
+++# FaceDNA v2 — especificación del prototipo
+++
+++## Perfil
+++
+++```json
+++{
+++  "version": 2,
+++  "style": "sports/default-v2",
+++  "seed": 123456789,
+++  "identityBits": 0,
+++  "appearanceBits": 0,
+++  "age": 24,
+++  "presentation": "neutral",
+++  "kit": {
+++    "primary": "#166534",
+++    "secondary": "#f8fafc"
+++  }
+++}
+++```
+++
+++## Dominios
+++
+++### Identidad permanente
+++
+++- cabeza;
+++- piel;
+++- ojos;
+++- cejas;
+++- nariz;
+++- boca;
+++- pecas;
+++- color de ojos;
+++- orejas;
+++- mandíbula;
+++- proporción facial.
+++
+++La edad y la presentación no pueden modificar `identityBits`.
+++
+++### Apariencia mutable
+++
+++- peinado;
+++- barba;
+++- color de pelo;
+++- pelo visible;
+++- gafas;
+++- cicatriz.
+++
+++## Código de texto
+++
+++Formato:
+++
+++```text
+++SF2~<style>~<identity36>~<appearance36>~<seed36>~<age36>~<presentation>~<primary>~<secondary>~<checksum>
+++```
+++
+++El código se genera desde un perfil canónico:
+++
+++- valores inválidos se normalizan;
+++- campos inactivos se ponen a cero;
+++- el checksum cubre todos los campos anteriores;
+++- el estilo debe existir en el registro.
+++
+++## Compatibilidad
+++
+++El lector acepta:
+++
+++- `SF2`: lectura directa;
+++- `SF1`: migración al estilo `sports/default-v2`.
+++
+++Los campos nuevos de SF2 que no existen en SF1 se generan de forma determinista desde la semilla.
+++
+++## Estabilidad de assets
+++
+++Los enteros compactos se traducen a IDs lógicos mediante catálogos congelados. Un ID puede recibir arte nuevo sin alterar el FaceDNA. Reordenar el catálogo sí sería un cambio incompatible y requiere nueva versión o migración.
+++
+++## Reglas actuales
+++
+++- pelo oculto ⇒ peinado cero;
+++- pelo oculto + sin barba ⇒ color de pelo inactivo y cero;
+++- pelo oculto + barba ⇒ el color sigue activo;
+++- menor de 18 años ⇒ barba limitada a las variantes juveniles del MVP;
+++- edad válida: 16–60.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/MIGRATION_SF1_TO_SF2.md /mnt/data/sports-face-mvp-phase1/docs/MIGRATION_SF1_TO_SF2.md
++--- /tmp/sports-face-mvp-v01/docs/MIGRATION_SF1_TO_SF2.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/docs/MIGRATION_SF1_TO_SF2.md	2026-08-05 07:08:34.975422941 +0000
++@@ -0,0 +1,47 @@
+++# Migración SF1 → SF2
+++
+++## Objetivo
+++
+++Conservar las caras creadas con la versión 0.1 del MVP mientras se introduce la separación entre identidad y apariencia.
+++
+++## Rasgos preservados literalmente
+++
+++- cabeza;
+++- piel;
+++- ojos;
+++- cejas;
+++- nariz;
+++- boca;
+++- pelo;
+++- barba;
+++- color de pelo;
+++- gafas;
+++- pecas;
+++- visibilidad del pelo;
+++- cicatriz.
+++
+++## Rasgos nuevos
+++
+++Se obtienen de la semilla de manera determinista:
+++
+++- color de ojos;
+++- forma de orejas;
+++- mandíbula;
+++- proporción facial.
+++
+++## Datos externos preservados
+++
+++- semilla;
+++- edad;
+++- presentación;
+++- colores de equipación.
+++
+++## Comportamiento
+++
+++1. `parseFaceCode` detecta el prefijo `SF1-`.
+++2. Verifica el checksum antiguo.
+++3. Extrae los selectores antiguos.
+++4. Construye `identityBits` y `appearanceBits`.
+++5. Aplica reglas de compatibilidad.
+++6. Devuelve un perfil de versión 2.
+++7. `formatFaceCode` lo exporta como `SF2~...`.
++diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/docs/PHASE1_OPENTTD_AUDIT.md /mnt/data/sports-face-mvp-phase1/docs/PHASE1_OPENTTD_AUDIT.md
++--- /tmp/sports-face-mvp-v01/docs/PHASE1_OPENTTD_AUDIT.md	1970-01-01 00:00:00.000000000 +0000
+++++ /mnt/data/sports-face-mvp-phase1/docs/PHASE1_OPENTTD_AUDIT.md	2026-08-05 07:08:34.973410143 +0000
++@@ -0,0 +1,101 @@
+++# Fase 1 — auditoría del generador facial de OpenTTD
+++
+++## Alcance
+++
+++Esta fase estudia el comportamiento del generador de caras de empresa de OpenTTD para mejorar el MVP temporal. El prototipo continúa bajo GPL-2.0-only y no debe incorporarse directamente al producto final propietario.
+++
+++Archivos de OpenTTD revisados:
+++
+++- `src/company_manager_face.h`
+++- `src/table/company_face.h`
+++- `src/company_cmd.cpp`
+++- `src/company_gui.cpp`
+++
+++## Ideas adoptadas en el MVP
+++
+++### 1. Estilos etiquetados
+++
+++OpenTTD no trata una cara como un único esquema universal: mantiene especificaciones de estilo identificadas por una etiqueta. FaceDNA v2 introduce `style: "sports/default-v2"` y un registro `FACE_STYLE_SPECS`.
+++
+++Beneficio: en el futuro se podrán añadir estilos, catálogos o direcciones artísticas sin reinterpretar silenciosamente los guardados existentes.
+++
+++### 2. Variables declarativas
+++
+++Cada rasgo declara:
+++
+++- tipo (`sprite`, `palette`, `toggle` o `morph`);
+++- dominio (`identity` o `appearance`);
+++- posición y longitud en su palabra compacta;
+++- número de valores válidos;
+++- dependencias o capas afectadas.
+++
+++Beneficio: el editor, la validación, la serialización y el render pueden consultar una única especificación.
+++
+++### 3. Variables activas e inactivas
+++
+++Los toggles pueden desactivar otros rasgos. FaceDNA v2 elimina de la representación canónica los valores que no tienen efecto visual. Ejemplo: cuando el pelo está oculto, el selector de peinado se limpia. El color de pelo se conserva si todavía existe barba.
+++
+++Beneficio: dos caras visualmente equivalentes producen un único código canónico y no quedan datos basura en los guardados.
+++
+++### 4. Paletas desacopladas de las formas
+++
+++Las paletas se vinculan a grupos de capas. FaceDNA v2 registra, por ejemplo, que `hairColor` afecta pelo, barba y cejas, mientras que `skin` afecta cabeza, orejas, cuello, nariz y boca.
+++
+++Beneficio: se puede sustituir arte sin multiplicar cada forma por cada color.
+++
+++### 5. Código facial canónico y migración
+++
+++OpenTTD enmascara los bits inactivos antes de crear el código facial y conserva compatibilidad con formatos anteriores. El MVP ahora:
+++
+++- exporta `SF2`;
+++- valida checksum, estilo, rangos y colores;
+++- acepta los códigos `SF1` del MVP anterior;
+++- migra SF1 a FaceDNA v2;
+++- vuelve a exportar el resultado migrado como SF2.
+++
+++### 6. Cambio cíclico en el editor
+++
+++Los selectores pueden avanzar o retroceder con wrap-around. FaceDNA v2 incorpora `changeFeature(profile, key, delta)`.
+++
+++### 7. Separación entre selección, paleta y dibujado
+++
+++El orden de capas y los enlaces de paleta están declarados en el estilo, en lugar de quedar implícitos únicamente en el renderizador.
+++
+++## Mejoras deliberadas respecto al patrón estudiado
+++
+++### Identidad y apariencia en palabras separadas
+++
+++La identidad permanente no comparte palabra con peinado, barba, gafas o cicatrices. Esto impide que envejecer o cambiar la presentación regenere accidentalmente la estructura facial.
+++
+++### Aleatoriedad estable por rasgo
+++
+++Cada rasgo usa un flujo derivado de `semilla + dominio + clave`. Añadir una variable nueva o reordenar la tabla no cambia automáticamente los rasgos ya existentes.
+++
+++### IDs lógicos de assets
+++
+++El FaceDNA selecciona IDs estables como `head/oval` o `hair/fade-01`, no nombres de archivo ni coordenadas de atlas. El gráfico asociado a un ID puede reemplazarse sin modificar el guardado.
+++
+++### Reglas de compatibilidad explícitas
+++
+++Las correcciones quedan registradas por identificadores, por ejemplo:
+++
+++- `hair-cleared-when-hidden`;
+++- `youth-beard-capped`;
+++- `inactive-cleared:<rasgo>`.
+++
+++## Decisiones que no se trasladan al producto final
+++
+++- No se reutilizarán sprites de OpenTTD.
+++- No se copiarán tablas, offsets ni identificadores.
+++- No se incorporará este prototipo GPL al ejecutable comercial.
+++- La futura implementación deberá partir de una especificación neutral revisada y assets propios.
+++
+++## Resultado de la fase
+++
+++- FaceDNA v2 con dos palabras de 32 bits.
+++- Estilo etiquetado y registrable.
+++- Código SF2 canónico.
+++- Migración automática de SF1.
+++- IDs estables de assets.
+++- Compatibilidad y validación declarativas.
+++- Pruebas sobre 1.000 perfiles.
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/index.html /mnt/data/sports-face-mvp-phase1/index.html
+--- /tmp/sports-face-mvp-v01/index.html	2026-08-04 22:37:34.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/index.html	2026-08-05 07:07:40.409069216 +0000
+@@ -3,7 +3,7 @@
+ <head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+-  <title>Sports Face MVP</title>
++  <title>Sports Face MVP · FaceDNA v2</title>
+   <link rel="stylesheet" href="./styles.css">
+ </head>
+ <body>
+@@ -12,7 +12,7 @@
+       <p class="eyebrow">PROTOTIPO DE RETRATOS 2D</p>
+       <h1>Sports Face MVP</h1>
+     </div>
+-    <div class="license-pill">MVP temporal · GPL-2.0</div>
++    <div class="license-pill">Fase 1 · FaceDNA v2 · GPL-2.0</div>
+   </header>
+ 
+   <main class="layout">
+@@ -23,13 +23,13 @@
+         <button id="age-five" class="button">+5 años</button>
+         <button id="download-png" class="button">Exportar PNG</button>
+       </div>
+-      <p class="caption">La identidad facial permanece estable; la edad modifica arrugas, canas y densidad visual.</p>
++      <p class="caption">FaceDNA v2 separa identidad permanente, apariencia mutable, edad y equipación. Los códigos SF1 anteriores se migran automáticamente.</p>
+     </section>
+ 
+     <section class="controls card">
+       <div class="section-heading">
+         <div>
+-          <p class="eyebrow">FACE DNA</p>
++          <p class="eyebrow">FACE DNA V2</p>
+           <h2>Perfil del jugador</h2>
+         </div>
+       </div>
+@@ -69,13 +69,13 @@
+       </div>
+ 
+       <details open>
+-        <summary>Editor de rasgos</summary>
++        <summary>Editor de identidad y apariencia</summary>
+         <div id="feature-controls" class="feature-grid"></div>
+       </details>
+ 
+       <div class="code-box">
+         <label class="field wide">
+-          <span>Código facial reproducible</span>
++          <span>Código facial reproducible SF2 (también acepta SF1)</span>
+           <textarea id="face-code" rows="3" spellcheck="false"></textarea>
+         </label>
+         <div class="row-actions">
+@@ -97,7 +97,7 @@
+ 
+     <section class="debug-panel card">
+       <details>
+-        <summary>Datos internos del perfil</summary>
++        <summary>FaceDNA, IDs de assets, compatibilidad y validación</summary>
+         <pre id="debug-output"></pre>
+       </details>
+     </section>
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/package.json /mnt/data/sports-face-mvp-phase1/package.json
+--- /tmp/sports-face-mvp-v01/package.json	2026-08-04 22:37:34.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/package.json	2026-08-05 07:07:13.589998361 +0000
+@@ -1,6 +1,6 @@
+ {
+   "name": "sports-face-mvp",
+-  "version": "0.1.0",
++  "version": "0.2.0",
+   "private": true,
+   "type": "module",
+   "scripts": {
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/src/app.js /mnt/data/sports-face-mvp-phase1/src/app.js
+--- /tmp/sports-face-mvp-v01/src/app.js	2026-08-04 22:37:34.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/src/app.js	2026-08-05 07:06:29.111771049 +0000
+@@ -11,6 +11,8 @@
+   hashSeed,
+   parseFaceCode,
+   setFeature,
++  setKit,
++  setPresentation,
+ } from "./face-model.js";
+ import { downloadPng, renderFace } from "./renderer.js";
+ 
+@@ -44,7 +46,7 @@
+     const wrapper = document.createElement("label");
+     wrapper.className = "field compact";
+     const text = document.createElement("span");
+-    text.textContent = variable.label;
++    text.textContent = `${variable.domain === "identity" ? "Identidad" : "Apariencia"} · ${variable.label}`;
+     const select = document.createElement("select");
+     select.dataset.feature = variable.key;
+     for (let index = 0; index < variable.validValues; index += 1) {
+@@ -67,8 +69,8 @@
+   ageInput.value = String(profile.age);
+   ageValue.textContent = `${profile.age}`;
+   presentationInput.value = profile.presentation;
+-  kitPrimary.value = profile.kitPrimary;
+-  kitSecondary.value = profile.kitSecondary;
++  kitPrimary.value = profile.kit.primary;
++  kitSecondary.value = profile.kit.secondary;
+   faceCode.value = formatFaceCode(profile);
+ 
+   const values = getFaceValues(profile);
+@@ -125,8 +127,7 @@
+     age: Number(ageInput.value),
+     presentation: presentationInput.value,
+   });
+-  profile.kitPrimary = kitPrimary.value;
+-  profile.kitSecondary = kitSecondary.value;
++  profile = setKit(profile, kitPrimary.value, kitSecondary.value);
+   refresh();
+   showToast("Semilla aplicada");
+ });
+@@ -164,20 +165,20 @@
+ });
+ 
+ ageInput.addEventListener("input", () => {
+-  profile = { ...profile, age: Number(ageInput.value) };
++  profile = ageProfile(profile, Number(ageInput.value) - profile.age);
+   refresh({ rebuildGallery: false });
+ });
+ 
+ presentationInput.addEventListener("change", () => {
+-  profile = createProfile({ seed: profile.seed, age: profile.age, presentation: presentationInput.value });
+-  profile.kitPrimary = kitPrimary.value;
+-  profile.kitSecondary = kitSecondary.value;
++  profile = setPresentation(profile, presentationInput.value, { rerollAppearance: true });
++  profile = setKit(profile, kitPrimary.value, kitSecondary.value);
+   refresh();
++  showToast("Presentación actualizada; la identidad se conserva");
+ });
+ 
+ for (const input of [kitPrimary, kitSecondary]) {
+   input.addEventListener("input", () => {
+-    profile = { ...profile, kitPrimary: kitPrimary.value, kitSecondary: kitSecondary.value };
++    profile = setKit(profile, kitPrimary.value, kitSecondary.value);
+     refresh({ rebuildGallery: false });
+   });
+ }
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/src/face-model.js /mnt/data/sports-face-mvp-phase1/src/face-model.js
+--- /tmp/sports-face-mvp-v01/src/face-model.js	2026-08-04 22:40:05.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/src/face-model.js	2026-08-05 07:12:43.351678635 +0000
+@@ -1,94 +1,184 @@
+ /*
+- * Sports Face MVP
++ * Sports Face MVP — Phase 1 / FaceDNA v2
+  * SPDX-License-Identifier: GPL-2.0-only
+  *
+- * Temporary prototype inspired by OpenTTD's compact company-manager face
+- * representation (sprite/palette/toggle variables stored in a bitfield).
+- * The implementation and placeholder artwork in this repository are new.
++ * Temporary prototype informed by OpenTTD's company-manager face system:
++ * labelled styles, compact variables, active-variable masks, palette bindings,
++ * canonical face codes, legacy migration and range validation.
++ *
++ * This file is a new JavaScript implementation with different data layout,
++ * identifiers and behaviour. It is not intended to be incorporated into the
++ * final proprietary implementation.
+  */
+ 
++export const CURRENT_PROFILE_VERSION = 2;
++export const DEFAULT_STYLE_LABEL = "sports/default-v2";
++
+ export const FaceVarType = Object.freeze({
+   SPRITE: "sprite",
+   PALETTE: "palette",
+   TOGGLE: "toggle",
++  MORPH: "morph",
++});
++
++export const FaceDomain = Object.freeze({
++  IDENTITY: "identity",
++  APPEARANCE: "appearance",
+ });
+ 
+ /**
+- * Compact 32-bit face DNA. Offsets deliberately differ from OpenTTD.
+- * Age, presentation and kit colours are mutable profile data outside the
+- * permanent facial identity.
++ * Permanent identity. Offsets are local to identityBits and intentionally do
++ * not match the temporary v1 layout or OpenTTD.
+  */
+-export const FACE_VARS = Object.freeze([
+-  { key: "head", label: "Forma de cabeza", type: FaceVarType.SPRITE, offset: 0, length: 3, validValues: 6 },
+-  { key: "skin", label: "Tono de piel", type: FaceVarType.PALETTE, offset: 3, length: 3, validValues: 8 },
+-  { key: "eyes", label: "Ojos", type: FaceVarType.SPRITE, offset: 6, length: 3, validValues: 6 },
+-  { key: "brows", label: "Cejas", type: FaceVarType.SPRITE, offset: 9, length: 3, validValues: 8 },
+-  { key: "nose", label: "Nariz", type: FaceVarType.SPRITE, offset: 12, length: 3, validValues: 8 },
+-  { key: "mouth", label: "Boca", type: FaceVarType.SPRITE, offset: 15, length: 3, validValues: 7 },
+-  { key: "hair", label: "Peinado", type: FaceVarType.SPRITE, offset: 18, length: 4, validValues: 12 },
+-  { key: "beard", label: "Barba", type: FaceVarType.SPRITE, offset: 22, length: 3, validValues: 6 },
+-  { key: "hairColor", label: "Color de pelo", type: FaceVarType.PALETTE, offset: 25, length: 3, validValues: 8 },
+-  { key: "glasses", label: "Gafas", type: FaceVarType.TOGGLE, offset: 28, length: 1, validValues: 2 },
+-  { key: "freckles", label: "Pecas", type: FaceVarType.TOGGLE, offset: 29, length: 1, validValues: 2 },
++export const IDENTITY_VARS = Object.freeze([
++  { key: "head", label: "Forma de cabeza", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 0, length: 3, validValues: 6 },
++  { key: "skin", label: "Tono de piel", type: FaceVarType.PALETTE, domain: FaceDomain.IDENTITY, offset: 3, length: 3, validValues: 8 },
++  { key: "eyes", label: "Ojos", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 6, length: 3, validValues: 6 },
++  { key: "brows", label: "Cejas", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 9, length: 3, validValues: 8 },
++  { key: "nose", label: "Nariz", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 12, length: 3, validValues: 8 },
++  { key: "mouth", label: "Boca", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 15, length: 3, validValues: 7 },
++  { key: "freckles", label: "Pecas", type: FaceVarType.TOGGLE, domain: FaceDomain.IDENTITY, offset: 18, length: 1, validValues: 2 },
++  { key: "eyeColor", label: "Color de ojos", type: FaceVarType.PALETTE, domain: FaceDomain.IDENTITY, offset: 19, length: 2, validValues: 4 },
++  { key: "earShape", label: "Forma de orejas", type: FaceVarType.SPRITE, domain: FaceDomain.IDENTITY, offset: 21, length: 2, validValues: 4, status: "reserved-renderer" },
++  { key: "jaw", label: "Mandíbula", type: FaceVarType.MORPH, domain: FaceDomain.IDENTITY, offset: 23, length: 3, validValues: 6, status: "reserved-renderer" },
++  { key: "faceProportion", label: "Proporción facial", type: FaceVarType.MORPH, domain: FaceDomain.IDENTITY, offset: 26, length: 3, validValues: 6, status: "reserved-renderer" },
++]);
++
++/** Mutable styling and acquired marks. Offsets are local to appearanceBits. */
++export const APPEARANCE_VARS = Object.freeze([
++  { key: "hair", label: "Peinado", type: FaceVarType.SPRITE, domain: FaceDomain.APPEARANCE, offset: 0, length: 4, validValues: 12 },
++  { key: "beard", label: "Barba", type: FaceVarType.SPRITE, domain: FaceDomain.APPEARANCE, offset: 4, length: 3, validValues: 6 },
++  {
++    key: "hairColor",
++    label: "Color de pelo",
++    type: FaceVarType.PALETTE,
++    domain: FaceDomain.APPEARANCE,
++    offset: 7,
++    length: 3,
++    validValues: 8,
++    targets: ["hair", "beard", "brows"],
++  },
+   {
+     key: "hairVisible",
+     label: "Pelo visible",
+     type: FaceVarType.TOGGLE,
+-    offset: 30,
++    domain: FaceDomain.APPEARANCE,
++    offset: 10,
+     length: 1,
+     validValues: 2,
+-    data: { off: ["hair", "hairColor"], on: [] },
++    disablesWhenOff: ["hair"],
+   },
+-  { key: "scar", label: "Cicatriz", type: FaceVarType.TOGGLE, offset: 31, length: 1, validValues: 2 },
++  { key: "glasses", label: "Gafas", type: FaceVarType.TOGGLE, domain: FaceDomain.APPEARANCE, offset: 11, length: 1, validValues: 2 },
++  { key: "scar", label: "Cicatriz", type: FaceVarType.TOGGLE, domain: FaceDomain.APPEARANCE, offset: 12, length: 1, validValues: 2 },
+ ]);
+ 
++export const FACE_VARS = Object.freeze([...IDENTITY_VARS, ...APPEARANCE_VARS]);
++
+ const VAR_BY_KEY = new Map(FACE_VARS.map((item) => [item.key, item]));
++const VARS_BY_DOMAIN = Object.freeze({
++  [FaceDomain.IDENTITY]: IDENTITY_VARS,
++  [FaceDomain.APPEARANCE]: APPEARANCE_VARS,
++});
+ const PRESENTATIONS = new Set(["masculine", "feminine", "neutral"]);
+ 
++/**
++ * Stable logical asset IDs. Art can be replaced while retaining the same ID,
++ * so saved FaceDNA does not depend on filenames or atlas coordinates.
++ */
++export const ASSET_CATALOGS = Object.freeze({
++  head: Object.freeze(["head/oval", "head/broad", "head/long", "head/square", "head/round", "head/tapered"]),
++  skin: Object.freeze(["skin/01", "skin/02", "skin/03", "skin/04", "skin/05", "skin/06", "skin/07", "skin/08"]),
++  eyes: Object.freeze(["eyes/almond", "eyes/round", "eyes/deep", "eyes/narrow", "eyes/upturned", "eyes/downturned"]),
++  brows: Object.freeze(["brows/soft", "brows/flat", "brows/arched", "brows/thick", "brows/short", "brows/angular", "brows/low", "brows/high"]),
++  nose: Object.freeze(["nose/straight", "nose/wide", "nose/narrow", "nose/short", "nose/long", "nose/aquiline", "nose/rounded", "nose/flat-bridge"]),
++  mouth: Object.freeze(["mouth/neutral", "mouth/wide", "mouth/narrow", "mouth/full", "mouth/thin", "mouth/upturned", "mouth/downturned"]),
++  freckles: Object.freeze(["freckles/off", "freckles/on"]),
++  eyeColor: Object.freeze(["eye/brown", "eye/hazel", "eye/blue", "eye/green"]),
++  earShape: Object.freeze(["ears/average", "ears/small", "ears/large", "ears/projecting"]),
++  jaw: Object.freeze(["jaw/very-narrow", "jaw/narrow", "jaw/average", "jaw/broad", "jaw/very-broad", "jaw/angular"]),
++  faceProportion: Object.freeze(["ratio/compact", "ratio/short", "ratio/average", "ratio/long", "ratio/very-long", "ratio/high-forehead"]),
++  hair: Object.freeze(["hair/short-01", "hair/short-02", "hair/short-03", "hair/short-04", "hair/medium-01", "hair/medium-02", "hair/curly-01", "hair/long-01", "hair/long-02", "hair/fade-01", "hair/braids-01", "hair/bun-01"]),
++  beard: Object.freeze(["beard/none", "beard/stubble", "beard/short", "beard/full", "beard/goatee", "beard/moustache"]),
++  hairColor: Object.freeze(["hair/black", "hair/dark-brown", "hair/brown", "hair/light-brown", "hair/blond", "hair/golden", "hair/auburn", "hair/grey"]),
++  hairVisible: Object.freeze(["hair/hidden", "hair/visible"]),
++  glasses: Object.freeze(["glasses/off", "glasses/on"]),
++  scar: Object.freeze(["scar/off", "scar/on"]),
++});
++
++export const FACE_STYLE_SPECS = Object.freeze({
++  [DEFAULT_STYLE_LABEL]: Object.freeze({
++    label: DEFAULT_STYLE_LABEL,
++    identityVariables: IDENTITY_VARS,
++    appearanceVariables: APPEARANCE_VARS,
++    layerOrder: Object.freeze([
++      "background", "kit", "neck", "hairBack", "ears", "head", "eyes", "brows",
++      "nose", "freckles", "scar", "mouth", "beard", "ageDetails", "hairFront", "glasses",
++    ]),
++    paletteBindings: Object.freeze({
++      skin: Object.freeze(["neck", "ears", "head", "nose", "mouth"]),
++      hairColor: Object.freeze(["hairBack", "hairFront", "beard", "brows"]),
++      eyeColor: Object.freeze(["eyes"]),
++    }),
++  }),
++});
++
++const KIT_PALETTES = Object.freeze([
++  ["#b91c1c", "#f8fafc"],
++  ["#1d4ed8", "#facc15"],
++  ["#166534", "#f8fafc"],
++  ["#7e22ce", "#f8fafc"],
++  ["#111827", "#f97316"],
++  ["#f8fafc", "#111827"],
++  ["#0f766e", "#facc15"],
++  ["#be123c", "#0f172a"],
++]);
++
+ function maskForLength(length) {
+   return length === 32 ? 0xffffffff : (2 ** length - 1) >>> 0;
+ }
+ 
+-export function getBits(bits, variableOrKey) {
++function getVariable(variableOrKey) {
+   const variable = typeof variableOrKey === "string" ? VAR_BY_KEY.get(variableOrKey) : variableOrKey;
+   if (!variable) throw new Error(`Variable facial desconocida: ${String(variableOrKey)}`);
+-  const mask = maskForLength(variable.length);
+-  return (bits >>> variable.offset) & mask;
++  return variable;
++}
++
++export function getBits(bits, variableOrKey) {
++  const variable = getVariable(variableOrKey);
++  return (bits >>> variable.offset) & maskForLength(variable.length);
+ }
+ 
+ export function setBits(bits, variableOrKey, value) {
+-  const variable = typeof variableOrKey === "string" ? VAR_BY_KEY.get(variableOrKey) : variableOrKey;
+-  if (!variable) throw new Error(`Variable facial desconocida: ${String(variableOrKey)}`);
++  const variable = getVariable(variableOrKey);
+   const maxValue = variable.validValues - 1;
+-  const safeValue = Math.max(0, Math.min(maxValue, Number(value) || 0));
++  const safeValue = Math.max(0, Math.min(maxValue, Math.trunc(Number(value) || 0)));
+   const localMask = maskForLength(variable.length);
+   const shiftedMask = (localMask << variable.offset) >>> 0;
+   return ((bits & (~shiftedMask >>> 0)) | ((safeValue & localMask) << variable.offset)) >>> 0;
+ }
+ 
+-export function scaleBits(rawValue, variable) {
+-  const rawRange = 2 ** variable.length;
+-  return Math.floor((rawValue * variable.validValues) / rawRange);
++export function scaleBits(rawValue, variableOrKey) {
++  const variable = getVariable(variableOrKey);
++  return Math.floor((rawValue * variable.validValues) / (2 ** variable.length));
+ }
+ 
+-export function scaleAllFaceBits(bits) {
++export function scaleWordBits(bits, variables) {
+   let result = bits >>> 0;
+-  for (const variable of FACE_VARS) {
+-    const raw = getBits(result, variable);
+-    result = setBits(result, variable, scaleBits(raw, variable));
++  for (const variable of variables) {
++    result = setBits(result, variable, scaleBits(getBits(result, variable), variable));
+   }
+   return result >>> 0;
+ }
+ 
+-export function getActiveFaceVars(bits) {
+-  const active = new Set(FACE_VARS.map((variable) => variable.key));
+-  for (const variable of FACE_VARS) {
+-    if (variable.type !== FaceVarType.TOGGLE || !variable.data) continue;
+-    const enabled = getBits(bits, variable) === 1;
+-    const toDisable = enabled ? variable.data.on : variable.data.off;
+-    for (const key of toDisable) active.delete(key);
++export function normalizeWordBits(bits, variables) {
++  let result = bits >>> 0;
++  for (const variable of variables) {
++    const raw = getBits(result, variable);
++    if (raw >= variable.validValues) {
++      result = setBits(result, variable, scaleBits(raw, variable));
++    }
+   }
+-  return active;
++  return result >>> 0;
+ }
+ 
+ export class Randomizer {
+@@ -98,7 +188,6 @@
+   }
+ 
+   nextU32() {
+-    // Mulberry32-style deterministic generator.
+     this.state = (this.state + 0x6d2b79f5) >>> 0;
+     let value = this.state;
+     value = Math.imul(value ^ (value >>> 15), value | 1);
+@@ -130,8 +219,13 @@
+   return hash >>> 0;
+ }
+ 
++function featureRandomizer(seed, namespace, key) {
++  return new Randomizer(hashSeed(`${seed}:${namespace}:${key}`));
++}
++
+ function weightedChoice(randomizer, choices) {
+   const total = choices.reduce((sum, [, weight]) => sum + weight, 0);
++  if (!(total > 0)) throw new Error("La tabla de pesos debe contener algún peso positivo");
+   let cursor = randomizer.nextFloat() * total;
+   for (const [value, weight] of choices) {
+     cursor -= weight;
+@@ -140,79 +234,221 @@
+   return choices.at(-1)[0];
+ }
+ 
+-export function randomizeFaceBits(seed, { age = 24, presentation = "neutral" } = {}) {
+-  const safeAge = Math.max(16, Math.min(45, Math.round(age)));
++function getWord(profile, domain) {
++  return domain === FaceDomain.IDENTITY ? profile.identityBits : profile.appearanceBits;
++}
++
++function setWord(profile, domain, bits) {
++  return domain === FaceDomain.IDENTITY
++    ? { ...profile, identityBits: bits >>> 0 }
++    : { ...profile, appearanceBits: bits >>> 0 };
++}
++
++function readValue(profile, variableOrKey) {
++  const variable = getVariable(variableOrKey);
++  return getBits(getWord(profile, variable.domain), variable);
++}
++
++function writeValue(profile, variableOrKey, value) {
++  const variable = getVariable(variableOrKey);
++  return setWord(profile, variable.domain, setBits(getWord(profile, variable.domain), variable, value));
++}
++
++export function randomizeIdentityBits(seed) {
++  let bits = 0;
++  for (const variable of IDENTITY_VARS) {
++    const randomizer = featureRandomizer(seed, "identity", variable.key);
++    let value = randomizer.int(variable.validValues);
++    if (variable.key === "freckles") value = randomizer.chance(0.24) ? 1 : 0;
++    bits = setBits(bits, variable, value);
++  }
++  return bits >>> 0;
++}
++
++export function randomizeAppearanceBits(seed, { age = 24, presentation = "neutral" } = {}) {
++  const safeAge = Math.max(16, Math.min(60, Math.round(age)));
+   const safePresentation = PRESENTATIONS.has(presentation) ? presentation : "neutral";
+-  const randomizer = new Randomizer(hashSeed(seed));
+-  let bits = scaleAllFaceBits(randomizer.nextU32());
++  let bits = 0;
++
++  const hairVisibleRng = featureRandomizer(seed, "appearance", "hairVisible");
++  const hairVisible = hairVisibleRng.chance(safeAge > 42 ? 0.78 : 0.96) ? 1 : 0;
++  bits = setBits(bits, "hairVisible", hairVisible);
+ 
+-  // Weighted constraints provide a sports-roster distribution instead of pure noise.
+-  bits = setBits(bits, "hairVisible", randomizer.chance(safeAge > 37 ? 0.82 : 0.96) ? 1 : 0);
+-  bits = setBits(bits, "glasses", randomizer.chance(0.08 + Math.max(0, safeAge - 25) * 0.006) ? 1 : 0);
+-  bits = setBits(bits, "freckles", randomizer.chance(0.24) ? 1 : 0);
+-  bits = setBits(bits, "scar", randomizer.chance(0.07) ? 1 : 0);
++  const hairRng = featureRandomizer(seed, `appearance:${safePresentation}`, "hair");
++  let hair = hairRng.int(getVariable("hair").validValues);
++  if (safePresentation === "feminine") {
++    hair = weightedChoice(hairRng, [[0, 0.04], [2, 0.07], [3, 0.1], [4, 0.08], [6, 0.12], [7, 0.2], [8, 0.12], [10, 0.13], [11, 0.14]]);
++  }
++  bits = setBits(bits, "hair", hairVisible ? hair : 0);
+ 
++  const beardRng = featureRandomizer(seed, `appearance:${safePresentation}:${safeAge < 19 ? "youth" : "adult"}`, "beard");
+   const beardWeights = safePresentation === "feminine"
+-    ? [[0, 0.985], [1, 0.015]]
++    ? [[0, 0.995], [1, 0.005]]
+     : safePresentation === "masculine"
+       ? (safeAge < 19 ? [[0, 0.88], [1, 0.1], [2, 0.02]] : [[0, 0.34], [1, 0.22], [2, 0.15], [3, 0.12], [4, 0.1], [5, 0.07]])
+       : [[0, 0.68], [1, 0.14], [2, 0.08], [3, 0.05], [4, 0.03], [5, 0.02]];
+-  bits = setBits(bits, "beard", weightedChoice(randomizer, beardWeights));
++  bits = setBits(bits, "beard", weightedChoice(beardRng, beardWeights));
++
++  bits = setBits(bits, "hairColor", featureRandomizer(seed, "appearance", "hairColor").int(getVariable("hairColor").validValues));
++  bits = setBits(bits, "glasses", featureRandomizer(seed, "appearance", "glasses").chance(0.08 + Math.max(0, safeAge - 25) * 0.006) ? 1 : 0);
++  bits = setBits(bits, "scar", featureRandomizer(seed, "appearance", "scar").chance(0.07) ? 1 : 0);
++  return bits >>> 0;
++}
++
++export function getActiveFaceVars(profile) {
++  const active = new Set(FACE_VARS.map((variable) => variable.key));
+ 
+-  if (getBits(bits, "hairVisible") === 0) {
+-    bits = setBits(bits, "hair", 0);
+-  } else if (safePresentation === "feminine") {
+-    bits = setBits(bits, "hair", weightedChoice(randomizer, [[0, 0.05], [2, 0.08], [3, 0.13], [4, 0.08], [7, 0.22], [8, 0.12], [10, 0.18], [11, 0.14]]));
++  for (const variable of FACE_VARS) {
++    if (variable.type !== FaceVarType.TOGGLE) continue;
++    const enabled = readValue(profile, variable) === 1;
++    const disabled = enabled ? variable.disablesWhenOn : variable.disablesWhenOff;
++    for (const key of disabled ?? []) active.delete(key);
+   }
+ 
+-  return bits >>> 0;
++  // Hair colour is still needed by a beard on a bald player.
++  if (readValue(profile, "hairVisible") === 0 && readValue(profile, "beard") === 0) {
++    active.delete("hairColor");
++  }
++  return active;
+ }
+ 
+-const KIT_PALETTES = Object.freeze([
+-  ["#b91c1c", "#f8fafc"],
+-  ["#1d4ed8", "#facc15"],
+-  ["#166534", "#f8fafc"],
+-  ["#7e22ce", "#f8fafc"],
+-  ["#111827", "#f97316"],
+-  ["#f8fafc", "#111827"],
+-  ["#0f766e", "#facc15"],
+-  ["#be123c", "#0f172a"],
+-]);
++export function applyCompatibilityRules(profile) {
++  let result = {
++    ...profile,
++    version: CURRENT_PROFILE_VERSION,
++    style: typeof profile.style === "string" ? profile.style : DEFAULT_STYLE_LABEL,
++    seed: Number(profile.seed) >>> 0,
++    identityBits: Number(profile.identityBits) >>> 0,
++    appearanceBits: Number(profile.appearanceBits) >>> 0,
++    age: Math.max(16, Math.min(60, Math.round(Number(profile.age) || 24))),
++    presentation: PRESENTATIONS.has(profile.presentation) ? profile.presentation : "neutral",
++    kit: {
++      primary: normalizeHex(profile.kit?.primary ?? profile.kitPrimary ?? "#b91c1c"),
++      secondary: normalizeHex(profile.kit?.secondary ?? profile.kitSecondary ?? "#f8fafc"),
++    },
++  };
++  const corrections = [];
++
++  result.identityBits = normalizeWordBits(result.identityBits, IDENTITY_VARS);
++  result.appearanceBits = normalizeWordBits(result.appearanceBits, APPEARANCE_VARS);
++
++  if (readValue(result, "hairVisible") === 0 && readValue(result, "hair") !== 0) {
++    result = writeValue(result, "hair", 0);
++    corrections.push("hair-cleared-when-hidden");
++  }
++
++  if (result.age < 18 && readValue(result, "beard") > 2) {
++    result = writeValue(result, "beard", 2);
++    corrections.push("youth-beard-capped");
++  }
+ 
+-export function createProfile({ seed = Date.now(), age = 24, presentation = "neutral" } = {}) {
++  const active = getActiveFaceVars(result);
++  for (const variable of FACE_VARS) {
++    if (!active.has(variable.key) && readValue(result, variable) !== 0) {
++      result = writeValue(result, variable, 0);
++      corrections.push(`inactive-cleared:${variable.key}`);
++    }
++  }
++
++  return { profile: result, corrections };
++}
++
++export function canonicalizeProfile(profile) {
++  return applyCompatibilityRules(profile).profile;
++}
++
++export function createProfile({ seed = Date.now(), age = 24, presentation = "neutral", style = DEFAULT_STYLE_LABEL } = {}) {
+   const numericSeed = typeof seed === "number" ? seed >>> 0 : hashSeed(seed);
+-  const safeAge = Math.max(16, Math.min(45, Math.round(age)));
++  const safeAge = Math.max(16, Math.min(60, Math.round(age)));
+   const safePresentation = PRESENTATIONS.has(presentation) ? presentation : "neutral";
+-  const randomizer = new Randomizer(numericSeed ^ 0xa5a5a5a5);
+-  const kit = KIT_PALETTES[randomizer.int(KIT_PALETTES.length)];
+-  return {
+-    version: 1,
++  if (!FACE_STYLE_SPECS[style]) throw new Error(`Estilo facial desconocido: ${style}`);
++  const kitRng = featureRandomizer(numericSeed, "profile", "kit");
++  const kit = KIT_PALETTES[kitRng.int(KIT_PALETTES.length)];
++
++  return canonicalizeProfile({
++    version: CURRENT_PROFILE_VERSION,
++    style,
+     seed: numericSeed,
+-    faceBits: randomizeFaceBits(numericSeed, { age: safeAge, presentation: safePresentation }),
++    identityBits: randomizeIdentityBits(numericSeed),
++    appearanceBits: randomizeAppearanceBits(numericSeed, { age: safeAge, presentation: safePresentation }),
+     age: safeAge,
+     presentation: safePresentation,
+-    kitPrimary: kit[0],
+-    kitSecondary: kit[1],
+-  };
++    kit: { primary: kit[0], secondary: kit[1] },
++  });
+ }
+ 
+ export function cloneProfile(profile) {
+-  return { ...profile, faceBits: profile.faceBits >>> 0 };
++  const canonical = canonicalizeProfile(profile);
++  return { ...canonical, kit: { ...canonical.kit } };
+ }
+ 
+ export function setFeature(profile, key, value) {
+-  if (!VAR_BY_KEY.has(key)) throw new Error(`Rasgo desconocido: ${key}`);
+-  return { ...profile, faceBits: setBits(profile.faceBits, key, value) };
++  const variable = getVariable(key);
++  const updated = setWord(profile, variable.domain, setBits(getWord(profile, variable.domain), variable, value));
++  return canonicalizeProfile(updated);
++}
++
++export function changeFeature(profile, key, delta) {
++  const variable = getVariable(key);
++  const current = readValue(profile, variable);
++  const amount = Math.trunc(Number(delta) || 0);
++  const wrapped = ((current + amount) % variable.validValues + variable.validValues) % variable.validValues;
++  return setFeature(profile, key, wrapped);
++}
++
++export function setPresentation(profile, presentation, { rerollAppearance = true } = {}) {
++  const safePresentation = PRESENTATIONS.has(presentation) ? presentation : "neutral";
++  const updated = {
++    ...profile,
++    presentation: safePresentation,
++    appearanceBits: rerollAppearance
++      ? randomizeAppearanceBits(profile.seed, { age: profile.age, presentation: safePresentation })
++      : profile.appearanceBits,
++  };
++  return canonicalizeProfile(updated);
++}
++
++export function setKit(profile, primary, secondary) {
++  return canonicalizeProfile({
++    ...profile,
++    kit: { primary: normalizeHex(primary), secondary: normalizeHex(secondary) },
++  });
+ }
+ 
+ export function getFaceValues(profile) {
++  const canonical = canonicalizeProfile(profile);
+   const values = {};
+-  for (const variable of FACE_VARS) values[variable.key] = getBits(profile.faceBits, variable);
++  for (const variable of FACE_VARS) values[variable.key] = readValue(canonical, variable);
+   return values;
+ }
+ 
++export function getFaceAssetIds(profile) {
++  const values = getFaceValues(profile);
++  const assets = {};
++  for (const variable of FACE_VARS) {
++    const catalog = ASSET_CATALOGS[variable.key];
++    assets[variable.key] = catalog?.[values[variable.key]] ?? null;
++  }
++  return assets;
++}
++
+ export function ageProfile(profile, years = 1) {
+-  return { ...profile, age: Math.max(16, Math.min(60, profile.age + years)) };
++  return canonicalizeProfile({ ...profile, age: profile.age + Math.trunc(Number(years) || 0) });
++}
++
++export function getCompatibilityReport(profile) {
++  const { profile: canonical, corrections } = applyCompatibilityRules(profile);
++  return {
++    corrected: corrections.length > 0,
++    corrections,
++    activeVariables: [...getActiveFaceVars(canonical)],
++  };
++}
++
++function normalizeHex(value) {
++  const text = String(value).trim().replace(/^#/, "");
++  if (!/^[0-9a-fA-F]{6}$/.test(text)) throw new Error(`Color hexadecimal inválido: ${value}`);
++  return `#${text.toLowerCase()}`;
+ }
+ 
+ function checksum(text) {
+@@ -220,51 +456,174 @@
+ }
+ 
+ export function formatFaceCode(profile) {
++  const canonical = canonicalizeProfile(profile);
+   const payload = [
+-    "SF1",
+-    (profile.faceBits >>> 0).toString(36),
+-    (profile.seed >>> 0).toString(36),
+-    Number(profile.age).toString(36),
+-    profile.presentation === "masculine" ? "m" : profile.presentation === "feminine" ? "f" : "n",
+-    profile.kitPrimary.replace("#", ""),
+-    profile.kitSecondary.replace("#", ""),
+-  ].join("-");
+-  return `${payload}-${checksum(payload)}`;
++    "SF2",
++    canonical.style,
++    canonical.identityBits.toString(36),
++    canonical.appearanceBits.toString(36),
++    canonical.seed.toString(36),
++    canonical.age.toString(36),
++    canonical.presentation === "masculine" ? "m" : canonical.presentation === "feminine" ? "f" : "n",
++    canonical.kit.primary.slice(1),
++    canonical.kit.secondary.slice(1),
++  ].join("~");
++  return `${payload}~${checksum(payload)}`;
++}
++
++function parseBase36Integer(value, label) {
++  if (!/^[0-9a-z]+$/i.test(value)) throw new Error(`${label} inválido`);
++  const parsed = Number.parseInt(value, 36);
++  if (!Number.isSafeInteger(parsed) || parsed < 0 || parsed > 0xffffffff) throw new Error(`${label} fuera de rango`);
++  return parsed >>> 0;
++}
++
++function parseFaceCodeV2(code) {
++  const parts = String(code).trim().split("~");
++  if (parts.length !== 10 || parts[0] !== "SF2") throw new Error("Código FaceDNA v2 no reconocido");
++  const payload = parts.slice(0, 9).join("~");
++  if (checksum(payload) !== parts[9]) throw new Error("El código facial está dañado o incompleto");
++  if (!FACE_STYLE_SPECS[parts[1]]) throw new Error(`Estilo facial desconocido: ${parts[1]}`);
++  const presentation = parts[6] === "m" ? "masculine" : parts[6] === "f" ? "feminine" : parts[6] === "n" ? "neutral" : null;
++  if (!presentation) throw new Error("Presentación facial inválida");
++  if (!/^[0-9a-z]+$/i.test(parts[5])) throw new Error("Edad inválida");
++  const age = Number.parseInt(parts[5], 36);
++  if (!Number.isInteger(age) || age < 16 || age > 60) throw new Error("Edad fuera del rango 16–60");
++
++  const profile = canonicalizeProfile({
++    version: CURRENT_PROFILE_VERSION,
++    style: parts[1],
++    identityBits: parseBase36Integer(parts[2], "Identidad"),
++    appearanceBits: parseBase36Integer(parts[3], "Apariencia"),
++    seed: parseBase36Integer(parts[4], "Semilla"),
++    age,
++    presentation,
++    kit: { primary: normalizeHex(parts[7]), secondary: normalizeHex(parts[8]) },
++  });
++  const validation = validateProfile(profile);
++  if (!validation.valid) throw new Error(validation.errors[0]);
++  return profile;
+ }
+ 
+-export function parseFaceCode(code) {
++/** Temporary v1 offsets, used only to migrate codes produced by MVP 0.1. */
++const LEGACY_V1_VARS = Object.freeze({
++  head: { offset: 0, length: 3, validValues: 6 },
++  skin: { offset: 3, length: 3, validValues: 8 },
++  eyes: { offset: 6, length: 3, validValues: 6 },
++  brows: { offset: 9, length: 3, validValues: 8 },
++  nose: { offset: 12, length: 3, validValues: 8 },
++  mouth: { offset: 15, length: 3, validValues: 7 },
++  hair: { offset: 18, length: 4, validValues: 12 },
++  beard: { offset: 22, length: 3, validValues: 6 },
++  hairColor: { offset: 25, length: 3, validValues: 8 },
++  glasses: { offset: 28, length: 1, validValues: 2 },
++  freckles: { offset: 29, length: 1, validValues: 2 },
++  hairVisible: { offset: 30, length: 1, validValues: 2 },
++  scar: { offset: 31, length: 1, validValues: 2 },
++});
++
++function getLegacyBits(bits, variable) {
++  return (bits >>> variable.offset) & maskForLength(variable.length);
++}
++
++export function migrateLegacyProfileV1(legacy) {
++  const seed = Number(legacy.seed) >>> 0;
++  let identityBits = randomizeIdentityBits(seed);
++  let appearanceBits = randomizeAppearanceBits(seed, { age: legacy.age, presentation: legacy.presentation });
++  const legacyBits = Number(legacy.faceBits) >>> 0;
++
++  for (const key of ["head", "skin", "eyes", "brows", "nose", "mouth", "freckles"]) {
++    identityBits = setBits(identityBits, key, getLegacyBits(legacyBits, LEGACY_V1_VARS[key]));
++  }
++  for (const key of ["hair", "beard", "hairColor", "glasses", "hairVisible", "scar"]) {
++    appearanceBits = setBits(appearanceBits, key, getLegacyBits(legacyBits, LEGACY_V1_VARS[key]));
++  }
++
++  return canonicalizeProfile({
++    version: CURRENT_PROFILE_VERSION,
++    style: DEFAULT_STYLE_LABEL,
++    seed,
++    identityBits,
++    appearanceBits,
++    age: legacy.age,
++    presentation: legacy.presentation,
++    kit: {
++      primary: legacy.kit?.primary ?? legacy.kitPrimary,
++      secondary: legacy.kit?.secondary ?? legacy.kitSecondary,
++    },
++  });
++}
++
++function parseLegacyFaceCodeV1(code) {
+   const parts = String(code).trim().split("-");
+   if (parts.length !== 8 || parts[0] !== "SF1") throw new Error("Código facial no reconocido");
+   const payload = parts.slice(0, 7).join("-");
+   if (checksum(payload) !== parts[7]) throw new Error("El código facial está dañado o incompleto");
+   const presentation = parts[4] === "m" ? "masculine" : parts[4] === "f" ? "feminine" : "neutral";
+-  if (!/^[0-9a-fA-F]{6}$/.test(parts[5]) || !/^[0-9a-fA-F]{6}$/.test(parts[6])) {
+-    throw new Error("Colores de equipación inválidos");
+-  }
+-  const profile = {
++  if (!/^[0-9a-z]+$/i.test(parts[3])) throw new Error("Edad inválida");
++  const age = Number.parseInt(parts[3], 36);
++  if (!Number.isInteger(age) || age < 16 || age > 60) throw new Error("Edad fuera del rango 16–60");
++  return migrateLegacyProfileV1({
+     version: 1,
+-    faceBits: Number.parseInt(parts[1], 36) >>> 0,
+-    seed: Number.parseInt(parts[2], 36) >>> 0,
+-    age: Number.parseInt(parts[3], 36),
++    faceBits: parseBase36Integer(parts[1], "Rostro v1"),
++    seed: parseBase36Integer(parts[2], "Semilla"),
++    age,
+     presentation,
+-    kitPrimary: `#${parts[5].toLowerCase()}`,
+-    kitSecondary: `#${parts[6].toLowerCase()}`,
+-  };
+-  if (!Number.isFinite(profile.age) || profile.age < 1 || profile.age > 120) throw new Error("Edad inválida en el código");
+-  for (const variable of FACE_VARS) {
+-    if (getBits(profile.faceBits, variable) >= variable.validValues) {
+-      throw new Error(`Valor fuera de rango para ${variable.label}`);
++    kitPrimary: normalizeHex(parts[5]),
++    kitSecondary: normalizeHex(parts[6]),
++  });
++}
++
++export function parseFaceCode(code) {
++  const text = String(code).trim();
++  if (text.startsWith("SF2~")) return parseFaceCodeV2(text);
++  if (text.startsWith("SF1-")) return parseLegacyFaceCodeV1(text);
++  throw new Error("Código facial no reconocido");
++}
++
++export function validateProfile(profile) {
++  const errors = [];
++  if (!profile || typeof profile !== "object") return { valid: false, errors: ["El perfil no es un objeto"] };
++  if (profile.version !== CURRENT_PROFILE_VERSION) errors.push(`Versión no soportada: ${profile.version}`);
++  if (!FACE_STYLE_SPECS[profile.style]) errors.push(`Estilo facial desconocido: ${profile.style}`);
++  if (!Number.isInteger(profile.identityBits) || profile.identityBits < 0) errors.push("identityBits inválido");
++  if (!Number.isInteger(profile.appearanceBits) || profile.appearanceBits < 0) errors.push("appearanceBits inválido");
++  if (!Number.isInteger(profile.seed) || profile.seed < 0) errors.push("Semilla inválida");
++  if (!Number.isInteger(profile.age) || profile.age < 16 || profile.age > 60) errors.push("Edad fuera del rango 16–60");
++  if (!PRESENTATIONS.has(profile.presentation)) errors.push("Presentación inválida");
++  try {
++    normalizeHex(profile.kit?.primary);
++    normalizeHex(profile.kit?.secondary);
++  } catch (error) {
++    errors.push(error instanceof Error ? error.message : "Equipación inválida");
++  }
++
++  if (Number.isInteger(profile.identityBits) && Number.isInteger(profile.appearanceBits)) {
++    const active = getActiveFaceVars({ ...profile, identityBits: profile.identityBits >>> 0, appearanceBits: profile.appearanceBits >>> 0 });
++    for (const variable of FACE_VARS) {
++      if (!active.has(variable.key)) continue;
++      const value = readValue(profile, variable);
++      if (value >= variable.validValues) errors.push(`Valor fuera de rango para ${variable.label}`);
+     }
+   }
+-  return profile;
++  return { valid: errors.length === 0, errors };
+ }
+ 
+ export function describeProfile(profile) {
++  const canonical = canonicalizeProfile(profile);
+   return {
+-    code: formatFaceCode(profile),
+-    ...profile,
+-    faceBitsHex: `0x${(profile.faceBits >>> 0).toString(16).padStart(8, "0")}`,
+-    values: getFaceValues(profile),
+-    activeVariables: [...getActiveFaceVars(profile.faceBits)],
++    code: formatFaceCode(canonical),
++    version: canonical.version,
++    style: canonical.style,
++    seed: canonical.seed,
++    age: canonical.age,
++    presentation: canonical.presentation,
++    kit: canonical.kit,
++    identityBitsHex: `0x${canonical.identityBits.toString(16).padStart(8, "0")}`,
++    appearanceBitsHex: `0x${canonical.appearanceBits.toString(16).padStart(8, "0")}`,
++    values: getFaceValues(canonical),
++    assetIds: getFaceAssetIds(canonical),
++    compatibility: getCompatibilityReport(canonical),
++    validation: validateProfile(canonical),
+   };
+ }
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/src/renderer.js /mnt/data/sports-face-mvp-phase1/src/renderer.js
+--- /tmp/sports-face-mvp-v01/src/renderer.js	2026-08-04 22:39:12.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/src/renderer.js	2026-08-05 07:06:01.928849991 +0000
+@@ -109,13 +109,13 @@
+   shoulder.bezierCurveTo(370, 404, 438, 432, 460, 512);
+   shoulder.closePath();
+   const gradient = ctx.createLinearGradient(0, 395, 0, 512);
+-  gradient.addColorStop(0, mixHex(profile.kitPrimary, "#ffffff", 0.13));
+-  gradient.addColorStop(1, mixHex(profile.kitPrimary, "#000000", 0.28));
++  gradient.addColorStop(0, mixHex(profile.kit.primary, "#ffffff", 0.13));
++  gradient.addColorStop(1, mixHex(profile.kit.primary, "#000000", 0.28));
+   ctx.fillStyle = gradient;
+   ctx.fill(shoulder);
+ 
+   ctx.clip(shoulder);
+-  ctx.strokeStyle = profile.kitSecondary;
++  ctx.strokeStyle = profile.kit.secondary;
+   ctx.globalAlpha = 0.9;
+   ctx.lineWidth = 18;
+   ctx.beginPath();
+@@ -134,7 +134,7 @@
+   }
+   ctx.restore();
+ 
+-  ctx.fillStyle = profile.kitSecondary;
++  ctx.fillStyle = profile.kit.secondary;
+   ctx.beginPath();
+   ctx.arc(256, 424, 41, Math.PI, 0);
+   ctx.lineTo(296, 443);
+@@ -171,11 +171,13 @@
+   ctx.stroke(path);
+ }
+ 
+-function drawEars(ctx, spec, skin, seed) {
++function drawEars(ctx, spec, skin, seed, earShape = 0) {
+   const randomizer = new Randomizer(seed ^ 0x17d2a711);
+   const y = 222 + randomizer.int(12);
+-  const width = 31 + randomizer.int(8);
+-  const height = 65 + randomizer.int(12);
++  const earWidthAdjust = [-5, -3, 4, 8][earShape] ?? 0;
++  const earHeightAdjust = [0, -8, 9, 4][earShape] ?? 0;
++  const width = 31 + randomizer.int(8) + earWidthAdjust;
++  const height = 65 + randomizer.int(12) + earHeightAdjust;
+   const half = spec.width / 2;
+   for (const direction of [-1, 1]) {
+     const x = 256 + direction * (half - 2);
+@@ -654,17 +656,25 @@
+   ctx.clearRect(0, 0, 512, 512);
+ 
+   const values = getFaceValues(profile);
+-  const spec = HEADS[values.head];
++  const baseSpec = HEADS[values.head];
++  const jawDelta = (values.jaw - 2.5) * 0.012;
++  const proportionDelta = (values.faceProportion - 2.5) * 7;
++  const spec = {
++    ...baseSpec,
++    height: clamp(baseSpec.height + proportionDelta, 270, 350),
++    jaw: clamp(baseSpec.jaw + jawDelta, 0.31, 0.52),
++    chin: clamp(baseSpec.chin + jawDelta * 0.5, 0.15, 0.34),
++  };
+   const skin = SKINS[values.skin];
+   const baseHair = HAIR[values.hairColor];
+-  const eyeColor = EYES[(hashSeed(profile.seed) >>> 4) % EYES.length];
++  const eyeColor = EYES[values.eyeColor % EYES.length];
+   const hairVisible = values.hairVisible === 1;
+ 
+   drawBackdrop(ctx, profile);
+   drawKit(ctx, profile);
+   drawNeck(ctx, skin);
+   drawHairBack(ctx, values.hair, baseHair, spec, hairVisible);
+-  drawEars(ctx, spec, skin, profile.seed);
++  drawEars(ctx, spec, skin, profile.seed, values.earShape);
+   drawHead(ctx, spec, skin, profile.age);
+   drawEyes(ctx, values.eyes, spec, skin, eyeColor, profile.seed);
+   drawBrows(ctx, values.brows, baseHair, skin, profile.age);
+diff -ruN '--exclude=preview.png' /tmp/sports-face-mvp-v01/tests/model.test.mjs /mnt/data/sports-face-mvp-phase1/tests/model.test.mjs
+--- /tmp/sports-face-mvp-v01/tests/model.test.mjs	2026-08-04 22:37:34.000000000 +0000
++++ /mnt/data/sports-face-mvp-phase1/tests/model.test.mjs	2026-08-05 07:07:13.584993439 +0000
+@@ -1,29 +1,156 @@
+ import assert from "node:assert/strict";
+ import {
++  APPEARANCE_VARS,
++  ASSET_CATALOGS,
++  CURRENT_PROFILE_VERSION,
++  DEFAULT_STYLE_LABEL,
+   FACE_VARS,
++  IDENTITY_VARS,
++  ageProfile,
++  canonicalizeProfile,
++  changeFeature,
+   createProfile,
+   formatFaceCode,
++  getActiveFaceVars,
+   getBits,
++  getFaceAssetIds,
++  getFaceValues,
++  hashSeed,
+   parseFaceCode,
+-  randomizeFaceBits,
+   setBits,
++  setFeature,
++  setPresentation,
++  validateProfile,
+ } from "../src/face-model.js";
+ 
++function checksum(text) {
++  return hashSeed(text).toString(36).padStart(7, "0").slice(-7);
++}
++
++function makeLegacySf1Code({ faceBits, seed, age, presentation, primary, secondary }) {
++  const p = presentation === "masculine" ? "m" : presentation === "feminine" ? "f" : "n";
++  const payload = [
++    "SF1",
++    (faceBits >>> 0).toString(36),
++    (seed >>> 0).toString(36),
++    age.toString(36),
++    p,
++    primary.replace("#", ""),
++    secondary.replace("#", ""),
++  ].join("-");
++  return `${payload}-${checksum(payload)}`;
++}
++
+ for (const variable of FACE_VARS) {
+   for (let value = 0; value < variable.validValues; value += 1) {
+     const bits = setBits(0, variable, value);
+     assert.equal(getBits(bits, variable), value, `${variable.key} should round-trip`);
+   }
++  assert.equal(
++    ASSET_CATALOGS[variable.key].length,
++    variable.validValues,
++    `${variable.key} asset IDs must match validValues`,
++  );
+ }
+ 
+-const first = randomizeFaceBits(12345, { age: 24, presentation: "masculine" });
+-const second = randomizeFaceBits(12345, { age: 24, presentation: "masculine" });
+-assert.equal(first, second, "same seed should produce same face bits");
++const first = createProfile({ seed: 12345, age: 24, presentation: "masculine" });
++const second = createProfile({ seed: 12345, age: 24, presentation: "masculine" });
++assert.deepEqual(first, second, "same inputs should produce identical FaceDNA v2");
++assert.equal(first.version, CURRENT_PROFILE_VERSION);
++assert.equal(first.style, DEFAULT_STYLE_LABEL);
+ 
+-const profile = createProfile({ seed: 987654321, age: 29, presentation: "neutral" });
+-const code = formatFaceCode(profile);
+-const parsed = parseFaceCode(code);
+-assert.deepEqual(parsed, profile, "face code should round-trip");
++const differentAge = createProfile({ seed: 12345, age: 41, presentation: "masculine" });
++const differentPresentation = createProfile({ seed: 12345, age: 24, presentation: "feminine" });
++assert.equal(first.identityBits, differentAge.identityBits, "age must not change permanent identity");
++assert.equal(first.identityBits, differentPresentation.identityBits, "presentation must not change permanent identity");
+ 
++const aged = ageProfile(first, 5);
++assert.equal(aged.identityBits, first.identityBits, "ageing must preserve identity bits");
++assert.equal(aged.appearanceBits, first.appearanceBits, "ageing must preserve selected styling");
++assert.equal(aged.age, first.age + 5);
++
++const presentationChanged = setPresentation(first, "feminine", { rerollAppearance: true });
++assert.equal(presentationChanged.identityBits, first.identityBits, "changing presentation must preserve identity");
++assert.equal(presentationChanged.presentation, "feminine");
++
++const code = formatFaceCode(first);
++const parsed = parseFaceCode(code);
++assert.deepEqual(parsed, canonicalizeProfile(first), "FaceDNA v2 code should round-trip");
+ assert.throws(() => parseFaceCode(`${code.slice(0, -1)}x`), /dañado|incompleto/);
+-console.log("Model tests passed");
++
++// Migration from the MVP 0.1 / SF1 layout.
++let legacyBits = 0;
++const legacyDefs = {
++  head: { offset: 0, length: 3, validValues: 6 }, skin: { offset: 3, length: 3, validValues: 8 },
++  eyes: { offset: 6, length: 3, validValues: 6 }, brows: { offset: 9, length: 3, validValues: 8 },
++  nose: { offset: 12, length: 3, validValues: 8 }, mouth: { offset: 15, length: 3, validValues: 7 },
++  hair: { offset: 18, length: 4, validValues: 12 }, beard: { offset: 22, length: 3, validValues: 6 },
++  hairColor: { offset: 25, length: 3, validValues: 8 }, glasses: { offset: 28, length: 1, validValues: 2 },
++  freckles: { offset: 29, length: 1, validValues: 2 }, hairVisible: { offset: 30, length: 1, validValues: 2 },
++  scar: { offset: 31, length: 1, validValues: 2 },
++};
++for (const [key, value] of Object.entries({
++  head: 4, skin: 5, eyes: 2, brows: 7, nose: 6, mouth: 4,
++  hair: 9, beard: 3, hairColor: 2, glasses: 1, freckles: 1, hairVisible: 1, scar: 0,
++})) {
++  const variable = legacyDefs[key];
++  const mask = ((2 ** variable.length - 1) << variable.offset) >>> 0;
++  legacyBits = ((legacyBits & (~mask >>> 0)) | ((value << variable.offset) >>> 0)) >>> 0;
++}
++const legacyCode = makeLegacySf1Code({
++  faceBits: legacyBits,
++  seed: 246813579,
++  age: 27,
++  presentation: "masculine",
++  primary: "#166534",
++  secondary: "#f8fafc",
++});
++const migrated = parseFaceCode(legacyCode);
++const migratedValues = getFaceValues(migrated);
++for (const key of ["head", "skin", "eyes", "brows", "nose", "mouth", "hair", "beard", "hairColor", "glasses", "freckles", "hairVisible", "scar"]) {
++  assert.equal(migratedValues[key], getBits(legacyBits, legacyDefs[key]), `SF1 migration should preserve ${key}`);
++}
++assert.ok(formatFaceCode(migrated).startsWith("SF2~"), "migrated profiles must export as SF2");
++
++// Toggle dependency and canonical masking.
++let bald = setFeature(first, "hair", 7);
++bald = setFeature(bald, "beard", 0);
++bald = setFeature(bald, "hairColor", 5);
++bald = setFeature(bald, "hairVisible", 0);
++const baldValues = getFaceValues(bald);
++assert.equal(baldValues.hair, 0, "hidden hair must clear the hairstyle selector");
++assert.equal(baldValues.hairColor, 0, "unused hair colour must be canonicalized");
++assert.ok(!getActiveFaceVars(bald).has("hair"));
++assert.ok(!getActiveFaceVars(bald).has("hairColor"));
++
++let baldWithBeard = setFeature(first, "hairColor", 6);
++baldWithBeard = setFeature(baldWithBeard, "beard", 3);
++baldWithBeard = setFeature(baldWithBeard, "hairVisible", 0);
++assert.equal(getFaceValues(baldWithBeard).hairColor, 6, "beard must keep hair colour active on bald players");
++assert.ok(getActiveFaceVars(baldWithBeard).has("hairColor"));
++
++// Editor cycling uses wrap-around rather than clamping.
++const headMax = setFeature(first, "head", IDENTITY_VARS.find((v) => v.key === "head").validValues - 1);
++assert.equal(getFaceValues(changeFeature(headMax, "head", 1)).head, 0);
++assert.equal(getFaceValues(changeFeature(setFeature(first, "head", 0), "head", -1)).head, 5);
++
++// Stable logical IDs are returned independently of filenames or atlas layout.
++const assetIds = getFaceAssetIds(first);
++assert.match(assetIds.head, /^head\//);
++assert.match(assetIds.hair, /^hair\//);
++
++// Stress validation: enough to catch range, canonicalization and serialization issues.
++for (let index = 0; index < 1000; index += 1) {
++  const profile = createProfile({
++    seed: hashSeed(`phase1:${index}`),
++    age: 16 + (index % 45),
++    presentation: ["masculine", "feminine", "neutral"][index % 3],
++  });
++  const validation = validateProfile(profile);
++  assert.equal(validation.valid, true, `profile ${index} should validate: ${validation.errors.join(", ")}`);
++  assert.deepEqual(parseFaceCode(formatFaceCode(profile)), profile, `profile ${index} should serialize`);
++}
++
++assert.ok(IDENTITY_VARS.every((variable) => variable.domain === "identity"));
++assert.ok(APPEARANCE_VARS.every((variable) => variable.domain === "appearance"));
++console.log("FaceDNA v2 model tests passed");

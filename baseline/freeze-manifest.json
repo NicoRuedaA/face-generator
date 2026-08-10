@@ -1,0 +1,28 @@
+{
+  "schema": "sports-face-freeze-manifest/v1",
+  "freezeId": "sports-face-v0.2.1-2026-08-05",
+  "release": "0.2.1",
+  "createdAt": "2026-08-05T10:42:00+02:00",
+  "sourceRelease": {
+    "filename": "sports-face-mvp-phase1-v0.2.1-offline.zip",
+    "sha256": "f58fe2c705a8c8abd9a2be1ad5710a6275ba5b941901239288f1e8e2455d6109"
+  },
+  "contracts": {
+    "faceDnaFixtures": 100,
+    "sf1MigrationFixtures": 12,
+    "visualBaselineSha256": "fd8426f6a2aba28a0060e5a67e21ae0d1324ebaec32ab49d255dc4ca13483699",
+    "legacyMigrationSha256": "b82b446117a04a35743cc69a84be880e4bcf1498dc6c5020d748445947c40401"
+  },
+  "visualReferences": {
+    "generatedSheets": [
+      "baseline/gallery-001-050.png",
+      "baseline/gallery-051-100.png"
+    ],
+    "manualUserSamples": 5,
+    "portablePixelContract": false
+  },
+  "verification": {
+    "command": "npm test",
+    "result": "passed"
+  }
+}

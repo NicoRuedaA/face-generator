@@ -1,0 +1,20 @@
+{
+  "version": "0.3.1",
+  "phase": "2.5 Toon Prototype Polish",
+  "faceDnaChanged": false,
+  "sf2Changed": false,
+  "baseline": {
+    "profiles": 100,
+    "sf1Migrations": 12,
+    "visualBaselineSha256": "fd8426f6a2aba28a0060e5a67e21ae0d1324ebaec32ab49d255dc4ca13483699"
+  },
+  "tests": {
+    "generatedProfiles": 1000,
+    "result": "passed"
+  },
+  "visualEvidence": [
+    "docs/comparison-v030-v031.png",
+    "docs/acceptance-gallery-v031.png",
+    "docs/app-v031-toon-polish.png"
+  ]
+}

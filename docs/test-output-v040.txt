@@ -1,0 +1,32 @@
+
+> sports-face-mvp@0.4.0 test
+> npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools
+
+
+> sports-face-mvp@0.4.0 test:model
+> node ./tests/model.test.mjs
+
+FaceDNA v2 model tests passed
+
+> sports-face-mvp@0.4.0 test:baseline
+> node ./baseline/verify-baseline.mjs
+
+Frozen baseline v0.2.1 verified: 100 SF2 + 12 SF1 migration fixtures.
+
+> sports-face-mvp@0.4.0 test:toon
+> node ./tests/toon-renderer.test.mjs
+
+Toon polish tests passed: 100 frozen identities + neutral mapping, age plausibility and 1,000 generated profiles.
+
+> sports-face-mvp@0.4.0 test:morph
+> node ./tests/morphology.test.mjs
+
+Morph Lab tests passed: 8 families, 100 frozen identities and 1,000 generated profiles ({"low-wide":124,"tapered-heart":135,"compact-round":80,"long-narrow":133,"high-forehead":158,"angular-athletic":131,"oval-balanced":147,"broad-square":92}).
+
+> sports-face-mvp@0.4.0 test:gnm-tools
+> python3 ./tools/gnm/build_morphology_pack.py --input ./tools/gnm/starter-landmark-samples.json --output /tmp/sports-face-gnm-pack-test.json --families 8 --seed 400 && python3 ./tools/gnm/validate_morphology_pack.py /tmp/sports-face-gnm-pack-test.json
+
+Wrote 8 morphology families from 128 samples to /tmp/sports-face-gnm-pack-test.json
+Morphology pack valid: 8 families; source=analytic-starter
+
+E2E offline Morph Lab passed: 3 styles, stable SF2, landmarks and attribution.

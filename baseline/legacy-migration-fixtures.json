@@ -1,0 +1,224 @@
+{
+  "schema": "sports-face-sf1-migration-fixtures/v1",
+  "release": "0.2.1",
+  "generatedAt": "2026-08-05T10:42:00+02:00",
+  "fixtures": [
+    {
+      "id": "L01",
+      "sf1": "SF1-1bc214q-13wtiv1-i-m-166534-f8fafc-17vkuaj",
+      "expectedSf2": "SF2~sports/default-v2~2oyqey~3og~13wtiv1~i~m~166534~f8fafc~17ey1jy",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2413306045,
+        "identityBits": 162863674,
+        "appearanceBits": 4768,
+        "age": 18,
+        "presentation": "masculine",
+        "kit": {
+          "primary": "#166534",
+          "secondary": "#f8fafc"
+        }
+      }
+    },
+    {
+      "id": "L02",
+      "sf1": "SF1-pwmb1v-132ups4-p-f-1d4ed8-facc15-1y9t80l",
+      "expectedSf2": "SF2~sports/default-v2~3di5ir~313~132ups4~p~f~1d4ed8~facc15~05pnp9o",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2362973188,
+        "identityBits": 204080499,
+        "appearanceBits": 3927,
+        "age": 25,
+        "presentation": "feminine",
+        "kit": {
+          "primary": "#1d4ed8",
+          "secondary": "#facc15"
+        }
+      }
+    },
+    {
+      "id": "L03",
+      "sf1": "SF1-1a78wlm-13cubh3-w-n-991b1b-f1f5f9-0tqsy3v",
+      "expectedSf2": "SF2~sports/default-v2~5wji16~3hc~13cubh3~w~n~991b1b~f1f5f9~126qk6v",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2379750807,
+        "identityBits": 356988426,
+        "appearanceBits": 4512,
+        "age": 32,
+        "presentation": "neutral",
+        "kit": {
+          "primary": "#991b1b",
+          "secondary": "#f1f5f9"
+        }
+      }
+    },
+    {
+      "id": "L04",
+      "sf1": "SF1-omqkhv-12ivie6-13-m-111827-f97316-0td1854",
+      "expectedSf2": "SF2~sports/default-v2~3u1vlv~2sx~12ivie6~13~m~111827~f97316~1r5fzlt",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2329417950,
+        "identityBits": 231874627,
+        "appearanceBits": 3633,
+        "age": 39,
+        "presentation": "masculine",
+        "kit": {
+          "primary": "#111827",
+          "secondary": "#f97316"
+        }
+      }
+    },
+    {
+      "id": "L05",
+      "sf1": "SF1-199uo4a-12sv435-1a-f-166534-f8fafc-1jmwl9q",
+      "expectedSf2": "SF2~sports/default-v2~4sa1lm~3b4~12sv435~1a~f~166534~f8fafc~0rrey2q",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2346195569,
+        "identityBits": 289362586,
+        "appearanceBits": 4288,
+        "age": 46,
+        "presentation": "feminine",
+        "kit": {
+          "primary": "#166534",
+          "secondary": "#f8fafc"
+        }
+      }
+    },
+    {
+      "id": "L06",
+      "sf1": "SF1-nerr9x-11ywb08-1h-n-1d4ed8-facc15-0zk8xwd",
+      "expectedSf2": "SF2~sports/default-v2~2z7179~2l3~11ywb08~1h~n~1d4ed8~facc15~0yhk4sb",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2295862712,
+        "identityBits": 180047061,
+        "appearanceBits": 3351,
+        "age": 53,
+        "presentation": "neutral",
+        "kit": {
+          "primary": "#1d4ed8",
+          "secondary": "#facc15"
+        }
+      }
+    },
+    {
+      "id": "L07",
+      "sf1": "SF1-1cf5cq0-128vwp7-l-m-991b1b-f1f5f9-19kpfcx",
+      "expectedSf2": "SF2~sports/default-v2~i2co8~3vk~128vwp7~l~m~991b1b~f1f5f9~11xi8nk",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2312640331,
+        "identityBits": 30342824,
+        "appearanceBits": 5024,
+        "age": 21,
+        "presentation": "masculine",
+        "kit": {
+          "primary": "#991b1b",
+          "secondary": "#f1f5f9"
+        }
+      }
+    },
+    {
+      "id": "L08",
+      "sf1": "SF1-mjrwip-11ex3ma-s-f-111827-f97316-01yn8gl",
+      "expectedSf2": "SF2~sports/default-v2~4n18ip~2fl~11ex3ma~s~f~111827~f97316~174k49d",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2262307474,
+        "identityBits": 280553569,
+        "appearanceBits": 3153,
+        "age": 28,
+        "presentation": "feminine",
+        "kit": {
+          "primary": "#111827",
+          "secondary": "#f97316"
+        }
+      }
+    },
+    {
+      "id": "L09",
+      "sf1": "SF1-1bcrbga-11owpb9-z-n-166534-f8fafc-1e3s3yr",
+      "expectedSf2": "SF2~sports/default-v2~2p1jne~3og~11owpb9~z~n~166534~f8fafc~1vzj8yz",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 2279085093,
+        "identityBits": 162994874,
+        "appearanceBits": 4768,
+        "age": 35,
+        "presentation": "neutral",
+        "kit": {
+          "primary": "#166534",
+          "secondary": "#f8fafc"
+        }
+      }
+    },
+    {
+      "id": "L10",
+      "sf1": "SF1-prjp4h-1yjg2yf-16-m-1d4ed8-facc15-0rlioj4",
+      "expectedSf2": "SF2~sports/default-v2~spuy9~307~1yjg2yf~16~m~1d4ed8~facc15~0mu0jyv",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 4265295351,
+        "identityBits": 48235761,
+        "appearanceBits": 3895,
+        "age": 42,
+        "presentation": "masculine",
+        "kit": {
+          "primary": "#1d4ed8",
+          "secondary": "#facc15"
+        }
+      }
+    },
+    {
+      "id": "L11",
+      "sf1": "SF1-omogn7-1y9gh9g-1d-f-991b1b-f1f5f9-1uimiao",
+      "expectedSf2": "SF2~sports/default-v2~2f437n~2sx~1y9gh9g~1d~f~991b1b~f1f5f9~17h24g3",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 4248517732,
+        "identityBits": 146317379,
+        "appearanceBits": 3633,
+        "age": 49,
+        "presentation": "feminine",
+        "kit": {
+          "primary": "#991b1b",
+          "secondary": "#f1f5f9"
+        }
+      }
+    },
+    {
+      "id": "L12",
+      "sf1": "SF1-1a7t9u4-2b8d9-1k-n-111827-f97316-0bm2nk9",
+      "expectedSf2": "SF2~sports/default-v2~3dc3kc~3hc~2b8d9~1k~n~111827~f97316~1yxj3wc",
+      "expectedProfile": {
+        "version": 2,
+        "style": "sports/default-v2",
+        "seed": 3883293,
+        "identityBits": 203798028,
+        "appearanceBits": 4512,
+        "age": 56,
+        "presentation": "neutral",
+        "kit": {
+          "primary": "#111827",
+          "secondary": "#f97316"
+        }
+      }
+    }
+  ],
+  "fixturesSha256": "4bebd90d51714e403c8df9d3563d29ca8c3e0caadffd40dc760bc0fe3daf1d61"
+}

@@ -1,0 +1,90 @@
+{
+  "schema": "sports-face-release-manifest/v1",
+  "version": "0.4.0",
+  "releaseId": "sports-face-v0.4.0-morph-lab",
+  "createdAt": "2026-08-05T11:37:00+02:00",
+  "renderers": [
+    "sports/default-v2",
+    "sports/toon-prototype",
+    "sports/morph-v1",
+    "sports/morph-gnm-v1"
+  ],
+  "morphology": {
+    "defaultRenderer": "sports/morph-v1",
+    "families": 8,
+    "landmarks": 28,
+    "localDeformationRegions": [
+      "head",
+      "eyes",
+      "brows",
+      "nose",
+      "mouth",
+      "glasses",
+      "beard",
+      "hairFront",
+      "hairRear"
+    ],
+    "starterPack": "analytic-starter",
+    "gnmDerived": false,
+    "gnmRuntimeDependency": false,
+    "gnmRuntime": {
+      "style": "sports/morph-gnm-v1",
+      "pack": "tools/gnm/work/gnm-morphology-pack.json",
+      "embeddedIn": "src/app.bundle.js",
+      "browserDataArtifact": "tools/gnm/work/gnm-morphology-pack.js",
+      "landmarkMap": "provisional",
+      "familySelection": {
+        "method": "face-dna-semantic-shape",
+        "inputs": [
+          "head",
+          "faceProportion"
+        ],
+        "version": "face-dna-shape-v1"
+      }
+    }
+  },
+  "offlinePipeline": {
+    "orchestrator": "tools/gnm/build_runtime_pack.py",
+    "defaultCandidate": "tools/gnm/work/gnm-morphology-pack-200.json",
+    "runtimePack": "tools/gnm/work/gnm-morphology-pack.json",
+    "promotionRequired": true,
+    "bundleCommand": "npm run build:offline",
+    "manifestCommand": "npm run refresh:release"
+  },
+  "regression": {
+    "frozenSf2Profiles": 100,
+    "sf1MigrationFixtures": 12,
+    "generatedMorphProfiles": 1000,
+    "offlineLandmarkSamples": 128,
+    "status": "passed"
+  },
+  "visualEvidence": [
+    "docs/morphology-families-v040.png",
+    "docs/comparison-v031-v040.png",
+    "docs/acceptance-gallery-v040.png",
+    "docs/app-v040-morph-lab.png"
+  ],
+  "keyHashes": {
+    "src/morphology.js": "af7e03a7337b6d117a99d0fcdf8be9b1bfb3768e2be283b0a18d4628e8254e8f",
+    "src/morph-renderer.js": "7e0b8085bf8beb8271d45cf2fc7bbc2aaacbf569c5979c238aed3b29454c838a",
+    "src/render-router.js": "1a8cdf7aad45457fb24df97255e662df5d244c7939d67e136ff06082c6e7d1d0",
+    "src/app.bundle.js": "afe29e9d1fb00e9aa43f1f9dac6366b3b076ff37d3d9bb74d66e8a447b76b657",
+    "tools/gnm/work/gnm-morphology-pack.js": "cb4d182c660ab7bdc9e23a4074b1d4ea4eab10ec0675503162c8f1f15aa3f02f",
+    "assets/morphology/starter-pack-v1.json": "7ccd7cf07bf72d4d19c26374c1eabfd20e74757b238ca9a340615ac7856eac56",
+    "tools/gnm/starter-landmark-samples.json": "b0809a44a7d2dc7eaacc543a7ba414112042ae3cabc21e48a51db7332cdc8cb1",
+    "tools/gnm/work/gnm-morphology-pack.json": "1e57afc78571b69db66508c5185bfaed378adf43827e1b1eb511734eea5ff1a7",
+    "baseline/visual-baseline.json": "fd8426f6a2aba28a0060e5a67e21ae0d1324ebaec32ab49d255dc4ca13483699",
+    "docs/test-output-v040.txt": "778bb5d7ef9b97a45146c5f193b3ca112498187461605fcd901ab1549552a5c4"
+  },
+  "operationalFiles": {
+    "tools/gnm/build_runtime_pack.py": "c6c0fae8b5205a71ad712753c6827a1cc8552e66379e6c2b06c6937f3200a17c",
+    "tools/gnm/test_build_runtime_pack.py": "bdc253bfe07ef8f56fbd23b74661eb03c0b47d322136cb252e709fd5df9d53ac",
+    "tools/gnm/README.md": "3936b1d05df62fafa661e5bedc6fa3e1d30e595358c74683b61fcd6638e781bf",
+    "README.md": "2f15d323f6b71e5d00664d9d0ce083f809b5cfeb0462b23c893d033bf6c69644",
+    "docs/PHASE3_MORPHOLOGY_GNM.md": "c112a8e05420ac0c4e6735b7e3184705d932f8b6e35dacdebb1c0285dfdb8622",
+    "docs/ACCEPTANCE_V040.md": "925a89f22614b913dabe5555cae3431fdb1e7407a43cb9f342f1690afb3658e2",
+    "CHANGELOG.md": "d34db7d7474aae23540d912615913a81f03e118db730339ba56a8b1de121106c",
+    "package.json": "90c553de66140622f9642479f3b73746c91c0d395dd8ede99c647ae2963c1cdd",
+    "scripts/refresh-release-manifest.mjs": "42c621448cf5c225dc987d29eebed37b04782ccdec1ffe1a612588c75192cbf8"
+  }
+}

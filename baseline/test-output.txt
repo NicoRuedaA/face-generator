@@ -1,0 +1,14 @@
+
+> sports-face-mvp@0.2.1 test
+> npm run test:model && npm run test:baseline
+
+
+> sports-face-mvp@0.2.1 test:model
+> node ./tests/model.test.mjs
+
+FaceDNA v2 model tests passed
+
+> sports-face-mvp@0.2.1 test:baseline
+> node ./baseline/verify-baseline.mjs
+
+Frozen baseline v0.2.1 verified: 100 SF2 + 12 SF1 migration fixtures.

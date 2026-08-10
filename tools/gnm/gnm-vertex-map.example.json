@@ -1,0 +1,25 @@
+{
+  "schema": "sports-face-gnm-vertex-map/v1",
+  "notes": "Replace every -1 with reviewed GNM Head skin vertex indices. Lists are averaged.",
+  "landmarks": {
+    "top": [-1],
+    "templeLeft": [-1],
+    "templeRight": [-1],
+    "cheekLeft": [-1],
+    "cheekRight": [-1],
+    "jawLeft": [-1],
+    "jawRight": [-1],
+    "chin": [-1],
+    "eyeLeft": [-1, -1],
+    "eyeRight": [-1, -1],
+    "noseBridge": [-1],
+    "noseTip": [-1],
+    "noseLeft": [-1],
+    "noseRight": [-1],
+    "mouthLeft": [-1],
+    "mouthRight": [-1],
+    "hairlineCenter": [-1],
+    "earLeft": [-1],
+    "earRight": [-1]
+  }
+}

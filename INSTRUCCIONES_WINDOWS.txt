@@ -1,0 +1,17 @@
+SPORTS FACE MVP v0.4.0 — INSTRUCCIONES PARA WINDOWS
+===================================================
+
+OPCIÓN 1 — MÁS FÁCIL
+1. Descomprime todo el ZIP.
+2. Abre index.html con doble clic.
+3. La cara debería aparecer inmediatamente.
+
+OPCIÓN 2 — MODO DESARROLLO
+1. Ejecuta iniciar-servidor.bat.
+2. Abre http://localhost:8080/index.module.html
+
+El error anterior ocurría porque Chrome bloquea los módulos JavaScript
+cargados desde una URL file://. Esta revisión incluye app.bundle.js y no
+usa módulos en la página principal.
+
+Selecciona "Sports Morph Lab v0.4.0" para probar landmarks y morfologías.

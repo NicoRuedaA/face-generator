@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sports Face MVP</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <p class="eyebrow">PROTOTIPO DE RETRATOS 2D</p>
+      <h1>Sports Face MVP</h1>
+    </div>
+    <div class="license-pill">Fase 3 · Morph Lab · v0.4.0</div>
+  </header>
+
+  <main class="layout">
+    <section class="portrait-panel card">
+      <canvas id="portrait" width="768" height="768" aria-label="Retrato generado"></canvas>
+      <div class="primary-actions">
+        <button id="new-player" class="button primary">Nuevo jugador</button>
+        <button id="age-five" class="button">+5 años</button>
+        <button id="download-png" class="button">Exportar PNG</button>
+      </div>
+      <p class="caption">Retrato deportivo neutral: la identidad permanece estable y la edad ajusta detalles sin cambiar la morfología permanente.</p>
+      <aside id="toon-attribution" class="attribution" hidden>
+        <strong>Arte ToonHead</strong> de <a href="https://www.johanmelin.com" target="_blank" rel="noreferrer">Johan Melin</a>,
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.
+        Subconjunto modificado y neutralizado para este prototipo deportivo. Morph Lab añade landmarks y deformación local; GNM continúa siendo una herramienta offline opcional.
+      </aside>
+    </section>
+
+    <section class="controls card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">FACE DNA</p>
+          <h2>Perfil del jugador</h2>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="field wide">
+          <span>Semilla</span>
+          <div class="inline-control">
+            <input id="seed" type="text" inputmode="numeric">
+            <button id="apply-seed" class="button small">Aplicar</button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span>Edad: <strong id="age-value">22</strong></span>
+          <input id="age" type="range" min="16" max="60" value="22">
+        </label>
+
+        <label class="field">
+          <span>Presentación</span>
+          <select id="presentation">
+            <option value="neutral">Neutral</option>
+            <option value="masculine">Masculina</option>
+            <option value="feminine">Femenina</option>
+          </select>
+        </label>
+        <label class="field wide">
+          <span>Estilo de renderizado</span>
+          <select id="render-style"></select>
+          <small>Este selector no se guarda dentro de FaceDNA ni modifica el código SF2.</small>
+        </label>
+        <label id="expression-mode-field" class="field wide" hidden>
+          <span>Microexpresión</span>
+          <select id="expression-mode">
+            <option value="auto">Automática</option>
+            <option value="neutral">Neutral</option>
+            <option value="alert">Alerta</option>
+            <option value="soft">Relajada</option>
+            <option value="focused">Concentrada</option>
+          </select>
+          <small>Solo se aplica en Morph Lab; no modifica FaceDNA ni el código SF2.</small>
+        </label>
+        <label id="landmark-field" class="field wide landmark-toggle" hidden>
+          <span>Diagnóstico morfológico</span>
+          <span class="checkbox-line"><input id="show-landmarks" type="checkbox"> Mostrar landmarks 2D sobre el retrato</span>
+          <small>La superposición es solo de depuración y no se incluye en FaceDNA.</small>
+        </label>
+
+        <label class="field colour-field">
+          <span>Equipación principal</span>
+          <input id="kit-primary" type="color" value="#b91c1c">
+        </label>
+
+        <label class="field colour-field">
+          <span>Equipación secundaria</span>
+          <input id="kit-secondary" type="color" value="#f8fafc">
+        </label>
+      </div>
+
+      <details open>
+        <summary>Editor de rasgos</summary>
+        <div id="feature-controls" class="feature-grid"></div>
+      </details>
+
+      <div class="code-box">
+        <label class="field wide">
+          <span>Código facial reproducible</span>
+          <textarea id="face-code" rows="3" spellcheck="false"></textarea>
+        </label>
+        <div class="row-actions">
+          <button id="copy-code" class="button">Copiar código</button>
+          <button id="load-code" class="button">Cargar código</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-panel card">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">PRUEBA DE VARIEDAD</p>
+          <h2>Plantilla generada</h2>
+        </div>
+      </div>
+      <div id="gallery" class="gallery"></div>
+    </section>
+
+    <section class="debug-panel card">
+      <details>
+        <summary>Datos internos del perfil</summary>
+        <pre id="debug-output"></pre>
+      </details>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="./tools/gnm/work/gnm-morphology-pack.js"></script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

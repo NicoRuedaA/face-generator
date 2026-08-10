@@ -1,0 +1,15 @@
+.atl/
+node_modules/
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+
+# Local GNM environments and large generated mesh archives.
+tools/gnm/work/*.npz
+tools/gnm/work/*.npy
+tools/gnm/work/heads-test/
+tools/gnm/work/gnm-heads-*.npz
+tools/gnm/work/gnm-landmarks-200.json
+tools/gnm/work/gnm-morphology-pack-200.json
+tools/gnm/work/gnm-landmarks-five.json

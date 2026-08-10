@@ -1,0 +1,5 @@
+
+> sports-face-mvp@0.2.0 test
+> node ./tests/model.test.mjs
+
+FaceDNA v2 model tests passed

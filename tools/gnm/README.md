@@ -1,0 +1,151 @@
+# GNM offline pipeline
+
+GNM itself is never loaded by the browser or game runtime. A generated portable
+morphology pack may be embedded in the offline bundle and selected explicitly
+as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
+Only the portable JSON pack crosses the browser boundary.
+
+## Quick path: regenerate a candidate
+
+Install GNM Shape separately from the official `google/GNM` repository, create
+its documented Python 3.13 environment, and activate that environment before
+running any command in this section. The orchestrator uses the active
+interpreter as `sys.executable` for every stage.
+
+```bash
+source /path/to/gnm/shape/.venv/bin/activate
+python tools/gnm/build_runtime_pack.py \
+  --count 200 --seed 400 --sigma 1.15 --families 8
+```
+
+The default output is the provisional candidate
+`tools/gnm/work/gnm-morphology-pack-200.json`. It also writes the sampled mesh
+and projected landmarks beside it. The canonical runtime pack
+`tools/gnm/work/gnm-morphology-pack.json` is not replaced.
+
+Review the provisional landmark map and generated data before promotion. The
+map must be inspected against a frontal mesh; it is not guessed automatically.
+
+After the map and candidate pass review, run the same command with the explicit
+promotion flag:
+
+```bash
+python tools/gnm/build_runtime_pack.py \
+  --count 200 --seed 400 --sigma 1.15 --families 8 --promote
+```
+
+Promotion is never implicit. After promotion, rebuild and verify the artifacts
+with these exact commands:
+
+```bash
+npm run build:offline
+npm test
+npm run refresh:release
+python3 -m json.tool docs/release-manifest-v040.json >/dev/null
+```
+
+`npm run build:offline` is the only step that embeds the portable JSON into
+`src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.
+`npm run refresh:release` updates SHA-256 entries for the release's operational
+files. Neither command installs or imports GNM in the browser/runtime.
+
+Use `--dry-run` to inspect the four planned subprocess commands without GNM,
+NumPy, or file changes:
+
+```bash
+python tools/gnm/build_runtime_pack.py --dry-run
+```
+
+The intended pipeline is:
+
+```text
+GNM Head neutral meshes
+  → reviewed vertex map
+  → frontal 2D landmark samples
+  → deterministic clustering
+  → portable morphology pack JSON
+  → Sports Morph Lab renderer
+```
+
+## 1. Install GNM separately
+
+GNM Shape currently documents Python 3.13 and exposes NumPy, JAX, PyTorch and
+TensorFlow backends. Its model separates identity, expression and pose. Install
+it from the official `google/GNM` repository in a dedicated environment.
+The browser project does not install GNM as an npm or Python runtime
+dependency. Keep the GNM checkout and its environment outside this project.
+
+## 2. Sample neutral identities
+
+```bash
+python sample_gnm_heads.py --count 200 --seed 400 --output work/gnm-heads.npz
+```
+
+## 3. Review a vertex map
+
+Copy `gnm-vertex-map.example.json`, replace every `-1`, and verify the selected
+vertices visually. The tool deliberately refuses to guess anatomical indices.
+
+## 4. Project landmarks
+
+```bash
+python project_gnm_landmarks.py \
+  --meshes work/gnm-heads.npz \
+  --vertex-map work/gnm-vertex-map.json \
+  --horizontal-axis x --vertical-axis y --flip-vertical \
+  --output work/gnm-landmarks.json
+```
+
+The correct axis choices must be verified against an exported frontal mesh.
+
+The projector must use one normalization frame for the complete sample set. A
+per-sample bounding box is forbidden: when each sample's own left, right, top
+and bottom are mapped to the same output rectangle, absolute face height and
+ear span become constants by construction. This destroys the morphology
+variation that the GNM identities provide. When the mesh archive contains
+`template`, the mapped template landmarks define the stable frame. Every sample
+is normalized against those same bounds, so differences in face height and ear
+span survive into the generated features. Archives without a template use the
+first sample as a deterministic fallback. The selected frame and bounds are
+recorded under `source.projection.normalization`.
+
+The generated pack exposes fourteen deterministic features. The four added
+landmark-derived metrics are calculated from the projected coordinates:
+
+- `chinWidth = distance(chinLeft, chinRight) / faceHeight`;
+- `eyeWidth = mean(distance(leftOuter, leftInner), distance(rightOuter, rightInner)) / faceHeight`;
+- `eyeHeight = mean(distance(leftTop, leftBottom), distance(rightTop, rightBottom)) / faceHeight`;
+- `templeSlope = mean(atan2(abs(dy), abs(dx)) for temple-to-hairline segments on both sides)`.
+
+The temple slope is an unsigned angle in radians: `0` means a horizontal
+segment and `pi / 2` means a vertical segment. `atan2` keeps each segment in
+the bounded `[0, pi / 2]` range, and averaging both sides makes the result
+bilateral and independent of which side is called left or right. The new map
+IDs are provisional frontal/depth surface anchors, not semantic mesh labels.
+
+## 5. Build the pack manually
+
+```bash
+python build_morphology_pack.py \
+  --input work/gnm-landmarks.json \
+  --families 8 --seed 400 \
+  --output work/gnm-morphology-pack.json
+python validate_morphology_pack.py work/gnm-morphology-pack.json
+```
+
+The orchestrator above is the preferred path because it runs these four stages
+in order with one interpreter and a deterministic set of paths. The individual
+commands remain useful for diagnosis.
+
+## Current bundled data
+
+`starter-landmark-samples.json` and the runtime family definitions are analytic
+fixtures. They exercise the complete data contract but are not claimed as GNM
+derivatives. `work/gnm-morphology-pack.json` is the generated portable pack
+embedded by `npm run build:offline`; the same command also writes
+`work/gnm-morphology-pack.js` for the modular browser entry. Both are consumed
+only by the explicit GNM renderer. Its current landmark map is provisional.
+Family selection uses the reviewed `face-dna-shape-v1` FaceDNA rule table in
+`src/morphology.js`; it is explicit and semantic, not learned from the pack or
+derived from the profile seed. The analytic `sports/morph-v1` renderer and
+runtime defaults are unchanged.

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "sports-face-landmark-samples/v1",
+  "type": "object",
+  "required": ["schema", "source", "samples"],
+  "properties": {
+    "schema": {"const": "sports-face-landmark-samples/v1"},
+    "source": {
+      "type": "object",
+      "required": ["kind", "gnmDerived"],
+      "properties": {
+        "kind": {"type": "string"},
+        "gnmDerived": {"type": "boolean"}
+      }
+    },
+    "samples": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "landmarks"],
+        "properties": {
+          "id": {"type": "string"},
+          "landmarks": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["x", "y"],
+              "properties": {
+                "x": {"type": "number"},
+                "y": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
