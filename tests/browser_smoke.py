@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Browser smoke test for the default 2D path and opt-in WebGL fallback contract."""
+"""Browser smoke test for default, legacy WebGL, and official GNM WebGL paths."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ def main() -> int:
             assert selected.input_value() == "sports/default-v2", selected.input_value()
             assert not page.locator("#webgl-camera-controls").is_visible(), f"{entry}: WebGL controls should be hidden by default"
 
-            selected.select_option("sports/morph-webgl-v1")
+            selected.select_option("sports/morph-webgl-official-v1")
             page.wait_for_timeout(1800)
             webgl_visible = page.locator("#portrait-webgl").is_visible()
             fallback_visible = page.locator("#portrait").is_visible()
@@ -35,6 +35,10 @@ def main() -> int:
                 controls = page.locator("#webgl-camera-controls")
                 assert controls.is_visible(), f"{entry}: WebGL camera controls should be visible"
                 canvas = page.locator("#portrait-webgl")
+                diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert diagnostics["components"] == 6, diagnostics
+                assert diagnostics["materials"] == 6, diagnostics
+                assert diagnostics["officialTexturesIncluded"] is False, diagnostics
                 box = canvas.bounding_box()
                 assert box, f"{entry}: WebGL canvas has no bounds"
                 center_x = box["x"] + box["width"] / 2

@@ -4,6 +4,8 @@ import { renderGnmMorphFace } from "./morph-renderer.js";
 
 export const WEBGL_MORPH_RENDER_STYLE = "sports/morph-webgl-v1";
 export const WEBGL_MORPH_ASSET_URL = "./tools/gnm/work/head-morph.glb";
+export const WEBGL_OFFICIAL_RENDER_STYLE = "sports/morph-webgl-official-v1";
+export const WEBGL_OFFICIAL_ASSET_URL = "./tools/gnm/work/gnm-official-head.glb";
 export const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
 export const WEBGL_FRAME_MARGIN = 0.12;
 export const DEFAULT_WEBGL_CAMERA = Object.freeze({ yaw: 0, pitch: 0, distance: 1 });
@@ -70,6 +72,23 @@ export function describeWebglMapping(profile) {
   };
 }
 
+export function describeOfficialWebglMapping() {
+  return {
+    renderer: WEBGL_OFFICIAL_RENDER_STYLE,
+    prototype: true,
+    source: "official GNM Head v3.0 template and basis metadata",
+    targetSemantics: "neutral official template; no semantic basis mapping",
+    officialTexturesIncluded: false,
+    mapping: {
+      identityOnly: true,
+      applied: false,
+      identityBasis: "disabled: official head_/eyes_/teeth_ names do not safely map to FaceDNA variables",
+      expressionBasis: "disabled: regional expression names do not safely map to application expression modes",
+      identityInvariant: true,
+    },
+  };
+}
+
 function parseGlb(data) {
   if (!(data instanceof ArrayBuffer) || data.byteLength < 20) fail("GLB is shorter than its header");
   const header = new DataView(data, 0, 12);
@@ -97,6 +116,7 @@ function headerFor(data, offset) { return new DataView(data, offset, 8); }
 
 function parseAsset(data) {
   const { json, binary } = parseGlb(data);
+  if (json.extras?.sportsFaceGnmOfficial?.schema === "sports-face-gnm-official-head/v1") return parseOfficialAsset(json, binary);
   if (json.asset?.version !== "2.0" || json.scene !== 0 || json.scenes?.length !== 1 || json.nodes?.length !== 1 || json.meshes?.length !== 1) fail("GLB scene structure is unsupported");
   if (json.buffers?.length !== 1 || json.buffers[0].byteLength !== binary.byteLength) fail("GLB buffer length is invalid");
   const mesh = json.meshes[0];
@@ -144,6 +164,41 @@ function parseAsset(data) {
     }
   });
   return { json, binary, vertexCount, position, indices, targets, bounds, morphDisplacementBound };
+}
+
+function accessorView(json, binary, accessorIndex, componentType, type) {
+  const accessor = json.accessors?.[accessorIndex];
+  const view = json.bufferViews?.[accessor?.bufferView];
+  const componentCount = type === "VEC3" ? 3 : type === "VEC2" ? 2 : 1;
+  if (!accessor || !view || accessor.componentType !== componentType || accessor.type !== type) fail(`invalid official accessor ${accessorIndex}`);
+  const offset = (view.byteOffset || 0) + (accessor.byteOffset || 0);
+  const bytes = accessor.count * componentCount * 4;
+  if (offset % 4 !== 0 || view.byteLength !== bytes || offset + bytes > binary.byteLength) fail(`invalid official bufferView ${accessorIndex}`);
+  return { accessor, view, offset };
+}
+
+function parseOfficialAsset(json, binary) {
+  if (json.asset?.version !== "2.0" || json.scene !== 0 || json.scenes?.length !== 1 || json.nodes?.length !== 1 || json.meshes?.length !== 1) fail("official GLB scene structure is unsupported");
+  const mesh = json.meshes[0];
+  const names = ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"];
+  if (mesh.primitives?.length !== names.length || json.materials?.length !== names.length || json.buffers?.[0]?.byteLength !== binary.byteLength) fail("official GLB component structure is invalid");
+  const primitives = mesh.primitives.map((primitive, index) => {
+    if (primitive.mode !== 4 || primitive.material !== index || primitive.extras?.componentName !== names[index]) fail("official GLB component order is invalid");
+    const position = accessorView(json, binary, primitive.attributes?.POSITION, 5126, "VEC3");
+    const uv = accessorView(json, binary, primitive.attributes?.TEXCOORD_0, 5126, "VEC2");
+    const indices = accessorView(json, binary, primitive.indices, 5125, "SCALAR");
+    if (position.accessor.count !== uv.accessor.count || indices.accessor.count % 3 !== 0) fail("official primitive counts are invalid");
+    const material = json.materials[index];
+    if (material.extras?.materialSource !== "neutral-procedural" || material.extras?.officialTexturesIncluded !== false) fail("official material is not explicitly neutral procedural");
+    return { name: names[index], position, uv, indices, color: material.pbrMetallicRoughness?.baseColorFactor || [0.72, 0.72, 0.72, 1] };
+  });
+  const bounds = primitives.reduce((result, primitive) => ({
+    min: result.min.map((value, axis) => Math.min(value, primitive.position.accessor.min[axis])),
+    max: result.max.map((value, axis) => Math.max(value, primitive.position.accessor.max[axis])),
+  }), { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] });
+  const official = json.extras.sportsFaceGnmOfficial;
+  if (official.basis?.identity?.count !== 253 || official.basis?.expression?.count !== 383 || official.mapping?.identity?.applied !== false || official.mapping?.expression?.applied !== false) fail("official basis or mapping metadata is unsafe");
+  return { official: true, json, binary, primitives, bounds, morphDisplacementBound: [0, 0, 0], vertexCount: 17821 };
 }
 
 export function parseWebglGlb(data) { return parseAsset(data); }
@@ -216,6 +271,34 @@ function program(gl) {
   if (!gl.getProgramParameter(result, gl.LINK_STATUS)) fail(`WebGL program link failed: ${gl.getProgramInfoLog(result)}`);
   gl.deleteShader(vertex);
   gl.deleteShader(fragment);
+  return result;
+}
+
+function officialProgram(gl) {
+  const vertex = shader(gl, gl.VERTEX_SHADER, `#version 300 es
+    layout(location=0) in vec3 aPosition;
+    uniform mat4 uProjection;
+    uniform mat4 uCamera;
+    out vec3 vPosition;
+    void main() { vPosition = aPosition; gl_Position = uProjection * uCamera * vec4(aPosition, 1.0); }`);
+  const fragment = shader(gl, gl.FRAGMENT_SHADER, `#version 300 es
+    precision highp float;
+    uniform vec4 uColor;
+    in vec3 vPosition;
+    out vec4 color;
+    void main() {
+      vec3 normal = normalize(cross(dFdx(vPosition), dFdy(vPosition)));
+      normal = faceforward(normal, vec3(0.0, 0.0, -1.0), normal);
+      vec3 keyLight = normalize(vec3(-0.45, 0.72, 1.0));
+      vec3 fillLight = normalize(vec3(0.70, 0.15, 0.55));
+      float diffuse = max(dot(normal, keyLight), 0.0);
+      float fill = max(dot(normal, fillLight), 0.0);
+      color = vec4(uColor.rgb * (0.24 + 0.58 * diffuse + 0.16 * fill), uColor.a);
+    }`);
+  const result = gl.createProgram();
+  gl.attachShader(result, vertex); gl.attachShader(result, fragment); gl.linkProgram(result);
+  if (!gl.getProgramParameter(result, gl.LINK_STATUS)) fail(`official WebGL program link failed: ${gl.getProgramInfoLog(result)}`);
+  gl.deleteShader(vertex); gl.deleteShader(fragment);
   return result;
 }
 
@@ -325,6 +408,21 @@ function upload(gl, asset) {
   return { vao, texture, indexCount: indices.length, textureSize: [width, height] };
 }
 
+function uploadOfficial(gl, asset) {
+  const read = (entry, Type) => new Type(asset.binary.buffer.slice(asset.binary.byteOffset + entry.offset, asset.binary.byteOffset + entry.offset + entry.view.byteLength));
+  const primitives = asset.primitives.map((primitive) => {
+    const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
+    const position = read(primitive.position, Float32Array);
+    const positionBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer); gl.bufferData(gl.ARRAY_BUFFER, position, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    const indices = read(primitive.indices, Uint32Array);
+    const indexBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    return { vao, indexCount: indices.length, color: primitive.color };
+  });
+  return { primitives };
+}
+
 function resizeCanvas(canvas, gl) {
   const ratio = Math.min(window.devicePixelRatio || 1, 2);
   const width = Math.max(1, Math.round(canvas.clientWidth * ratio || canvas.width));
@@ -369,8 +467,30 @@ function draw(canvas, asset, resources, weights) {
   };
 }
 
+function drawOfficial(canvas, asset, resources) {
+  const gl = resources.gl;
+  const aspect = resizeCanvas(canvas, gl);
+  gl.useProgram(resources.program);
+  gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.clearDepth(1); gl.disable(gl.CULL_FACE);
+  gl.clearColor(0.035, 0.05, 0.075, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  const projection = buildWebglProjection(asset.bounds, aspect);
+  const camera = buildWebglCameraMatrix(asset.bounds, aspect, resources.camera);
+  gl.uniformMatrix4fv(resources.uniforms.projection, false, projection);
+  gl.uniformMatrix4fv(resources.uniforms.camera, false, camera);
+  for (const primitive of resources.primitives) {
+    gl.bindVertexArray(primitive.vao);
+    gl.uniform4fv(resources.uniforms.color, primitive.color);
+    gl.drawElements(gl.TRIANGLES, primitive.indexCount, gl.UNSIGNED_INT, 0);
+  }
+  gl.bindVertexArray(null);
+  if (gl.getError() !== gl.NO_ERROR) fail("official WebGL resource or draw error");
+  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, mapping: "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
+}
+
 function redraw(canvas, state) {
-  canvas.__sportsFaceWebglDiagnostics = draw(canvas, state.asset, state, state.weights);
+  canvas.__sportsFaceWebglDiagnostics = state.asset.official
+    ? drawOfficial(canvas, state.asset, state)
+    : draw(canvas, state.asset, state, state.weights);
 }
 
 function attachCameraControls(canvas, state) {
@@ -422,7 +542,8 @@ function fallback(canvas, profile, options, reason) {
 }
 
 export function renderWebglFace(canvas, profile, options = {}) {
-  const assetUrl = options.assetUrl || WEBGL_MORPH_ASSET_URL;
+  const official = options.official === true || options.assetUrl === WEBGL_OFFICIAL_ASSET_URL;
+  const assetUrl = options.assetUrl || (official ? WEBGL_OFFICIAL_ASSET_URL : WEBGL_MORPH_ASSET_URL);
   const fallbackOptions = { ...options };
   delete fallbackOptions.assetUrl;
   return Promise.resolve().then(async () => {
@@ -432,21 +553,22 @@ export function renderWebglFace(canvas, profile, options = {}) {
     const asset = await fetchAsset(assetUrl);
     let state = canvasState.get(canvas);
     if (!state || state.asset !== asset || state.gl !== gl) {
-      const webglProgram = program(gl);
-      const resources = upload(gl, asset);
+      const webglProgram = asset.official ? officialProgram(gl) : program(gl);
+      const resources = asset.official ? uploadOfficial(gl, asset) : upload(gl, asset);
       state = { asset, gl, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, weights: mapWebglWeights(profile), uniforms: {
         texture: gl.getUniformLocation(webglProgram, "uMorphDeltas"),
         weights: gl.getUniformLocation(webglProgram, "uWeights"),
         textureSize: gl.getUniformLocation(webglProgram, "uTextureSize"),
         projection: gl.getUniformLocation(webglProgram, "uProjection"),
         camera: gl.getUniformLocation(webglProgram, "uCamera"),
+        color: gl.getUniformLocation(webglProgram, "uColor"),
       } };
       canvasState.set(canvas, state);
     }
     attachCameraControls(canvas, state);
     state.weights = mapWebglWeights(profile);
-    const diagnostics = draw(canvas, asset, state, state.weights);
+    const diagnostics = asset.official ? drawOfficial(canvas, asset, state) : draw(canvas, asset, state, state.weights);
     canvas.__sportsFaceWebglDiagnostics = diagnostics;
-    return { canvas, fallback: false, renderer: WEBGL_MORPH_RENDER_STYLE, diagnostics };
+    return { canvas, fallback: false, renderer: asset.official ? WEBGL_OFFICIAL_RENDER_STYLE : WEBGL_MORPH_RENDER_STYLE, diagnostics };
   }).catch((error) => fallback(canvas, profile, fallbackOptions, error instanceof Error ? error.message : String(error)));
 }

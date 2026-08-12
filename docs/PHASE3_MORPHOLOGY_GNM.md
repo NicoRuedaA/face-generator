@@ -12,6 +12,7 @@ sports/toon-prototype
 sports/morph-v1
 sports/morph-gnm-v1
 sports/morph-webgl-v1
+sports/morph-webgl-official-v1
 ```
 
 `sports/morph-v1` continúa siendo el estilo analítico predeterminado. El estilo
@@ -259,6 +260,42 @@ python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
 El procedimiento, los ocho inputs fijos, los criterios de aceptación y la
 variante con overlay están en
 [`docs/ACCEPTANCE_GNM_GALLERY.md`](ACCEPTANCE_GNM_GALLERY.md).
+
+### Slice oficial 3D: paquete GNM v3.0
+
+La primera integración oficial 3D está aceptada únicamente para el alcance
+público no comercial autorizado por `project-owner` el `2026-08-12`, referencia
+`sports-face-mvp-noncommercial-mvp-authorization`. La fuente exacta es GNM
+`8ea2906a31aab7f8b550e33968f3c0a86051a92d`, archive SHA-256
+`2aabb75107ed5a3c7be45ba93700fbfa7e1333c646054ff9dc9d267dd02b730d`, con NPZ
+SHA-256 `03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14` y
+Apache-2.0.
+
+El importer `tools/gnm/import_official_gnm_npz.py` genera
+`tools/gnm/work/gnm-official-head.glb` y su metadata. El paquete contiene
+`17.821` vértices fuente, `35.324` triángulos, `17.662` quads y seis primitivas:
+skin, left/right eye, upper/lower teeth and gums y tongue. Las `triangle_uvs`
+oficiales se preservan exactamente con un vértice GLB por esquina de triángulo,
+por lo que los seams no se colapsan. Las bases oficiales de identidad (`253`) y
+expresión (`383`) viajan como payload binario y metadata dentro del GLB.
+
+No se incluye un bundle completo de texturas materiales. Cada componente recibe
+un material procedural neutro. Los nombres oficiales no prueban una
+correspondencia segura con FaceDNA o los modos de expresión, así que el runtime
+usa plantilla neutral y un diagnóstico transparente; no asigna significados
+anatómicos arbitrarios. La invariancia de identity-only se conserva.
+
+El estilo `sports/morph-webgl-official-v1` es opt-in, mantiene los controles de
+cámara y cae a `sports/morph-gnm-v1` si WebGL2 o el asset fallan. El estilo
+`sports/morph-webgl-v1`, `head-morph.glb`, SVG y el default anterior permanecen
+intactos.
+
+```bash
+npm run build:gnm-official
+npm run validate:gnm-official
+npm run test:gnm-official-asset
+npm run capture:gnm-official-smoke
+```
 
 ### Selección semántica de familias
 

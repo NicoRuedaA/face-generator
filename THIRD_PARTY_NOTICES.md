@@ -33,15 +33,16 @@ See `third_party/toon-head/ATTRIBUTION.md`.
 
 ## GNM Head
 
-No se redistribuye GNM en esta entrega. `tools/gnm/` contiene herramientas
-propias capaces de trabajar con una instalación externa de google/GNM, cuyo
-proyecto declara Apache License 2.0. GNM no es una dependencia de runtime.
-El bundle puede incrustar un paquete morfológico portable generado offline a
-partir de datos de GNM; ese paquete solo se consume al seleccionar
-`sports/morph-gnm-v1` explícitamente.
+This MVP includes a generated official GNM-derived 3D package under the
+explicitly authorized public, noncommercial scope. It was generated from
+`google/GNM` revision `8ea2906a31aab7f8b550e33968f3c0a86051a92d`, source archive
+SHA-256 `2aabb75107ed5a3c7be45ba93700fbfa7e1333c646054ff9dc9d267dd02b730d`,
+and official NPZ SHA-256
+`03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14`.
 
-Esta fase tampoco acepta ni redistribuye un bundle oficial. El contrato de
-intake exige registrar la procedencia exacta, el texto de licencia y una
-decisión humana explícita sobre redistribución; la licencia del repositorio por
-sí sola no basta. UVs, texturas, ojos, dientes y lengua permanecen fuera del
-navegador/runtime hasta que el manifest pase a `accepted`.
+- License: Apache-2.0; complete upstream text is retained at `tools/gnm/work/LICENSE-GNM.txt`.
+- Permission: `project-owner`, `2026-08-12`, `sports-face-mvp-noncommercial-mvp-authorization`.
+- Runtime style: `sports/morph-webgl-official-v1`, opt-in only; default and prior geometry-only WebGL remain intact.
+- Components: skin, left/right eye, upper/lower teeth and gums, tongue.
+- Materials: neutral procedural materials only. No complete official material texture bundle is included; `edgeflow_bw_4k.png` is visualization-only and is not used as a texture.
+- Mapping: official identity/expression bases are retained as metadata/payload, but semantic FaceDNA/expression mapping is disabled because the names do not safely establish anatomical semantics. Identity-only invariance is preserved.

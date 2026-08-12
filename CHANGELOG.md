@@ -1,5 +1,13 @@
 ## Unreleased — Operativa GNM
 
+- Integra el primer paquete 3D oficial de GNM Head v3.0 en el alcance público no
+  comercial autorizado por el propietario del proyecto: GLB portable con skin,
+  ojos, dientes/encías y lengua separados, UVs oficiales sin colapsar seams,
+  bases de identidad/expresión y materiales procedurales neutros. El estilo
+  `sports/morph-webgl-official-v1` es opt-in, conserva el fallback anterior y no
+  asigna semántica anatómica no demostrada. No se incluye el bundle completo de
+  texturas materiales.
+
 - Añade una comparación bounded report-only entre el pack GNM canónico de 200 y
   candidatos de 400/800 muestras: diversidad, duplicados, vecinos normalizados,
   rangos/varianzas, balance familiar, deltas de centroides, procedencia y

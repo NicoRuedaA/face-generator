@@ -1,0 +1,82 @@
+{
+  "schema": "sports-face-gnm-official-bundle/v1",
+  "status": "accepted",
+  "runtimeAllowed": true,
+  "source": {
+    "repositoryUrl": "https://github.com/google/GNM",
+    "upstreamRevision": "8ea2906a31aab7f8b550e33968f3c0a86051a92d",
+    "archiveSha256": "2aabb75107ed5a3c7be45ba93700fbfa7e1333c646054ff9dc9d267dd02b730d",
+    "archiveFormat": "git archive tar at exact revision"
+  },
+  "license": {
+    "name": "Apache License 2.0",
+    "spdxId": "Apache-2.0",
+    "textPath": "LICENSE-GNM.txt",
+    "textSha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
+  },
+  "permission": {
+    "decision": "approved",
+    "reviewer": "project-owner",
+    "decisionDate": "2026-08-12",
+    "decisionReference": "sports-face-mvp-noncommercial-mvp-authorization",
+    "scope": "Public redistribution for this noncommercial MVP only; replace with custom assets when the MVP result is desirable."
+  },
+  "geometry": {
+    "expectedVertexCount": 17821,
+    "expectedTriangleCount": 35324,
+    "identityTemplateTopology": {
+      "consistent": true,
+      "identityCount": 253,
+      "templateVertexCount": 17821,
+      "templateTriangleCount": 35324,
+      "identityVertexCount": 17821,
+      "identityTriangleCount": 35324
+    }
+  },
+  "assets": {
+    "uvs": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    "materialsTextures": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    "eyes": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    "teeth": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    "tongue": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    "mesh": {
+      "path": "gnm-official-head.glb",
+      "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d",
+      "sizeBytes": 138998408
+    },
+    "expressions": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    }
+  },
+  "assetPackage": {
+    "metadataPath": "gnm-official-head.json",
+    "glbPath": "gnm-official-head.glb",
+    "components": [
+      "skin",
+      "left_eye",
+      "right_eye",
+      "upper_teeth_and_gums",
+      "lower_teeth_and_gums",
+      "tongue"
+    ],
+    "officialTexturesIncluded": false,
+    "runtimeMaterials": "neutral-procedural"
+  },
+  "notes": "Accepted official GNM-derived package for the explicitly authorized noncommercial/public MVP scope. No complete material texture bundle is included; runtime uses neutral procedural materials."
+}

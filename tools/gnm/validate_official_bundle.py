@@ -96,6 +96,11 @@ def validate_json_structure(path: Path, role: str, expected_vertices: int, expec
     except (OSError, UnicodeError, json.JSONDecodeError) as error:
         fail(f"{role} JSON is invalid: {error}")
     require(isinstance(document, dict), f"{role} JSON must contain an object")
+    if document.get("schema") == "sports-face-gnm-official-head/v1":
+        require(document.get("geometry", {}).get("vertexCount") == expected_vertices, "official metadata vertex count does not match geometry")
+        require(document.get("geometry", {}).get("triangleCount") == expected_triangles, "official metadata triangle count does not match geometry")
+        require(document.get("mapping", {}).get("identityOnlyInvariant") is True, "official metadata identity invariant is missing")
+        return
     require(document.get("role") == role, f"{role} JSON role does not match manifest role")
     if role == "mesh":
         require(document.get("vertexCount") == expected_vertices, "mesh vertex count does not match geometry")
@@ -124,6 +129,13 @@ def validate_glb_structure(path: Path, expected_vertices: int, expected_triangle
     require(document.get("asset", {}).get("version") == "2.0", "mesh GLB must be glTF 2.0")
     accessors = document.get("accessors")
     require(isinstance(accessors, list) and len(accessors) >= 2, "mesh GLB must expose position and index accessors")
+    official = document.get("extras", {}).get("sportsFaceGnmOfficial")
+    if official and official.get("schema") == "sports-face-gnm-official-head/v1":
+        require(len(document.get("meshes", [{}])[0].get("primitives", [])) == 6, "official GLB must contain six component primitives")
+        require(official.get("topology", {}).get("templateVertexCount") == expected_vertices, "official GLB source vertex count does not match geometry")
+        require(official.get("topology", {}).get("triangleCount") == expected_triangles, "official GLB triangle count does not match geometry")
+        require(len(document.get("materials", [])) == 6, "official GLB must contain six materials")
+        return
     require(accessors[0].get("count") == expected_vertices, "mesh GLB vertex count does not match geometry")
     require(accessors[1].get("count") == expected_triangles * 3, "mesh GLB index count does not match geometry")
 

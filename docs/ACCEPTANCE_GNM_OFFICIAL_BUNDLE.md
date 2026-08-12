@@ -1,18 +1,22 @@
 # Acceptance: Official GNM Asset Bundle
 
-This phase adds a fail-closed intake contract for a future official GNM bundle.
-It does not accept, download, or redistribute official GNM assets. The current
-repository still contains only retained geometry and derived offline artifacts.
+This acceptance records the first official GNM 3D integration slice for the
+explicitly authorized public, noncommercial MVP scope. The source is GNM at
+revision `8ea2906a31aab7f8b550e33968f3c0a86051a92d`, archive SHA-256
+`2aabb75107ed5a3c7be45ba93700fbfa7e1333c646054ff9dc9d267dd02b730d`, under
+Apache-2.0. The package is generated locally; the external checkout is not
+copied wholesale.
 
 ## Quick path
 
-1. Copy `tools/gnm/work/official-bundle.example.json` to an intake location outside runtime assets.
-2. Replace every neutral placeholder with evidence from the exact upstream bundle.
-3. Record human provenance, licensing, and redistribution decisions.
-4. Run the validator and retain its output with the review record.
+1. Run the NumPy-only offline importer against the reviewed external NPZ.
+2. Validate the accepted manifest, GLB structure, components, UVs, and basis metadata.
+3. Run the official browser smoke with the explicit style.
 
 ```bash
 python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
+python3 tools/gnm/validate_official_gnm_asset.py tools/gnm/work/official-bundle.json
+npm run capture:gnm-official-smoke
 ```
 
 The canonical placeholder and its tests are intentionally fast and stdlib-only:
@@ -32,7 +36,7 @@ The manifest schema is `sports-face-gnm-official-bundle/v1`. It must record:
 | License | Declared license name, SPDX identifier, license text path, and license text SHA-256 |
 | Permission | Explicit `pending`, `approved`, or `denied` decision, reviewer, decision date, and decision reference; repository license alone is never inferred as redistribution permission |
 | Geometry | Expected vertex/triangle counts and identity/template topology consistency with matching counts |
-| Assets | Mesh, UVs, materials/textures, eyes, teeth, tongue paths and SHA-256 hashes; expressions are optional |
+| Assets | Self-contained GLB, metadata, exact UV policy, six components, basis payloads, and SHA-256 hashes |
 | Safety | Relative paths only, no traversal, bounded files, and `runtimeAllowed: false` until explicit human approval |
 
 For `reviewed` and `accepted`, every referenced file must exist next to the
@@ -68,5 +72,5 @@ SVG changes. No official GNM asset was accepted or redistributed here.
 - [ ] Redistribution permission is explicit and references a human decision.
 - [ ] Mesh, UVs, materials/textures, eyes, teeth, and tongue are complete and hashed.
 - [ ] Identity and template topology counts are consistent.
-- [ ] `runtimeAllowed` remains false until the human approval is complete.
+- [x] `runtimeAllowed` is true only for the explicit project-owner MVP decision.
 - [ ] The validator passes from the manifest directory context.

@@ -20,6 +20,7 @@ from playwright.sync_api import Page, TimeoutError as PlaywrightTimeoutError, sy
 SCHEMA = "sports-face-gnm-webgl-ab/v1"
 SVG_RENDERER = "sports/morph-gnm-v1"
 WEBGL_RENDERER = "sports/morph-webgl-v1"
+OFFICIAL_WEBGL_RENDERER = "sports/morph-webgl-official-v1"
 AGE = 22
 PRESENTATION = "neutral"
 EXPRESSION_MODE = "neutral"
@@ -37,6 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--port", type=int, default=8080, help="Default app server port when --url is omitted")
     parser.add_argument("--browser", default="/usr/bin/chromium", help="Chromium executable")
     parser.add_argument("--timeout-ms", type=int, default=15000, help="Per-page readiness timeout")
+    parser.add_argument("--renderer", choices=(WEBGL_RENDERER, OFFICIAL_WEBGL_RENDERER), default=OFFICIAL_WEBGL_RENDERER, help="WebGL style to smoke-test")
     return parser.parse_args()
 
 
@@ -89,7 +91,7 @@ def wait_for_visible_canvas(page: Page, renderer: str, timeout_ms: int) -> dict[
           const webgl = document.querySelector('#portrait-webgl');
           const svg = document.querySelector('#portrait');
           const visible = element => element && !element.hidden && element.offsetWidth > 0 && element.offsetHeight > 0;
-          return renderer === 'sports/morph-webgl-v1' ? visible(webgl) || visible(svg) : visible(svg) && !visible(webgl);
+           return ['sports/morph-webgl-v1', 'sports/morph-webgl-official-v1'].includes(renderer) ? visible(webgl) || visible(svg) : visible(svg) && !visible(webgl);
         }
         """,
         arg=renderer,
@@ -98,7 +100,7 @@ def wait_for_visible_canvas(page: Page, renderer: str, timeout_ms: int) -> dict[
     page.wait_for_timeout(100)
     webgl_visible = page.locator("#portrait-webgl").is_visible()
     svg_visible = page.locator("#portrait").is_visible()
-    if renderer == WEBGL_RENDERER:
+    if renderer in (WEBGL_RENDERER, OFFICIAL_WEBGL_RENDERER):
         if webgl_visible and not svg_visible:
             status = "rendered"
             canvas = page.locator("#portrait-webgl")
@@ -130,7 +132,7 @@ def browser_canvas_metrics(page: Page, canvas: Any, renderer: str) -> dict[str, 
         ({ selector, renderer }) => {
           const canvas = document.querySelector(selector);
           const result = { width: canvas.width, height: canvas.height, cssWidth: canvas.clientWidth, cssHeight: canvas.clientHeight };
-          if (renderer !== 'sports/morph-webgl-v1') return { ...result, probe: 'screenshot-only' };
+           if (!['sports/morph-webgl-v1', 'sports/morph-webgl-official-v1'].includes(renderer)) return { ...result, probe: 'screenshot-only' };
           const gl = canvas.getContext('webgl2');
           if (!gl) return { ...result, probe: 'webgl2-unavailable' };
           gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -154,7 +156,7 @@ def browser_canvas_metrics(page: Page, canvas: Any, renderer: str) -> dict[str, 
           return { ...result, probe: count > 0 ? 'readPixels' : 'readPixels-empty', clearColor: clear, tolerance, nonBackgroundPixels: count, occupancy: count / (gl.drawingBufferWidth * gl.drawingBufferHeight), boundingBox: maxX < 0 ? null : [minX, minY, maxX, maxY], glError: gl.getError(), diagnostics: canvas.__sportsFaceWebglDiagnostics || null };
         }
         """,
-        {"selector": "#portrait-webgl" if renderer == WEBGL_RENDERER else "#portrait", "renderer": renderer},
+        {"selector": "#portrait-webgl" if renderer in (WEBGL_RENDERER, OFFICIAL_WEBGL_RENDERER) else "#portrait", "renderer": renderer},
     )
 
 
@@ -251,14 +253,14 @@ def capture_renderer(context: Any, url: str, seed: int, renderer: str, output_di
         render_start = time.perf_counter()
         ready = wait_for_visible_canvas(page, renderer, timeout_ms)
         render_ms = round((time.perf_counter() - render_start) * 1000, 2)
-        filename = f"{'svg' if renderer == SVG_RENDERER else 'webgl'}-{profile_id(seed)}.png"
+        filename = f"{'svg' if renderer == SVG_RENDERER else 'webgl-official' if renderer == OFFICIAL_WEBGL_RENDERER else 'webgl'}-{profile_id(seed)}.png"
         if ready["canvas"] is not None:
             ready["canvas"].screenshot(path=str(output_dir / filename), animations="disabled")
             ready["imageMetrics"] = image_metrics(output_dir / filename)
         else:
             filename = None
         asset_url = page.evaluate(
-            "renderer => renderer === 'sports/morph-webgl-v1' ? new URL('tools/gnm/work/head-morph.glb', location.href).href : 'tools/gnm/work/gnm-morphology-pack.js (embedded)'",
+            "renderer => renderer === 'sports/morph-webgl-v1' ? new URL('tools/gnm/work/head-morph.glb', location.href).href : new URL('tools/gnm/work/gnm-official-head.glb', location.href).href",
             renderer,
         )
         capture = {
@@ -282,7 +284,7 @@ def capture_renderer(context: Any, url: str, seed: int, renderer: str, output_di
     except (PlaywrightTimeoutError, RuntimeError) as error:
         return {
             "renderer": renderer,
-            "status": "unavailable" if renderer == WEBGL_RENDERER else "error",
+            "status": "unavailable" if renderer in (WEBGL_RENDERER, OFFICIAL_WEBGL_RENDERER) else "error",
             "attempted": True,
             "file": None,
             "assetUrl": None,
@@ -350,7 +352,7 @@ def main() -> int:
             try:
                 for seed in SEEDS:
                     svg, svg_code = capture_renderer(context, url, seed, SVG_RENDERER, output_dir, args.timeout_ms, "chromium")
-                    webgl, webgl_code = capture_renderer(context, url, seed, WEBGL_RENDERER, output_dir, args.timeout_ms, "chromium", svg_code)
+                    webgl, webgl_code = capture_renderer(context, url, seed, args.renderer, output_dir, args.timeout_ms, "chromium", svg_code)
                     cases.append({
                         "profile": {"id": profile_id(seed), "seed": seed, "age": AGE, "presentation": PRESENTATION, "expressionMode": EXPRESSION_MODE, "kit": KIT, "faceCode": svg_code or webgl_code},
                         "captures": {"svg": svg, "webgl": webgl},
@@ -364,7 +366,7 @@ def main() -> int:
 
     manifest = {
         "schema": SCHEMA,
-        "comparison": {"reference": SVG_RENDERER, "candidate": WEBGL_RENDERER, "claim": "qualitative diagnostic; not pixel equivalence"},
+        "comparison": {"reference": SVG_RENDERER, "candidate": args.renderer, "claim": "qualitative diagnostic; not pixel equivalence"},
         "fixedInputs": {"seeds": list(SEEDS), "age": AGE, "presentation": PRESENTATION, "expressionMode": EXPRESSION_MODE, "kit": KIT},
         "viewport": {**VIEWPORT, "deviceScaleFactor": DEVICE_SCALE_FACTOR},
         "url": url,

@@ -5,15 +5,19 @@ morphology pack may be embedded in the offline bundle and selected explicitly
 as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
 Only the portable JSON pack crosses the browser boundary.
 
-## Official GNM asset intake gate
+## Official GNM 3D asset package
 
-This repository does not include or redistribute an official GNM UV/material or
-anatomy bundle. The intake contract is documentation/tooling only and starts
-with a proposed placeholder manifest:
+The first official package is accepted for the project-owner-authorized public,
+noncommercial MVP scope. It is generated from the exact GNM revision recorded in
+`tools/gnm/work/official-bundle.json`; the external checkout is never copied
+wholesale.
 
 ```bash
 npm run validate:gnm-official-example
 npm run test:gnm-official-bundle
+/home/nico/src/GNM/gnm/shape/.venv/bin/python tools/gnm/import_official_gnm_npz.py
+python3 tools/gnm/validate_official_gnm_asset.py tools/gnm/work/official-bundle.json
+npm run capture:gnm-official-smoke
 ```
 
 For a real external candidate, create a manifest outside release/runtime asset
@@ -23,13 +27,16 @@ paths and validate it with the exact command below:
 python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
 ```
 
-`proposed` manifests may reference missing files. `reviewed` and `accepted`
-manifests must contain the complete mesh, UV, materials/textures, eyes, teeth
-and tongue roles with matching hashes and topology counts. `accepted` also
-requires a human-approved redistribution permission record; a repository
-license is not sufficient. Keep `runtimeAllowed` false until that record is
-explicit and accepted. Do not put UVs, textures, eyes, teeth or tongue into the
-browser/runtime before acceptance. See
+The importer reads only the official NPZ with NumPy offline and emits
+`tools/gnm/work/gnm-official-head.glb`, `gnm-official-head.json`, an accepted
+manifest, and a copied Apache-2.0 license text. The GLB has six component
+primitives and six neutral procedural materials. Triangle UVs are preserved
+exactly by splitting every triangle corner into its own vertex; the importer
+fails closed on ambiguous topology, component membership, or UV correspondence.
+The package retains 253 identity and 383 expression basis directions, but maps
+neither to FaceDNA nor application expression modes because the source names do
+not safely establish those semantics. Identity-only invariance remains explicit.
+No complete official material texture bundle is included. See
 [`docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md`](../../docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md).
 
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
