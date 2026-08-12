@@ -134,6 +134,19 @@ semánticos oficiales de GNM. El resultado actual conserva `95.2596%` de la
 varianza, deja `4.7404%` residual, tiene RMSE residual `0.0172562` y error
 absoluto máximo `0.147963` en las unidades de la malla.
 
+##### Contrato de identidad permanente para WebGL2
+
+La integración opt-in `sports/morph-webgl-v1` proyecta sus 16 pesos PCA usando
+únicamente los valores permanentes `head`, `skin`, `eyes`, `brows`, `nose`,
+`mouth`, `freckles`, `eyeColor`, `earShape`, `jaw` y `faceProportion` de
+`getFaceValues(profile)`. El hash de decorrelación, cuando se usa, deriva solo
+de `identityBits`. Por tanto, cambiar pelo, barba, color o visibilidad del pelo,
+gafas, cicatriz, edad, presentación, equipación o expresión no cambia la
+geometría WebGL; cambiar `seed` solo puede hacerlo cuando `createProfile` deriva
+una identidad distinta. Este contrato no convierte los componentes PCA en
+controles anatómicos semánticos: siguen siendo direcciones neutrales derivadas
+de geometría.
+
 #### Flujo operativo reproducible
 
 GNM Shape se instala aparte, en el entorno Python 3.13 recomendado por su

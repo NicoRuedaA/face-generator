@@ -4,6 +4,7 @@ import {
   ageProfile,
   createProfile,
   formatFaceCode,
+  getFaceValues,
   hashSeed,
   setFeature,
   setKit,
@@ -218,9 +219,42 @@ assert.equal(isRenderStyle(GNM_MORPH_RENDER_STYLE), true);
 assert.equal(describeRender(gnmProfile, GNM_MORPH_RENDER_STYLE, { gnmAdapter }).renderer, GNM_MORPH_RENDER_STYLE);
 assert.equal(isRenderStyle(WEBGL_MORPH_RENDER_STYLE), true);
 assert.equal(describeRender(gnmProfile, WEBGL_MORPH_RENDER_STYLE).renderer, WEBGL_MORPH_RENDER_STYLE);
-assert.equal(mapWebglWeights(gnmProfile).length, 16);
-assert.ok(mapWebglWeights(gnmProfile).every((value) => value >= -WEBGL_MORPH_WEIGHT_LIMIT && value <= WEBGL_MORPH_WEIGHT_LIMIT));
-assert.equal(describeWebglMapping(gnmProfile).targetSemantics, "neutral PCA components; not anatomical controls");
+const webglWeights = mapWebglWeights(gnmProfile);
+assert.equal(webglWeights.length, 16);
+assert.ok(webglWeights.every((value) => value >= -WEBGL_MORPH_WEIGHT_LIMIT && value <= WEBGL_MORPH_WEIGHT_LIMIT));
+assert.deepEqual(mapWebglWeights(gnmProfile), webglWeights, "WebGL weights must be deterministic");
+const webglDescription = describeWebglMapping(gnmProfile);
+assert.equal(webglDescription.targetSemantics, "neutral PCA components; not anatomical controls");
+assert.equal(webglDescription.gnmRuntimeDependency, false);
+assert.equal(webglDescription.mapping.identityOnly, true);
+assert.deepEqual(webglDescription.mapping.inputs, [
+  "head", "skin", "eyes", "brows", "nose", "mouth", "freckles", "eyeColor", "earShape", "jaw", "faceProportion",
+]);
+
+// WebGL geometry is a permanent-identity projection. Mutable profile state and
+// render options must not alter its PCA weights.
+const webglStable = createProfile({ seed: hashSeed("webgl-identity-contract"), age: 19, presentation: "neutral" });
+const webglStableWeights = mapWebglWeights(webglStable);
+const appearanceRanges = { hair: 12, beard: 6, hairColor: 8, hairVisible: 2, glasses: 2, scar: 2 };
+const stableValues = getFaceValues(webglStable);
+for (const [feature, range] of Object.entries(appearanceRanges)) {
+  const changed = setFeature(webglStable, feature, (stableValues[feature] + 1) % range);
+  assert.notEqual(getFaceValues(changed)[feature], stableValues[feature], `${feature} test did not change appearance`);
+  assert.deepEqual(mapWebglWeights(changed), webglStableWeights, `${feature} changed WebGL geometry`);
+}
+assert.deepEqual(mapWebglWeights(ageProfile(webglStable, 31)), webglStableWeights, "age changed WebGL geometry");
+assert.deepEqual(mapWebglWeights(setPresentation(webglStable, "feminine")), webglStableWeights, "presentation changed WebGL geometry");
+assert.deepEqual(mapWebglWeights(setKit(webglStable, "#ff0000", "#00ff00")), webglStableWeights, "kit changed WebGL geometry");
+for (const mode of EXPRESSION_MODES) {
+  assert.deepEqual(
+    describeWebglMapping(webglStable, { expressionMode: mode }).weights,
+    webglStableWeights,
+    `${mode} changed WebGL geometry`,
+  );
+}
+const sameIdentityDifferentSeed = { ...webglStable, seed: (webglStable.seed + 1) >>> 0 };
+assert.equal(sameIdentityDifferentSeed.identityBits, webglStable.identityBits);
+assert.deepEqual(mapWebglWeights(sameIdentityDifferentSeed), webglStableWeights, "seed changed weights with identical identityBits");
 assert.deepEqual(expandWebglBounds({ min: [-1, 0, -2], max: [1, 2, 2] }, [0.1, 0.2, 0.3]), {
   min: [-1.1, -0.2, -2.3],
   max: [1.1, 2.2, 2.3],

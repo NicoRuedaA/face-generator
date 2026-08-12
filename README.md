@@ -70,9 +70,14 @@ python tools/gnm/validate_gnm_glb.py tools/gnm/work/head-morph.glb
 
 La integración GLB usa `template + meanDelta` como base y añade 16 deltas PCA en
 orden estable. Los nombres son neutrales y los pesos del renderer son una
-proyección bounded determinista de FaceDNA/SF2; no son controles anatómicos ni
-componentes PCA semánticos. WebGL2 es un prototipo opt-in, GNM no entra en
-runtime y SVG sigue siendo el camino predeterminado.
+proyección bounded determinista de las variables de identidad permanente
+`head`, `skin`, `eyes`, `brows`, `nose`, `mouth`, `freckles`, `eyeColor`,
+`earShape`, `jaw` y `faceProportion`. Esta fase hace cumplir el contrato de que
+la geometría WebGL depende solo de identidad: apariencia, edad, presentación,
+equipación, expresión y semilla no alteran los pesos cuando `identityBits` es
+el mismo. No son controles anatómicos ni componentes PCA semánticos. WebGL2 es
+un prototipo opt-in, GNM no entra en runtime y SVG sigue siendo el camino
+predeterminado.
 
 ### Comparativa visual A/B SVG/WebGL2
 

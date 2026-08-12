@@ -20,15 +20,18 @@ function clampWebglWeight(value) {
 
 export function mapWebglWeights(profile) {
   const values = getFaceValues(profile);
-  const identity = [values.head, values.jaw, values.faceProportion, values.eyes, values.brows, values.nose, values.mouth, values.earShape];
-  const appearance = [values.hair, values.beard, values.hairColor, values.glasses, values.scar];
-  const seed = hashSeed(`${profile.seed}:${profile.identityBits >>> 0}:${profile.appearanceBits >>> 0}`);
+  const identity = [
+    values.head, values.skin, values.eyes, values.brows, values.nose, values.mouth,
+    values.freckles, values.eyeColor, values.earShape, values.jaw, values.faceProportion,
+  ];
+  // PCA decorrelation is derived from permanent identityBits only. It must not
+  // make mutable presentation, appearance, age, kit, or expression affect geometry.
+  const identityHash = hashSeed(`identity:${profile.identityBits >>> 0}`);
   const weights = [];
   for (let index = 0; index < TARGET_COUNT; index += 1) {
     const identityValue = identity[index % identity.length] / 5;
-    const appearanceValue = appearance[index % appearance.length] / 11;
-    const phase = ((seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0) / 0x100000000;
-    const raw = (identityValue - 0.5) * 0.42 + (appearanceValue - 0.35) * 0.12 + (phase - 0.5) * 0.18;
+    const phase = ((identityHash ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0) / 0x100000000;
+    const raw = (identityValue - 0.5) * 0.42 + (phase - 0.5) * 0.18;
     weights.push(clampWebglWeight(raw));
   }
   return weights;
@@ -44,9 +47,10 @@ export function describeWebglMapping(profile) {
     targetCount: TARGET_COUNT,
     weights: mapWebglWeights(profile),
     mapping: {
-      inputs: ["FaceDNA identityBits", "FaceDNA appearanceBits", "seed"],
-      method: "bounded deterministic hash plus normalized FaceDNA slots; each component is clamped to [-0.75, 0.75]",
-      note: "PCA component directions and neutral IDs are geometry-derived and are not interpreted as semantic facial controls.",
+      identityOnly: true,
+      inputs: ["head", "skin", "eyes", "brows", "nose", "mouth", "freckles", "eyeColor", "earShape", "jaw", "faceProportion"],
+      method: "identityBits-only deterministic hash plus normalized permanent FaceDNA identity slots; each component is clamped to [-0.75, 0.75]",
+      note: "Age, appearance, presentation, kit, expression options, and seed do not affect geometry weights; PCA component directions and neutral IDs are geometry-derived and are not interpreted as semantic facial controls.",
     },
   };
 }

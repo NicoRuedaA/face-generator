@@ -36,6 +36,12 @@
   redistribución, hashes, completitud geométrica y estados `proposed` ->
   `reviewed` -> `accepted`. Esta fase no acepta ni redistribuye assets oficiales
   ni cambia el runtime.
+- Corrige el contrato de `sports/morph-webgl-v1`: sus 16 pesos PCA dependen solo
+  de la identidad permanente (`getFaceValues` de identidad y, para
+  decorrelación, `identityBits`). Cambios de apariencia, edad, presentación,
+  equipación, expresión o semilla con los mismos bits de identidad no alteran la
+  geometría. Los componentes PCA continúan siendo direcciones derivadas de
+  geometría, no controles anatómicos semánticos.
 
 ## 0.4.0 — Morph Lab
 

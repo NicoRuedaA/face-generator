@@ -3,7 +3,10 @@
 Esta aceptación aporta evidencia visual bounded y reproducible para el commit
 actual de WebGL2. El mismo conjunto fijo de perfiles FaceDNA se captura dos veces:
 `sports/morph-gnm-v1` como referencia SVG y `sports/morph-webgl-v1` como candidato
-WebGL2 opt-in geometry-only.
+WebGL2 opt-in geometry-only. La fase también hace cumplir el contrato permanente:
+los pesos de geometría dependen solo de `identityBits` y de sus valores de
+identidad, no de apariencia, edad, presentación, equipación, expresión ni de
+`seed` cuando los bits de identidad son iguales.
 
 ## Camino rápido
 
@@ -90,4 +93,6 @@ geometry-only, sin UVs, texturas, ojos, dientes, lengua ni animación. Los IDs
 PCA `gnm-pca-01` ... `gnm-pca-16` son neutrales y no controles semánticos.
 
 La captura no forma parte de `npm test`, porque requiere Chromium y Playwright.
-La validación sí es independiente y usa solo Python stdlib.
+La validación sí es independiente y usa solo Python stdlib. Los 16 targets PCA
+siguen siendo direcciones neutrales derivadas de geometría, no controles
+anatómicos semánticos.

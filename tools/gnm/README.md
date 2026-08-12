@@ -155,9 +155,13 @@ The exporter validates adjacent metadata and `.bin` hash, exact byte ranges,
 finite float32 payloads, vertex count, target ranges, and neutral target order.
 The GLB base is `template + meanDelta`; target buffers are additive deltas. The
 runtime style `sports/morph-webgl-v1` uses one position attribute and a 16-layer
-`RGBA32F` texture rather than requiring 17 vertex attributes. It maps FaceDNA/SF2
-deterministically to bounded neutral PCA weights, without calling PCA components
-anatomical or semantic controls. Missing WebGL2 or asset/resource errors fall
+`RGBA32F` texture rather than requiring 17 vertex attributes. It maps only the
+permanent identity values `head`, `skin`, `eyes`, `brows`, `nose`, `mouth`,
+`freckles`, `eyeColor`, `earShape`, `jaw`, and `faceProportion` to bounded neutral
+PCA weights. Its decorrelation hash is derived from `identityBits` only, so
+appearance, age, presentation, kit, expression, and seed changes with identical
+identity bits cannot change geometry. PCA components remain geometry-derived and
+are not anatomical or semantic controls. Missing WebGL2 or asset/resource errors fall
 back to the existing GNM SVG renderer. The GLB is geometry-derived, GNM itself is
 not runtime data, and this remains a prototype with the existing provenance and
 licensing caveats.
