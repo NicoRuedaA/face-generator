@@ -1,5 +1,6 @@
 ## Unreleased — Operativa GNM
 
+- Añade un workflow que ejecuta `npm test` antes de publicar el sitio estático mínimo en GitHub Pages.
 - Añade `tools/gnm/build_runtime_pack.py`, un orquestador determinista para
   generar y validar candidatos GNM de 200 cabezas sin reemplazar el paquete de
   runtime salvo mediante `--promote` explícito.

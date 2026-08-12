@@ -7,9 +7,11 @@ const manifestPath = path.join(root, "docs", "release-manifest-v040.json");
 const operationalFiles = [
   "tools/gnm/build_runtime_pack.py",
   "tools/gnm/test_build_runtime_pack.py",
+  "tools/gnm/test_gnm_quality.py",
   "tools/gnm/README.md",
   "README.md",
   "docs/PHASE3_MORPHOLOGY_GNM.md",
+  "docs/ACCEPTANCE_GNM_QUALITY.md",
   "docs/ACCEPTANCE_V040.md",
   "CHANGELOG.md",
   "package.json",

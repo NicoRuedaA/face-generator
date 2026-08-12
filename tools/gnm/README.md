@@ -42,12 +42,19 @@ npm run build:offline
 npm test
 npm run refresh:release
 python3 -m json.tool docs/release-manifest-v040.json >/dev/null
+npm run test:gnm-quality
 ```
 
 `npm run build:offline` is the only step that embeds the portable JSON into
 `src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.
 `npm run refresh:release` updates SHA-256 entries for the release's operational
 files. Neither command installs or imports GNM in the browser/runtime.
+
+The standard-library-only canonical quality gate is also available directly:
+
+```bash
+npm run test:gnm-quality
+```
 
 Use `--dry-run` to inspect the four planned subprocess commands without GNM,
 NumPy, or file changes:
@@ -141,10 +148,14 @@ commands remain useful for diagnosis.
 
 `starter-landmark-samples.json` and the runtime family definitions are analytic
 fixtures. They exercise the complete data contract but are not claimed as GNM
-derivatives. `work/gnm-morphology-pack.json` is the generated portable pack
-embedded by `npm run build:offline`; the same command also writes
-`work/gnm-morphology-pack.js` for the modular browser entry. Both are consumed
-only by the explicit GNM renderer. Its current landmark map is provisional.
+derivatives. The canonical generated artifacts are the 200-sample
+`work/gnm-landmarks.json` projection from `gnm-heads-200.npz` and its matching
+`work/gnm-morphology-pack.json`. The retained `work/gnm-landmarks-200.json` and
+`work/gnm-morphology-pack-200.json` files preserve the reviewed candidate
+provenance; the two pack files are byte-identical. `work/gnm-morphology-pack.js`
+is the modular browser copy written by `npm run build:offline`; the pack is
+embedded in `src/app.bundle.js` as well. These artifacts are consumed only by
+the explicit GNM renderer. Its current landmark map is provisional.
 Family selection uses the reviewed `face-dna-shape-v1` FaceDNA rule table in
 `src/morphology.js`; it is explicit and semantic, not learned from the pack or
 derived from the profile seed. The analytic `sports/morph-v1` renderer and

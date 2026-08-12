@@ -22,6 +22,10 @@ python3 -m http.server 8080
 
 Abre [http://localhost:8080/index.module.html](http://localhost:8080/index.module.html). Esta entrada carga `src/app.js` y el pack portable GNM generado para la entrada modular. En Windows también está disponible `iniciar-servidor.bat`.
 
+### Publicación en GitHub Pages
+
+El workflow de GitHub Pages ejecuta `npm test` antes de preparar y publicar el sitio estático en cada push a `main` o mediante ejecución manual. Después de que termine el workflow, la URL pública estará disponible en [GitHub Pages](https://nicoruedaa.github.io/sports-face-mvp/); no se considera publicada hasta completar esa ejecución.
+
 ## Renderizadores
 
 El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2. La opción GNM es explícita: selecciona `Sports Morph Lab GNM v1` (`sports/morph-gnm-v1`) cuando quieras probar el pack portable.
@@ -71,6 +75,7 @@ python tools/gnm/build_runtime_pack.py \
   --count 200 --seed 400 --sigma 1.15 --families 8 --promote
 npm run build:offline
 npm test
+npm run test:gnm-quality
 npm run refresh:release
 python3 -m json.tool docs/release-manifest-v040.json >/dev/null
 ```
@@ -132,6 +137,10 @@ sha256sum -c SHA256SUMS.txt
 ```bash
 python tools/gnm/build_runtime_pack.py --dry-run
 ```
+
+La puerta de calidad determinista del pack canónico se puede ejecutar de forma
+independiente con `npm run test:gnm-quality`. Solo usa la biblioteca estándar de
+Python; el chequeo de límites de malla se omite claramente si falta el `.npz`.
 
 ## Licencia, atribución y clean room
 

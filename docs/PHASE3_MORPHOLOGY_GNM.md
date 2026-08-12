@@ -106,6 +106,7 @@ python tools/gnm/build_runtime_pack.py \
   --count 200 --seed 400 --sigma 1.15 --families 8 --promote
 npm run build:offline
 npm test
+npm run test:gnm-quality
 npm run refresh:release
 python3 -m json.tool docs/release-manifest-v040.json >/dev/null
 ```
@@ -114,6 +115,14 @@ La promoción es explícita y el orquestador imprime estos comandos de
 seguimiento. `npm run build:offline` incrusta únicamente el JSON portable en el
 bundle; `npm run refresh:release` actualiza los hashes operativos del manifiesto.
 El pack es el único dato de GNM que recibe el navegador.
+
+La aceptación determinista del pack canónico también puede ejecutarse directamente:
+
+```bash
+npm run test:gnm-quality
+```
+
+La puerta está descrita en [`docs/ACCEPTANCE_GNM_QUALITY.md`](ACCEPTANCE_GNM_QUALITY.md).
 
 El paquete portable de `sports/morph-gnm-v1` contiene ocho familias y un contrato
 de 14 features positivos y finitos:

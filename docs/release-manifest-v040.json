@@ -79,12 +79,14 @@
   "operationalFiles": {
     "tools/gnm/build_runtime_pack.py": "c6c0fae8b5205a71ad712753c6827a1cc8552e66379e6c2b06c6937f3200a17c",
     "tools/gnm/test_build_runtime_pack.py": "bdc253bfe07ef8f56fbd23b74661eb03c0b47d322136cb252e709fd5df9d53ac",
-    "tools/gnm/README.md": "3936b1d05df62fafa661e5bedc6fa3e1d30e595358c74683b61fcd6638e781bf",
-    "README.md": "2f15d323f6b71e5d00664d9d0ce083f809b5cfeb0462b23c893d033bf6c69644",
-    "docs/PHASE3_MORPHOLOGY_GNM.md": "c112a8e05420ac0c4e6735b7e3184705d932f8b6e35dacdebb1c0285dfdb8622",
+    "tools/gnm/test_gnm_quality.py": "3684b109b04ef5fbfb313a0d691b59a8d00d06f3c99783c3d44fbb21adf48ea8",
+    "tools/gnm/README.md": "e73f76a77c0004aee9a1ceb1c67cf992a5590cb65f4040e7ba1a14ea43098ae4",
+    "README.md": "2f89eefd3d8beb33821b67050bdb29bc7ae5117374f1694c576ac19cd232b2b0",
+    "docs/PHASE3_MORPHOLOGY_GNM.md": "e98925aebc4b0214cafc54265828add27b8b5d62fe555f5582498843fa274c49",
+    "docs/ACCEPTANCE_GNM_QUALITY.md": "5c3fe99b064a835b86da16c9cf89fe9df1673c975122af3b4c84269edf78ec9c",
     "docs/ACCEPTANCE_V040.md": "925a89f22614b913dabe5555cae3431fdb1e7407a43cb9f342f1690afb3658e2",
-    "CHANGELOG.md": "d34db7d7474aae23540d912615913a81f03e118db730339ba56a8b1de121106c",
-    "package.json": "90c553de66140622f9642479f3b73746c91c0d395dd8ede99c647ae2963c1cdd",
-    "scripts/refresh-release-manifest.mjs": "42c621448cf5c225dc987d29eebed37b04782ccdec1ffe1a612588c75192cbf8"
+    "CHANGELOG.md": "29692761967c40565857432126564961cf941737cbc527f27d20c9df69274dbd",
+    "package.json": "16215c22dee75f59d4c9321ec6674ff1c9f63bba1a950e064d54bbaac7af14c8",
+    "scripts/refresh-release-manifest.mjs": "8edd7f3e8dc0c95050a3c1ffe66cb5b8e6cb11dc8b2993ec4643af3c94c8b82a"
   }
 }

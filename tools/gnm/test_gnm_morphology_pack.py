@@ -16,6 +16,7 @@ from validate_morphology_pack import validate_document
 ROOT = Path(__file__).resolve().parents[2]
 LANDMARKS = ROOT / "tools" / "gnm" / "work" / "gnm-landmarks.json"
 PACK = ROOT / "tools" / "gnm" / "work" / "gnm-morphology-pack.json"
+EXPECTED_CANONICAL_SAMPLE_COUNT = 200
 
 
 class GnmMorphologyPackTest(unittest.TestCase):
@@ -26,12 +27,25 @@ class GnmMorphologyPackTest(unittest.TestCase):
 
     def test_all_fourteen_projected_features_are_positive_finite_and_variable(self) -> None:
         rows = [vector(sample) for sample in self.landmarks["samples"]]
-        self.assertEqual(len(rows), 20)
+        self.assertEqual(len(rows), EXPECTED_CANONICAL_SAMPLE_COUNT)
         self.assertEqual(self.pack["clustering"]["features"], list(FEATURE_KEYS))
         for key in FEATURE_KEYS:
             values = [row[key] for row in rows]
             self.assertTrue(all(math.isfinite(value) and value > 0 for value in values), key)
             self.assertGreater(max(values) - min(values), 1e-9, key)
+
+    def test_canonical_landmarks_and_pack_share_provenance_and_members(self) -> None:
+        landmark_source = self.landmarks["source"]
+        pack_source = self.pack["source"]
+        self.assertEqual(landmark_source["meshFile"], pack_source["meshFile"])
+
+        sample_ids = [sample["id"] for sample in self.landmarks["samples"]]
+        member_ids = [member for family in self.pack["families"] for member in family["members"]]
+        self.assertEqual(len(sample_ids), EXPECTED_CANONICAL_SAMPLE_COUNT)
+        self.assertEqual(len(member_ids), EXPECTED_CANONICAL_SAMPLE_COUNT)
+        self.assertEqual(len(set(member_ids)), EXPECTED_CANONICAL_SAMPLE_COUNT)
+        self.assertEqual(sum(family["memberCount"] for family in self.pack["families"]), len(sample_ids))
+        self.assertEqual(set(member_ids), set(sample_ids))
 
     def test_pack_centroids_contain_the_same_fourteen_positive_features(self) -> None:
         for family in self.pack["families"]:
