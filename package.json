@@ -21,6 +21,8 @@
     "test:gnm-glb-morph": "python ./tools/gnm/test_gnm_glb.py",
     "build:gnm-morph-targets": "python ./tools/gnm/build_gnm_morph_targets.py",
     "test:gnm-morph-targets": "python ./tools/gnm/test_gnm_morph_targets.py",
+    "capture:gnm-webgl-ab": "python3 /home/nico/.agents/skills/webapp-testing/scripts/with_server.py --server \"python3 -m http.server 8080\" --port 8080 -- python3 tools/gnm/capture_webgl_ab.py --output-dir docs/gnm-webgl-ab",
+    "validate:gnm-webgl-ab": "python3 tools/gnm/validate_webgl_ab.py docs/gnm-webgl-ab/comparison.json",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"
   },
   "license": "GPL-2.0-only",

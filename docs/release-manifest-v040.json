@@ -80,7 +80,9 @@
     "docs/morphology-families-v040.png",
     "docs/comparison-v031-v040.png",
     "docs/acceptance-gallery-v040.png",
-    "docs/app-v040-morph-lab.png"
+    "docs/app-v040-morph-lab.png",
+    "docs/gnm-webgl-ab/comparison.html",
+    "docs/gnm-webgl-ab/comparison.json"
   ],
   "keyHashes": {
     "src/morphology.js": "af7e03a7337b6d117a99d0fcdf8be9b1bfb3768e2be283b0a18d4628e8254e8f",
@@ -116,6 +118,8 @@
     "tools/gnm/build_gnm_morph_targets.py": "98648258fa5b676e3489f769f7c74b3d5353561eb991400331aaee0bc956dd5b",
     "tools/gnm/validate_gnm_morph_targets.py": "396da2dd7181bace1ddcfe0c4bf33469bf5370dab8226bec81fb9796b8029d92",
     "tools/gnm/test_gnm_morph_targets.py": "6bef36187b809fef9d15b5fe15927a960900d8e260d7a1a7359f80009f3cc174",
+    "tools/gnm/capture_webgl_ab.py": "900d7e0dd08ebbe06275fa291abb72233ff4f659eca68cd41752c7825c79ca14",
+    "tools/gnm/validate_webgl_ab.py": "7b3ab957676e24096474f2d7fb57628a86c9128839bca251e9e7802f085c0835",
     "src/webgl-renderer.js": "a9692c60236812f526536d46d4d9017a91286f570be5a673dc2275f865115736",
     "src/render-router.js": "4f90b67ad71578f902158adcc9ae2aa72adb345e2761f9910065ab783309a2b0",
     "src/app.js": "af94691e0662093efe3c6aa7c892f44e9671f444ba7553883cc42e8384becf64",
@@ -125,16 +129,17 @@
     "index.module.html": "e4d1d43190119050d42e7c23d35258b4ecc4c835f1fe9cd7d0c3d47283d95b9e",
     "styles.css": "cefb41f59744bc6383966c110a450ea345ce144b86aa97d923f1aaa668140368",
     "tools/gnm/work/head-morph.glb": "bed55bac58b21bf4168e66d1806ac6f3a14684eb841d5df1b6cb6a2bc554d79b",
-    "tools/gnm/README.md": "5d5aa90edbec11aa55dffcf9a1130377a3435152ab3f18bb8d090d3353e24030",
-    "README.md": "ec4360574b0f0aee536372e72654ebd3b3aaaf842af998c9846baef389e20bbc",
-    "docs/PHASE3_MORPHOLOGY_GNM.md": "38cd2c74b6579ea0323ce1c2223e72229f0a6d58f2a49290c7163b74498697ae",
+    "tools/gnm/README.md": "01171259907b232ade587490d47d17c533e6b24d0cc288908f47ea5918b21ceb",
+    "README.md": "5629b69b97c791c4a6cd334c9528c63dadcae436f213e6e3c955f4980c3b0565",
+    "docs/PHASE3_MORPHOLOGY_GNM.md": "6bbfce6c3332ac5dbfa0aecdad6f7e1987cb595ed14d8df969595721d74a633f",
     "docs/ACCEPTANCE_GNM_QUALITY.md": "5c3fe99b064a835b86da16c9cf89fe9df1673c975122af3b4c84269edf78ec9c",
     "docs/ACCEPTANCE_GNM_LANDMARKS.md": "c13db84122542eb0a4bb1e0165570e8921eb9ea906bc7683bc0a43eabc8a7c5b",
     "docs/ACCEPTANCE_GNM_GALLERY.md": "0104fda7b86f5591307690eee1ce20de8efbad0fa541a6cc1ea735c1338b8073",
     "docs/ACCEPTANCE_GNM_GLB.md": "2f3bb691d2b626a55635fd1d7d8741477c50a61cef4b721ebfb646e6e02a309a",
+    "docs/ACCEPTANCE_GNM_WEBGL_AB.md": "d2ffdba0d4e982007ba828765c83c034d2536ef8b76131ef25c56e98e1bac6c3",
     "docs/ACCEPTANCE_V040.md": "925a89f22614b913dabe5555cae3431fdb1e7407a43cb9f342f1690afb3658e2",
-    "CHANGELOG.md": "1cb1981cecfbbed71b36ccb9f9a323102f4f1c2f5b6614ed89e5029006187e1f",
-    "package.json": "573955e9fe071708ddb860367087f0c0d604cfbf71c71a049640d3bd9f5d472e",
-    "scripts/refresh-release-manifest.mjs": "aab588f039cc15516c5146d7cfcc1e58ee08d7342a95d8cb2ed1693d33dbac45"
+    "CHANGELOG.md": "fb90f18352b1200194e503eb2cfed5ec413cb06827475cf860f111a87e6dfcc3",
+    "package.json": "871f9fceb8aa7f35d69a3c5bab51d79f89a672c6af7cda42467aa2d64207a059",
+    "scripts/refresh-release-manifest.mjs": "4194c43d341a450fa3808fd28bb0ce9e0f5745685d333165a056cddf8b556da9"
   }
 }

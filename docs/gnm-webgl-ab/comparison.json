@@ -1,0 +1,639 @@
+{
+  "schema": "sports-face-gnm-webgl-ab/v1",
+  "comparison": {
+    "reference": "sports/morph-gnm-v1",
+    "candidate": "sports/morph-webgl-v1",
+    "claim": "qualitative diagnostic; not pixel equivalence"
+  },
+  "fixedInputs": {
+    "seeds": [
+      0,
+      1,
+      42,
+      12345,
+      424242,
+      8675309,
+      2147483647,
+      4294967295
+    ],
+    "age": 22,
+    "presentation": "neutral",
+    "expressionMode": "neutral",
+    "kit": {
+      "primary": "#b91c1c",
+      "secondary": "#f8fafc"
+    }
+  },
+  "viewport": {
+    "width": 1024,
+    "height": 1024,
+    "deviceScaleFactor": 1
+  },
+  "url": "http://127.0.0.1:8080/index.module.html",
+  "cases": [
+    {
+      "profile": {
+        "id": "seed-0000000000",
+        "seed": 0,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0000000000.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 532.39,
+            "render": 104.37
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0000000000.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 546.43,
+            "render": 105.17
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-0000000001",
+        "seed": 1,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~59hsd4~0~efwnq4~m~n~b91c1c~f8fafc~1b5us7u"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0000000001.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 611.89,
+            "render": 104.44
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~59hsd4~0~efwnq4~m~n~b91c1c~f8fafc~1b5us7u"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0000000001.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 548.41,
+            "render": 105.32
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~59hsd4~0~efwnq4~m~n~b91c1c~f8fafc~1b5us7u"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-0000000042",
+        "seed": 42,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~4wt3ze~4ck~11pcryb~m~n~b91c1c~f8fafc~0flpa3f"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0000000042.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 617.65,
+            "render": 103.64
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~4wt3ze~4ck~11pcryb~m~n~b91c1c~f8fafc~0flpa3f"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0000000042.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 546.6,
+            "render": 104.75
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~4wt3ze~4ck~11pcryb~m~n~b91c1c~f8fafc~0flpa3f"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-0000012345",
+        "seed": 12345,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~28a1wj~1jm~isucwo~m~n~b91c1c~f8fafc~0cwt8xr"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0000012345.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 611.18,
+            "render": 104.72
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~28a1wj~1jm~isucwo~m~n~b91c1c~f8fafc~0cwt8xr"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0000012345.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 540.56,
+            "render": 102.88
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~28a1wj~1jm~isucwo~m~n~b91c1c~f8fafc~0cwt8xr"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-0000424242",
+        "seed": 424242,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~4xy6ya~1hn~1m4lvab~m~n~b91c1c~f8fafc~0hey2wf"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0000424242.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 610.83,
+            "render": 104.63
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~4xy6ya~1hn~1m4lvab~m~n~b91c1c~f8fafc~0hey2wf"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0000424242.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 549.67,
+            "render": 104.64
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~4xy6ya~1hn~1m4lvab~m~n~b91c1c~f8fafc~0hey2wf"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-0008675309",
+        "seed": 8675309,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~19xd2s~2v5~qtlk3n~m~n~b91c1c~f8fafc~04bq04b"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-0008675309.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 601.09,
+            "render": 103.55
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~19xd2s~2v5~qtlk3n~m~n~b91c1c~f8fafc~04bq04b"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-0008675309.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 542.83,
+            "render": 104.08
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~19xd2s~2v5~qtlk3n~m~n~b91c1c~f8fafc~04bq04b"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-2147483647",
+        "seed": 2147483647,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~17qyas~135~8a1p61~m~n~b91c1c~f8fafc~0no35ns"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-2147483647.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 608.02,
+            "render": 103.56
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~17qyas~135~8a1p61~m~n~b91c1c~f8fafc~0no35ns"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-2147483647.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 541.57,
+            "render": 103.77
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~17qyas~135~8a1p61~m~n~b91c1c~f8fafc~0no35ns"
+        }
+      }
+    },
+    {
+      "profile": {
+        "id": "seed-4294967295",
+        "seed": 4294967295,
+        "age": 22,
+        "presentation": "neutral",
+        "expressionMode": "neutral",
+        "kit": {
+          "primary": "#b91c1c",
+          "secondary": "#f8fafc"
+        },
+        "faceCode": "SF2~sports/default-v2~1nnt6x~1a9~1aacy02~m~n~b91c1c~f8fafc~0fiva41"
+      },
+      "captures": {
+        "svg": {
+          "renderer": "sports/morph-gnm-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "svg-seed-4294967295.png",
+          "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
+          "timingMs": {
+            "navigation": 617.22,
+            "render": 104.29
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~1nnt6x~1a9~1aacy02~m~n~b91c1c~f8fafc~0fiva41"
+        },
+        "webgl": {
+          "renderer": "sports/morph-webgl-v1",
+          "status": "rendered",
+          "attempted": true,
+          "file": "webgl-seed-4294967295.png",
+          "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
+          "timingMs": {
+            "navigation": 547.59,
+            "render": 103.34
+          },
+          "fallback": {
+            "used": false,
+            "reason": null
+          },
+          "viewport": {
+            "width": 1024,
+            "height": 1024,
+            "deviceScaleFactor": 1
+          },
+          "browser": {
+            "name": "chromium",
+            "version": "150.0.7871.128",
+            "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/150.0.0.0 Safari/537.36"
+          },
+          "consoleErrors": [],
+          "pageErrors": [],
+          "requestFailures": [],
+          "faceCode": "SF2~sports/default-v2~1nnt6x~1a9~1aacy02~m~n~b91c1c~f8fafc~0fiva41"
+        }
+      }
+    }
+  ],
+  "statusDistribution": {
+    "svg": {
+      "rendered": 8,
+      "error": 0,
+      "unavailable": 0
+    },
+    "webgl": {
+      "rendered": 8,
+      "fallback": 0,
+      "unavailable": 0
+    }
+  }
+}

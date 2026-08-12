@@ -267,3 +267,27 @@ renderer usa WebGL2 sin dependencias, empaqueta los deltas en una textura de 16
 capas y cae al SVG GNM si falta WebGL2, el asset es inválido o falla un recurso.
 SVG continúa siendo el default, GNM no entra en runtime y se mantienen las
 cautelas de licencia y procedencia.
+
+## Comparativa A/B SVG/WebGL2
+
+La evidencia canónica de esta slice está en [`gnm-webgl-ab/`](gnm-webgl-ab/)
+y compara exactamente los mismos ocho perfiles FaceDNA, con semillas fijas, edad
+22, presentación neutral y microexpresión neutral. `sports/morph-gnm-v1` es el
+lado de referencia y aceptación; `sports/morph-webgl-v1` es un renderer WebGL2
+opt-in y geometry-only.
+
+```bash
+npm run capture:gnm-webgl-ab
+npm run validate:gnm-webgl-ab
+```
+
+La comparación es cualitativa y diagnóstica, no una afirmación de identidad de
+píxeles: WebGL usa otra proyección y otro sombreado. Si el navegador no ofrece
+WebGL2, el resultado queda acotado como `fallback` o `unavailable`; nunca se
+fabrica un `PASS`. El reporte guarda viewport, navegador, asset URL, tiempos,
+fallback y errores de consola por captura.
+
+Siguen fuera de alcance UVs, texturas, ojos, dientes, lengua y animación. Los IDs
+PCA neutrales no son controles semánticos. La captura requiere Playwright y
+Chromium local; la validación de un `comparison.json` existente solo usa la
+biblioteca estándar de Python.

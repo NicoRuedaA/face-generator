@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>GNM SVG/WebGL2 visual A/B comparison</title>
+<style>
+body{font:16px system-ui,sans-serif;background:#111827;color:#f3f4f6;margin:2rem}
+table{border-collapse:collapse;width:100%;max-width:1800px}
+th,td{border:1px solid #374151;padding:.75rem;vertical-align:top;text-align:left}
+th{background:#1f2937}
+td{width:38%}
+img{display:block;width:100%;max-width:384px;background:#0f172a}
+small{display:block;color:#cbd5e1;margin-top:.35rem}
+code{overflow-wrap:anywhere}
+.notice{background:#1f2937;padding:1rem;margin-bottom:1rem;max-width:1100px}
+</style>
+<h1>GNM SVG/WebGL2 visual A/B comparison</h1>
+<div class="notice"><strong>Bounded diagnostic evidence.</strong> The same fixed FaceDNA profiles are shown with SVG GNM as the reference and WebGL2 geometry-only as the opt-in candidate. Different shading and projection mean this is qualitative evidence, not pixel equivalence. WebGL2 absence is reported as fallback or unavailable, never as a fabricated pass.</div>
+<table><thead><tr><th>Profile</th><th>SVG reference</th><th>WebGL2 attempt</th><th>Shared profile / fallback</th></tr></thead><tbody><tr><th scope="row">seed-0000000000</th><td><img src="svg-seed-0000000000.png" alt="SVG seed-0000000000"><small>rendered</small></td><td><img src="webgl-seed-0000000000.png" alt="WebGL seed-0000000000"><small>rendered</small></td><td><code>SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh</code><br></td></tr>
+<tr><th scope="row">seed-0000000001</th><td><img src="svg-seed-0000000001.png" alt="SVG seed-0000000001"><small>rendered</small></td><td><img src="webgl-seed-0000000001.png" alt="WebGL seed-0000000001"><small>rendered</small></td><td><code>SF2~sports/default-v2~59hsd4~0~efwnq4~m~n~b91c1c~f8fafc~1b5us7u</code><br></td></tr>
+<tr><th scope="row">seed-0000000042</th><td><img src="svg-seed-0000000042.png" alt="SVG seed-0000000042"><small>rendered</small></td><td><img src="webgl-seed-0000000042.png" alt="WebGL seed-0000000042"><small>rendered</small></td><td><code>SF2~sports/default-v2~4wt3ze~4ck~11pcryb~m~n~b91c1c~f8fafc~0flpa3f</code><br></td></tr>
+<tr><th scope="row">seed-0000012345</th><td><img src="svg-seed-0000012345.png" alt="SVG seed-0000012345"><small>rendered</small></td><td><img src="webgl-seed-0000012345.png" alt="WebGL seed-0000012345"><small>rendered</small></td><td><code>SF2~sports/default-v2~28a1wj~1jm~isucwo~m~n~b91c1c~f8fafc~0cwt8xr</code><br></td></tr>
+<tr><th scope="row">seed-0000424242</th><td><img src="svg-seed-0000424242.png" alt="SVG seed-0000424242"><small>rendered</small></td><td><img src="webgl-seed-0000424242.png" alt="WebGL seed-0000424242"><small>rendered</small></td><td><code>SF2~sports/default-v2~4xy6ya~1hn~1m4lvab~m~n~b91c1c~f8fafc~0hey2wf</code><br></td></tr>
+<tr><th scope="row">seed-0008675309</th><td><img src="svg-seed-0008675309.png" alt="SVG seed-0008675309"><small>rendered</small></td><td><img src="webgl-seed-0008675309.png" alt="WebGL seed-0008675309"><small>rendered</small></td><td><code>SF2~sports/default-v2~19xd2s~2v5~qtlk3n~m~n~b91c1c~f8fafc~04bq04b</code><br></td></tr>
+<tr><th scope="row">seed-2147483647</th><td><img src="svg-seed-2147483647.png" alt="SVG seed-2147483647"><small>rendered</small></td><td><img src="webgl-seed-2147483647.png" alt="WebGL seed-2147483647"><small>rendered</small></td><td><code>SF2~sports/default-v2~17qyas~135~8a1p61~m~n~b91c1c~f8fafc~0no35ns</code><br></td></tr>
+<tr><th scope="row">seed-4294967295</th><td><img src="svg-seed-4294967295.png" alt="SVG seed-4294967295"><small>rendered</small></td><td><img src="webgl-seed-4294967295.png" alt="WebGL seed-4294967295"><small>rendered</small></td><td><code>SF2~sports/default-v2~1nnt6x~1a9~1aacy02~m~n~b91c1c~f8fafc~0fiva41</code><br></td></tr></tbody></table>
+</html>

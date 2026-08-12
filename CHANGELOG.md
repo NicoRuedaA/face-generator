@@ -17,6 +17,10 @@
   `template + meanDelta` y añade `sports/morph-webgl-v1`, un prototipo WebGL2
   opt-in con textura `sampler2DArray` y fallback seguro al SVG GNM. SVG sigue
   siendo el default; los targets son geometry-derived y sus nombres son neutrales.
+- Añade una comparativa A/B bounded y reproducible de ocho perfiles FaceDNA entre
+  SVG GNM y WebGL2, con capturas PNG, reporte HTML, manifest JSON y validador
+  stdlib-only. La evidencia es cualitativa, no pixel-equivalent; WebGL2 ausente
+  queda como `fallback` o `unavailable`.
 - Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,

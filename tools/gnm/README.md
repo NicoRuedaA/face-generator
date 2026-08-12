@@ -135,6 +135,26 @@ back to the existing GNM SVG renderer. The GLB is geometry-derived, GNM itself i
 not runtime data, and this remains a prototype with the existing provenance and
 licensing caveats.
 
+## Phase 3: bounded SVG/WebGL2 A/B evidence
+
+The committed comparison uses the same eight fixed FaceDNA seeds, age `22`, and
+neutral presentation in `sports/morph-gnm-v1` (SVG reference) and
+`sports/morph-webgl-v1` (opt-in WebGL2 geometry-only candidate). It is qualitative
+diagnostic evidence, not pixel equivalence: the renderers have different
+projection and shading. The capture uses Playwright through the shared
+`with_server.py` workflow and writes stable `svg-*`, `webgl-*`, `comparison.html`,
+and `comparison.json` files.
+
+```bash
+npm run capture:gnm-webgl-ab
+npm run validate:gnm-webgl-ab
+```
+
+The canonical evidence is in `docs/gnm-webgl-ab/`. Missing WebGL2 is a bounded
+`fallback` or `unavailable` result and is never reported as a fabricated pass.
+The prototype remains geometry-only: it has no UVs, textures, eyes, teeth,
+tongue, or animation. The neutral PCA IDs are not semantic controls.
+
 The standard-library-only canonical quality gate is also available directly:
 
 ```bash

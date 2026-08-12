@@ -36,7 +36,7 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Toon Polish | `sports/toon-prototype` | Pulido visual basado en el subconjunto modificado de ToonHead: expresiones neutralizadas, pelo, barba, gafas, envejecimiento y equipación deportiva. |
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
-| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias y cae al renderer GNM SVG si el contexto o el asset no están disponibles. |
+| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias y cae al renderer GNM SVG si el contexto o el asset no están disponibles. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
@@ -73,6 +73,26 @@ orden estable. Los nombres son neutrales y los pesos del renderer son una
 proyección bounded determinista de FaceDNA/SF2; no son controles anatómicos ni
 componentes PCA semánticos. WebGL2 es un prototipo opt-in, GNM no entra en
 runtime y SVG sigue siendo el camino predeterminado.
+
+### Comparativa visual A/B SVG/WebGL2
+
+La evidencia canónica de la comparación bounded está en
+[`docs/gnm-webgl-ab/`](docs/gnm-webgl-ab/) y su contrato está en
+[`docs/ACCEPTANCE_GNM_WEBGL_AB.md`](docs/ACCEPTANCE_GNM_WEBGL_AB.md). Usa ocho
+semillas fijas con los mismos perfiles FaceDNA, edad `22`, presentación neutral y
+microexpresión neutral. SVG GNM es la referencia/aceptación; WebGL2 es opt-in y
+geometry-only. La comparación es cualitativa/diagnóstica, no pixel equivalence,
+porque ambos renderers tienen distinto sombreado y proyección.
+
+```bash
+npm run capture:gnm-webgl-ab
+npm run validate:gnm-webgl-ab
+```
+
+La ausencia de WebGL2 se reporta honestamente como `fallback` o `unavailable`,
+nunca como un PASS fabricado. Persisten las limitaciones de no tener UVs,
+texturas, ojos, dientes, lengua ni animación; los IDs PCA neutrales no son
+controles semánticos.
 
 ## Estado de GNM
 
@@ -168,6 +188,8 @@ La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo 
 | `src/app.bundle.js` | Bundle generado para abrir `index.html` directamente. |
 | `tools/gnm/` | Pipeline completamente offline, validadores, esquemas y documentación GNM. |
 | `tools/gnm/work/` | Pack canónico, candidato, mapa de vértices y artefactos generados. |
+| `tools/gnm/capture_webgl_ab.py` | Captura Playwright bounded de la comparación SVG/WebGL2. |
+| `tools/gnm/validate_webgl_ab.py` | Validador stdlib-only del manifest de evidencia. |
 | `scripts/build-offline-bundle.mjs` | Inyecta el JSON portable en el bundle clásico y la entrada modular. |
 | `scripts/refresh-release-manifest.mjs` | Actualiza hashes en `docs/release-manifest-v040.json`. |
 | `tests/` | Pruebas del modelo, baseline, Toon Polish, Morph Lab y herramientas GNM. |
@@ -212,6 +234,9 @@ python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
   --server "python3 -m http.server 8080" --port 8080 -- \
   python3 tools/gnm/capture_acceptance_gallery.py
 ```
+
+La aceptación visual A/B SVG/WebGL2 se captura con `npm run capture:gnm-webgl-ab`
+y se valida con `npm run validate:gnm-webgl-ab`; no forma parte de `npm test`.
 
 ## Licencia, atribución y clean room
 
