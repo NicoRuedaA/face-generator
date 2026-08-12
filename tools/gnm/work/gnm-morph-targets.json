@@ -1,0 +1,412 @@
+{
+  "binary": {
+    "byteLength": 3849336,
+    "byteOrder": "little-endian",
+    "dtype": "float32",
+    "layout": "template, meanDelta, target deltas in target index order",
+    "path": "gnm-morph-targets.bin",
+    "sha256": "4eadf77c1c0780bd8128c143920efe671f0fee5eac33b24f03fba27e1020b8d8"
+  },
+  "method": {
+    "algorithm": "centered-pca-svd",
+    "centering": "subtract mean mesh delta before SVD",
+    "input": "per-sample mesh deltas relative to template",
+    "signConvention": "first maximum-magnitude component coordinate is positive",
+    "targetScale": "one standard deviation per principal component",
+    "weightFormula": "U[:,i] * sqrt(sampleCount - 1)"
+  },
+  "metrics": {
+    "meanReferenceRmse": 0.004397726782656303,
+    "numericalRank": 199,
+    "residualMaxAbs": 0.1359714035143063,
+    "residualRmse": 0.014331759002892559,
+    "residualVariance": 0.04740358648908183,
+    "retainedVariance": 0.9525964135109182,
+    "templateRmse": 0.004404731839450725
+  },
+  "reference": {
+    "array": "template",
+    "deltaBase": "template + meanDelta",
+    "kind": "template",
+    "meanDelta": {
+      "byteLength": 213852,
+      "byteOffset": 213852,
+      "dtype": "float32",
+      "shape": [
+        17821,
+        3
+      ]
+    },
+    "template": {
+      "byteLength": 213852,
+      "byteOffset": 0,
+      "dtype": "float32",
+      "shape": [
+        17821,
+        3
+      ]
+    }
+  },
+  "sampleCount": 200,
+  "schema": "sports-face-gnm-morph-targets/v1",
+  "source": {
+    "archive": "gnm-heads-200.npz",
+    "archiveMetadata": {
+      "count": 200,
+      "expression": "neutral-zero-vector",
+      "gnmVersion": "v3",
+      "schema": "sports-face-gnm-mesh-samples/v1",
+      "seed": 400,
+      "sigma": 1.15,
+      "variant": "head"
+    },
+    "archiveSha256": "39de8c32533ebfb1564d632ccecba1fa7e730451b4862582c7b533cb3795c4e2",
+    "arrays": {
+      "identities": {
+        "dtype": "float32",
+        "shape": [
+          200,
+          253
+        ]
+      },
+      "metadata": {
+        "dtype": "<U163",
+        "shape": []
+      },
+      "template": {
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "triangles": {
+        "dtype": "int32",
+        "shape": [
+          35324,
+          3
+        ]
+      },
+      "vertices": {
+        "dtype": "float32",
+        "shape": [
+          200,
+          17821,
+          3
+        ]
+      }
+    },
+    "identitiesInterpretation": "parameter vectors, not mesh data",
+    "meshArray": "vertices",
+    "templateArray": "template"
+  },
+  "targetCount": 16,
+  "targets": [
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 427704,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.43461598008459046,
+      "id": "gnm-pca-01",
+      "index": 0,
+      "label": "gnm-pca-01",
+      "weightRange": [
+        -2.530789679946012,
+        2.5125521224789558
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 641556,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.23416202972908384,
+      "id": "gnm-pca-02",
+      "index": 1,
+      "label": "gnm-pca-02",
+      "weightRange": [
+        -2.3568158159356725,
+        2.3709382534699803
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 855408,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.0659183768967496,
+      "id": "gnm-pca-03",
+      "index": 2,
+      "label": "gnm-pca-03",
+      "weightRange": [
+        -2.200164322742771,
+        3.0058469588477132
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 1069260,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.050952600849610806,
+      "id": "gnm-pca-04",
+      "index": 3,
+      "label": "gnm-pca-04",
+      "weightRange": [
+        -2.6301198960029937,
+        2.479524773875792
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 1283112,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.044597301883043304,
+      "id": "gnm-pca-05",
+      "index": 4,
+      "label": "gnm-pca-05",
+      "weightRange": [
+        -3.0117055543433637,
+        2.3334974658283487
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 1496964,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.022211306960905917,
+      "id": "gnm-pca-06",
+      "index": 5,
+      "label": "gnm-pca-06",
+      "weightRange": [
+        -3.078229140638465,
+        2.8110251471065673
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 1710816,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.02094399670890602,
+      "id": "gnm-pca-07",
+      "index": 6,
+      "label": "gnm-pca-07",
+      "weightRange": [
+        -2.4267030266391503,
+        2.311622889548649
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 1924668,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.01716248584024201,
+      "id": "gnm-pca-08",
+      "index": 7,
+      "label": "gnm-pca-08",
+      "weightRange": [
+        -2.6062244076748007,
+        2.831493191843391
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 2138520,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.015762207909691264,
+      "id": "gnm-pca-09",
+      "index": 8,
+      "label": "gnm-pca-09",
+      "weightRange": [
+        -3.0990794415166047,
+        2.441483674825506
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 2352372,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.012034076710406592,
+      "id": "gnm-pca-10",
+      "index": 9,
+      "label": "gnm-pca-10",
+      "weightRange": [
+        -3.2637692828220386,
+        2.8455365225785
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 2566224,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.008702834100356953,
+      "id": "gnm-pca-11",
+      "index": 10,
+      "label": "gnm-pca-11",
+      "weightRange": [
+        -2.7643526465478034,
+        2.3832520732831712
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 2780076,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.0073906778381667955,
+      "id": "gnm-pca-12",
+      "index": 11,
+      "label": "gnm-pca-12",
+      "weightRange": [
+        -3.144949434929616,
+        2.6330958333474426
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 2993928,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.005935302793208367,
+      "id": "gnm-pca-13",
+      "index": 12,
+      "label": "gnm-pca-13",
+      "weightRange": [
+        -2.504562860881482,
+        2.712613312608368
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 3207780,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.004581599065244125,
+      "id": "gnm-pca-14",
+      "index": 13,
+      "label": "gnm-pca-14",
+      "weightRange": [
+        -2.7706438219782865,
+        2.1908696652279898
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 3421632,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.004026667607436154,
+      "id": "gnm-pca-15",
+      "index": 14,
+      "label": "gnm-pca-15",
+      "weightRange": [
+        -2.7636782783531344,
+        2.8456109438985075
+      ]
+    },
+    {
+      "delta": {
+        "byteLength": 213852,
+        "byteOffset": 3635484,
+        "dtype": "float32",
+        "shape": [
+          17821,
+          3
+        ]
+      },
+      "explainedVariance": 0.0035989685332759687,
+      "id": "gnm-pca-16",
+      "index": 15,
+      "label": "gnm-pca-16",
+      "weightRange": [
+        -3.257242094605543,
+        2.4032449059765932
+      ]
+    }
+  ],
+  "version": "offline-prototype-v1",
+  "vertexCount": 17821
+}

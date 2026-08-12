@@ -81,6 +81,35 @@ targets. Those elements are intentionally absent and must come only from
 official GNM data in a later slice. See
 [`docs/ACCEPTANCE_GNM_GLB.md`](../../docs/ACCEPTANCE_GNM_GLB.md).
 
+## Phase 3: offline PCA morph-target reduction
+
+This bounded Phase 3 slice creates an auditable offline package from the 200
+retained neutral identity meshes. It is geometry-derived prototype data, not
+official semantic GNM controls. It does not implement WebGL, browser loading,
+or GLB morph-target integration. The SVG renderer remains the default and
+`src/` is unchanged.
+
+The builder inspects the NPZ before choosing source data. In the retained
+archive, `identities` has shape `(200, 253)` and contains parameter vectors, so
+the builder uses `vertices` with shape `(200, 17,821, 3)` as the per-sample mesh
+array. If valid mesh data are unavailable, it fails closed rather than
+fabricating targets.
+
+```bash
+npm run build:gnm-morph-targets
+npm run test:gnm-morph-targets
+python tools/gnm/validate_gnm_morph_targets.py tools/gnm/work/gnm-morph-targets.json
+```
+
+The accepted target-count range is 12-20; the canonical package uses 16 neutral
+IDs `gnm-pca-01` through `gnm-pca-16`. JSON metadata references a separate
+relocation-safe `gnm-morph-targets.bin` payload containing the template,
+mean-delta reference, and target deltas as little-endian float32 values with
+exact byte offsets and lengths. The PCA records explained variance per target,
+weight ranges, retained variance and residual/error metrics. The current
+package retains 95.2596% variance with residual RMSE `0.0172562` and maximum
+absolute residual `0.147963`.
+
 `npm run build:offline` is the only step that embeds the portable JSON into
 `src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.
 `npm run refresh:release` updates SHA-256 entries for the release's operational

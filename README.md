@@ -43,6 +43,27 @@ La Fase 2 exporta offline la malla template retenida a
 `tools/gnm/work/head.glb`. Es un GLB geometry-only para inspección: no implementa
 WebGL ni cambia el runtime o el comportamiento SVG.
 
+### Fase 3: reducción offline de morph targets
+
+La primera slice acotada de Fase 3 genera `tools/gnm/work/gnm-morph-targets.json`
+y su payload `gnm-morph-targets.bin` desde las 200 mallas neutrales retenidas.
+Es un prototipo derivado de geometría, no controles semánticos oficiales de GNM.
+No añade WebGL, carga en navegador ni integración de morph targets en el GLB; el
+renderer SVG continúa siendo el predeterminado y `src/` no cambia.
+
+El builder verifica las claves y formas del NPZ: `identities` es `(200, 253)` y
+no es mesh data, por lo que usa `vertices` `(200, 17821, 3)` y registra esa
+decisión en la procedencia. Si no encuentra mallas válidas, termina sin generar
+targets. El paquete acepta de 12 a 20 targets y usa los IDs neutrales
+`gnm-pca-01` ... `gnm-pca-16`. La salida actual conserva `95.2596%` de varianza,
+con residual `4.7404%`, RMSE `0.0172562` y error absoluto máximo `0.147963`.
+
+```bash
+npm run build:gnm-morph-targets
+npm run test:gnm-morph-targets
+python tools/gnm/validate_gnm_morph_targets.py tools/gnm/work/gnm-morph-targets.json
+```
+
 ## Estado de GNM
 
 GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.

@@ -10,6 +10,9 @@
   promoción, regeneración del bundle y comprobaciones de release.
 - Añade la exportación y validación offline del template GNM retenido como GLB
   geometry-only; no implementa WebGL ni inventa UVs, texturas o submallas ausentes.
+- Añade la primera slice acotada de Fase 3: reducción PCA/SVD offline de las 200
+  mallas GNM a 16 morph targets neutrales con payload binario float32 validado;
+  no implementa WebGL, carga en navegador, integración GLB ni nombres semánticos.
 - Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,

@@ -104,6 +104,34 @@ No se simulan ni se rellenan esos datos: deben añadirse solamente desde datos
 oficiales de GNM en una slice posterior. La especificación de aceptación está en
 [`ACCEPTANCE_GNM_GLB.md`](ACCEPTANCE_GNM_GLB.md).
 
+#### Fase 3: reducción offline de morph targets
+
+La primera slice acotada de la Fase 3 reduce las 200 mallas de identidad
+neutrales retenidas a un paquete PCA portable. Es exclusivamente una operación
+offline: no añade WebGL, no carga el paquete en el navegador, no integra targets
+en el GLB y no cambia el renderer SVG predeterminado. `src/` permanece intacto.
+
+El archivo retenido contiene `identities` con forma `(200, 253)`, que son
+parámetros de identidad y no mallas. El builder inspecciona las formas y usa la
+matriz `vertices` `(200, 17821, 3)` como datos de malla por muestra; si no existe
+una fuente válida, termina con error y no fabrica datos. Las mallas se comparan
+con `template`, se centra el delta medio y se aplica PCA/SVD determinista. El
+paquete registra el origen, el inventario del NPZ, la varianza explicada, el
+error residual y los offsets exactos del payload binario.
+
+```bash
+npm run build:gnm-morph-targets
+npm run test:gnm-morph-targets
+python tools/gnm/validate_gnm_morph_targets.py tools/gnm/work/gnm-morph-targets.json
+```
+
+El rango aceptado es de 12 a 20 targets; el artefacto canónico usa 16 targets
+con etiquetas neutrales `gnm-pca-01` ... `gnm-pca-16`. No se deben sustituir por
+nombres anatómicos: son un prototipo derivado de geometría, no controles
+semánticos oficiales de GNM. El resultado actual conserva `95.2596%` de la
+varianza, deja `4.7404%` residual, tiene RMSE residual `0.0172562` y error
+absoluto máximo `0.147963` en las unidades de la malla.
+
 #### Flujo operativo reproducible
 
 GNM Shape se instala aparte, en el entorno Python 3.13 recomendado por su
