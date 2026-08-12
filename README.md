@@ -39,6 +39,10 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
+La Fase 2 exporta offline la malla template retenida a
+`tools/gnm/work/head.glb`. Es un GLB geometry-only para inspección: no implementa
+WebGL ni cambia el runtime o el comportamiento SVG.
+
 ## Estado de GNM
 
 GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.
@@ -51,6 +55,23 @@ El estado actual del pack es:
 - 8 familias agrupadas con clustering determinista.
 - Mapeo semántico `face-dna-shape-v1` basado únicamente en `head` y `faceProportion`, con reglas explícitas y revisadas. No es un mapeo aprendido ni se deriva de la semilla.
 - Microexpresiones deterministas compartidas por los dos estilos Morph Lab.
+
+### Fase 2: exportación GLB offline
+
+Con el entorno externo de GNM activado (debe aportar NumPy), exporta y valida la
+malla template retenida:
+
+```bash
+npm run build:gnm-glb
+npm run test:gnm-glb
+python tools/gnm/validate_gnm_glb.py tools/gnm/work/head.glb
+```
+
+El resultado actual contiene 17.821 vértices, 35.324 triángulos y 105.972
+índices. El NPZ retenido no contiene UVs, texturas, ojos, dientes, lengua ni
+morph targets; esos datos solo deben incorporarse desde datos oficiales de GNM
+en una fase posterior. `npm test` no ejecuta este paso porque requiere NumPy y
+GNM no es una dependencia del proyecto.
 
 La provisionalidad del mapa es un límite conocido: los índices fueron seleccionados como anclajes de superficie a partir de inspección de la malla y varias zonas no tienen etiquetas anatómicas semánticas. Cualquier promoción de un pack debe revisar el mapa y los datos generados antes de incorporarlos al runtime.
 
@@ -145,6 +166,11 @@ Python; el chequeo de límites de malla se omite claramente si falta el `.npz`.
 La auditoría de landmarks de la fase 1 se ejecuta con `npm run test:gnm-landmarks`.
 También empieza con la biblioteca estándar y solo usa NumPy cuando está presente
 `tools/gnm/work/gnm-heads-200.npz`; su resultado esperado es `PASS with WARN`.
+
+La aceptación del GLB de la fase 2 está descrita en
+[`docs/ACCEPTANCE_GNM_GLB.md`](docs/ACCEPTANCE_GNM_GLB.md). El validador usa solo
+la biblioteca estándar y comprueba el contenedor GLB, los chunks, las escenas,
+los accesores, los bounds y los límites del BIN.
 
 La aceptación visual reproducible de las ocho familias GNM se captura fuera del
 release con el procedimiento de [`docs/ACCEPTANCE_GNM_GALLERY.md`](docs/ACCEPTANCE_GNM_GALLERY.md):

@@ -5,6 +5,10 @@ morphology pack may be embedded in the offline bundle and selected explicitly
 as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
 Only the portable JSON pack crosses the browser boundary.
 
+Phase 2 also exports the retained neutral template mesh to a standards-compliant
+binary glTF 2.0 file for offline inspection. The GLB is not loaded by the
+browser and does not implement the WebGL runtime.
+
 ## Quick path: regenerate a candidate
 
 Install GNM Shape separately from the official `google/GNM` repository, create
@@ -58,6 +62,24 @@ npm run test:gnm-landmarks
 The command exits successfully for the documented provisional `PASS with WARN`
 baseline. It exits nonzero for duplicate or out-of-range IDs, bilateral
 inversions, count mismatches, or retained-artifact integrity failures.
+
+## Phase 2: export the retained template
+
+Use the external GNM environment with NumPy active. The exporter reads only the
+retained NPZ arrays `template` and `triangles`; the validator and tests use only
+the Python standard library:
+
+```bash
+npm run build:gnm-glb
+npm run test:gnm-glb
+python tools/gnm/validate_gnm_glb.py tools/gnm/work/head.glb
+```
+
+The current output has 17,821 vertices, 35,324 triangles and 105,972 uint32
+indices. The retained NPZ has no UVs, textures, eyes, teeth, tongue or morph
+targets. Those elements are intentionally absent and must come only from
+official GNM data in a later slice. See
+[`docs/ACCEPTANCE_GNM_GLB.md`](../../docs/ACCEPTANCE_GNM_GLB.md).
 
 `npm run build:offline` is the only step that embeds the portable JSON into
 `src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.

@@ -83,6 +83,27 @@ Se incluyen herramientas para:
 3. agrupar las muestras en familias;
 4. validar el paquete portable.
 
+#### Fase 2: template GLB geometry-only
+
+La Fase 2 añade una exportación offline de la malla `template` retenida en
+`tools/gnm/work/gnm-heads-200.npz`:
+
+```bash
+npm run build:gnm-glb
+npm run test:gnm-glb
+python tools/gnm/validate_gnm_glb.py tools/gnm/work/head.glb
+```
+
+El GLB contiene una sola escena, nodo y mesh, con posiciones float32, índices
+uint32, material neutro y bounds finitos. La salida actual es de 17.821 vértices,
+35.324 triángulos y 105.972 índices. Es un artefacto geometry-only para uso
+offline; no modifica el runtime/SVG y todavía no implementa WebGL.
+
+El NPZ retenido no contiene UVs, texturas, ojos, dientes, lengua ni morph targets.
+No se simulan ni se rellenan esos datos: deben añadirse solamente desde datos
+oficiales de GNM en una slice posterior. La especificación de aceptación está en
+[`ACCEPTANCE_GNM_GLB.md`](ACCEPTANCE_GNM_GLB.md).
+
 #### Flujo operativo reproducible
 
 GNM Shape se instala aparte, en el entorno Python 3.13 recomendado por su

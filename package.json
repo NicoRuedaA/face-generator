@@ -15,6 +15,8 @@
     "test:gnm-tools": "python3 ./tools/gnm/build_morphology_pack.py --input ./tools/gnm/starter-landmark-samples.json --output /tmp/sports-face-gnm-pack-test.json --families 8 --seed 400 && python3 ./tools/gnm/validate_morphology_pack.py /tmp/sports-face-gnm-pack-test.json && python3 ./tools/gnm/test_gnm_morphology_pack.py && python3 ./tools/gnm/test_build_runtime_pack.py",
     "test:gnm-quality": "python3 ./tools/gnm/test_gnm_quality.py",
     "test:gnm-landmarks": "python3 ./tools/gnm/audit_gnm_landmarks.py",
+    "build:gnm-glb": "python ./tools/gnm/export_gnm_glb.py",
+    "test:gnm-glb": "python ./tools/gnm/test_gnm_glb.py",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"
   },
   "license": "GPL-2.0-only",

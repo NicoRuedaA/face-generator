@@ -47,6 +47,9 @@
     "orchestrator": "tools/gnm/build_runtime_pack.py",
     "defaultCandidate": "tools/gnm/work/gnm-morphology-pack-200.json",
     "runtimePack": "tools/gnm/work/gnm-morphology-pack.json",
+    "templateGlb": "tools/gnm/work/head.glb",
+    "templateGlbSource": "tools/gnm/work/gnm-heads-200.npz",
+    "templateGlbScope": "geometry-only; offline artifact; no WebGL runtime",
     "promotionRequired": true,
     "bundleCommand": "npm run build:offline",
     "manifestCommand": "npm run refresh:release"
@@ -73,6 +76,7 @@
     "assets/morphology/starter-pack-v1.json": "7ccd7cf07bf72d4d19c26374c1eabfd20e74757b238ca9a340615ac7856eac56",
     "tools/gnm/starter-landmark-samples.json": "b0809a44a7d2dc7eaacc543a7ba414112042ae3cabc21e48a51db7332cdc8cb1",
     "tools/gnm/work/gnm-morphology-pack.json": "1e57afc78571b69db66508c5185bfaed378adf43827e1b1eb511734eea5ff1a7",
+    "tools/gnm/work/head.glb": "6b53bde96f0c8aa2e26310ba9b03ba2e8fa499d5b608649928eafcd669e4143c",
     "baseline/visual-baseline.json": "fd8426f6a2aba28a0060e5a67e21ae0d1324ebaec32ab49d255dc4ca13483699",
     "docs/test-output-v040.txt": "778bb5d7ef9b97a45146c5f193b3ca112498187461605fcd901ab1549552a5c4"
   },
@@ -82,15 +86,19 @@
     "tools/gnm/test_gnm_quality.py": "3684b109b04ef5fbfb313a0d691b59a8d00d06f3c99783c3d44fbb21adf48ea8",
     "tools/gnm/audit_gnm_landmarks.py": "89c292a93c92ca2acc0639d7d1d47285663aea0560cc8cbed5967fa982af2e36",
     "tools/gnm/capture_acceptance_gallery.py": "5de7d69e1b3cf739ff721fa01067cfad882fccf0b3a3026378ccb9f253796ec3",
-    "tools/gnm/README.md": "7880cc676303b4ce882231b67d1d06c3bb4d431c40ab372c6a8aa96687b2f27d",
-    "README.md": "568f7602a1804efa5d6b3b6e784b28f1cb76973e971ba15b76b25d409f801bac",
-    "docs/PHASE3_MORPHOLOGY_GNM.md": "024d2f38c02963cec23b7a1a7d16e711d75ba1f6ce051bef25dad3625208b7d8",
+    "tools/gnm/export_gnm_glb.py": "51d2e4ac14a31fb4d7ead6c82dc62b035c15771ff3b790a7805a041b96777c85",
+    "tools/gnm/validate_gnm_glb.py": "c7e2c18e23625ecabd85a5860f9174fd9aff12c503f370cb63607de932698811",
+    "tools/gnm/test_gnm_glb.py": "74bb1b9a53d580b72f74d57135a1a222493660f0d0cefaaae7ac23298563243e",
+    "tools/gnm/README.md": "b888bc4a03276852273ca3848e2f97dd30df90cb477a42b7cc77fc5eee33b4ca",
+    "README.md": "a485631d50dcaea34d0bc43126e04ca57be25ff3d374dd096ff4e6c8fd887455",
+    "docs/PHASE3_MORPHOLOGY_GNM.md": "50eab51822fe4e70a42066ff6e431fb34e1c2b2338898b4076f383952c5b0407",
     "docs/ACCEPTANCE_GNM_QUALITY.md": "5c3fe99b064a835b86da16c9cf89fe9df1673c975122af3b4c84269edf78ec9c",
     "docs/ACCEPTANCE_GNM_LANDMARKS.md": "c13db84122542eb0a4bb1e0165570e8921eb9ea906bc7683bc0a43eabc8a7c5b",
     "docs/ACCEPTANCE_GNM_GALLERY.md": "0104fda7b86f5591307690eee1ce20de8efbad0fa541a6cc1ea735c1338b8073",
+    "docs/ACCEPTANCE_GNM_GLB.md": "ff0778de4ad0956a21939d735d7d7164e0f670fc8cdf180f7403df3dc16351f4",
     "docs/ACCEPTANCE_V040.md": "925a89f22614b913dabe5555cae3431fdb1e7407a43cb9f342f1690afb3658e2",
-    "CHANGELOG.md": "29692761967c40565857432126564961cf941737cbc527f27d20c9df69274dbd",
-    "package.json": "cf05747e4bb50e776e373f339dd15416bb3afb4c17e740fa9c99e035a0272e5b",
-    "scripts/refresh-release-manifest.mjs": "da05cf8ff71c2ee64f41fabc891f770d3850b7fb8420597b7ca0eb7d9501b08b"
+    "CHANGELOG.md": "cee64a411aa025f6ea6b6b04c96e620ee6d8299ebd5cf24fa99b2ebd1e12b443",
+    "package.json": "c32a4a3c4279a835ac8c3ab65bc1e6744cc28693ad417582f25b692bd276904d",
+    "scripts/refresh-release-manifest.mjs": "b7d9ff56d1157a339c8f6ba8516c9439e79605060acb96897f97aa97fbbb454b"
   }
 }

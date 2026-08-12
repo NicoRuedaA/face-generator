@@ -8,6 +8,8 @@
   `npm run refresh:release` para actualizar hashes del manifiesto.
 - Documenta instalación externa de GNM, revisión del mapa provisional,
   promoción, regeneración del bundle y comprobaciones de release.
+- Añade la exportación y validación offline del template GNM retenido como GLB
+  geometry-only; no implementa WebGL ni inventa UVs, texturas o submallas ausentes.
 - Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,
