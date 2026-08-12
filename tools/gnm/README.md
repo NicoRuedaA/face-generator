@@ -45,6 +45,20 @@ python3 -m json.tool docs/release-manifest-v040.json >/dev/null
 npm run test:gnm-quality
 ```
 
+The Phase 1 landmark audit is also standard-library-first. It always validates
+the JSON map, projected samples, bilateral orientation, fixed-frame bounds and
+retained-artifact consistency. If `gnm-heads-200.npz` exists, it additionally
+uses NumPy to compare map coordinates with the template and inspect raw-mesh
+bilateral orientation:
+
+```bash
+npm run test:gnm-landmarks
+```
+
+The command exits successfully for the documented provisional `PASS with WARN`
+baseline. It exits nonzero for duplicate or out-of-range IDs, bilateral
+inversions, count mismatches, or retained-artifact integrity failures.
+
 `npm run build:offline` is the only step that embeds the portable JSON into
 `src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.
 `npm run refresh:release` updates SHA-256 entries for the release's operational

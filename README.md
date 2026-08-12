@@ -142,6 +142,19 @@ La puerta de calidad determinista del pack canónico se puede ejecutar de forma
 independiente con `npm run test:gnm-quality`. Solo usa la biblioteca estándar de
 Python; el chequeo de límites de malla se omite claramente si falta el `.npz`.
 
+La auditoría de landmarks de la fase 1 se ejecuta con `npm run test:gnm-landmarks`.
+También empieza con la biblioteca estándar y solo usa NumPy cuando está presente
+`tools/gnm/work/gnm-heads-200.npz`; su resultado esperado es `PASS with WARN`.
+
+La aceptación visual reproducible de las ocho familias GNM se captura fuera del
+release con el procedimiento de [`docs/ACCEPTANCE_GNM_GALLERY.md`](docs/ACCEPTANCE_GNM_GALLERY.md):
+
+```bash
+python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
+  --server "python3 -m http.server 8080" --port 8080 -- \
+  python3 tools/gnm/capture_acceptance_gallery.py
+```
+
 ## Licencia, atribución y clean room
 
 El código de este repositorio se distribuye bajo **GNU General Public License v2.0 only**. Consulta [`LICENSE`](LICENSE) para los términos completos.

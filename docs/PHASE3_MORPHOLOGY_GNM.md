@@ -137,6 +137,31 @@ GNM en sí no se carga en el navegador y no es una dependencia de ejecución del
 juego. El navegador recibe solamente el JSON generado, embebido en el bundle
 offline y consumido por el estilo explícito `sports/morph-gnm-v1`.
 
+La auditoría de landmarks de la fase 1 se ejecuta con:
+
+```bash
+npm run test:gnm-landmarks
+```
+
+Valida siempre el mapa y los JSON con la biblioteca estándar. Si se conserva
+`tools/gnm/work/gnm-heads-200.npz`, usa NumPy para comprobar las coordenadas del
+template y la orientación bilateral sobre la malla. El baseline actual es
+`PASS with WARN`: los avisos de bounds y asimetría describen la normalización
+estable y no son evidencia suficiente de IDs anatómicamente incorrectos.
+
+La evidencia visual reproducible del baseline 2D se genera fuera del release
+con Chromium/CDP:
+
+```bash
+python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
+  --server "python3 -m http.server 8080" --port 8080 -- \
+  python3 tools/gnm/capture_acceptance_gallery.py
+```
+
+El procedimiento, los ocho inputs fijos, los criterios de aceptación y la
+variante con overlay están en
+[`docs/ACCEPTANCE_GNM_GALLERY.md`](ACCEPTANCE_GNM_GALLERY.md).
+
 ### Selección semántica de familias
 
 La familia GNM no se elige con la semilla del perfil. Se aplica la versión de
