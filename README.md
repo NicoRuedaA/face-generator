@@ -254,6 +254,27 @@ La puerta de calidad determinista del pack canónico se puede ejecutar de forma
 independiente con `npm run test:gnm-quality`. Solo usa la biblioteca estándar de
 Python; el chequeo de límites de malla se omite claramente si falta el `.npz`.
 
+La comparación bounded de escalas se mantiene separada de esa puerta canónica:
+
+```bash
+npm run test:gnm-quality-scales
+npm run compare:gnm-quality-scales
+npm run plan:gnm-quality-scales:400
+npm run compare:gnm-quality-scales:400
+```
+
+La evidencia actual está en [`docs/gnm-quality-scale-comparison.json`](docs/gnm-quality-scale-comparison.json).
+El candidato real de 400 muestras produce `warn`: cero duplicados exactos y dos
+reruns deterministas byte-idénticos, pero balance `22..72`, vecino normalizado
+mínimo `0.1899833723` y delta máximo de centroides `0.123909`. La comparación
+solo mide calidad morfológica estadística a otra escala; no promueve, no cambia
+runtime/FaceDNA/SF2 ni demuestra anatomía. La promoción futura exige revisión
+humana explícita.
+
+El runner usa GNM/NumPy únicamente desde el entorno externo indicado por
+`GNM_PYTHON`. Si falta, genera un reporte `unavailable` acotado sin fabricar
+packs ni métricas.
+
 La auditoría de landmarks de la fase 1 se ejecuta con `npm run test:gnm-landmarks`.
 También empieza con la biblioteca estándar y solo usa NumPy cuando está presente
 `tools/gnm/work/gnm-heads-200.npz`; su resultado esperado es `PASS with WARN`.

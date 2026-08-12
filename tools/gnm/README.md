@@ -217,6 +217,38 @@ NumPy, or file changes:
 python tools/gnm/build_runtime_pack.py --dry-run
 ```
 
+## Bounded scale comparison
+
+The canonical acceptance gate remains the 200-sample `test_gnm_quality.py` gate.
+Scale comparison is report-only and never calls `--promote`, changes runtime,
+FaceDNA, SF2, GLB, SVG, PCA, or canonical pack assets.
+
+```bash
+npm run test:gnm-quality-scales
+npm run compare:gnm-quality-scales
+npm run plan:gnm-quality-scales:400
+npm run compare:gnm-quality-scales:400
+```
+
+`compare_gnm_quality_scales.py` is stdlib-first. It accepts separate candidate
+and canonical pack/landmark paths and emits JSON with sample/member counts,
+exact feature-vector duplicates, normalized nearest-neighbor minimum/median and
+percentiles, per-feature range/variance, family counts and balance, common-family
+centroid deltas, source/seed/sigma provenance, and deterministic rerun byte
+identity. The defaults are documented diagnostic thresholds, not a replacement
+for the canonical gate: duplicate vectors `0`, nearest minimum `0.20`, family
+balance ratio `0.50`, and common-family centroid delta `0.10`. Use `--strict`
+only when a warning should fail the command.
+
+`run_gnm_scale_comparison.py` uses the documented external GNM Python from
+`GNM_PYTHON` or `/home/nico/src/GNM/gnm/shape/.venv/bin/python`, and samples
+400 heads by default. It runs two isolated deterministic candidates, compares
+them with the canonical 200 pack, and deletes temporary mesh/candidate files
+after writing the report. If GNM or NumPy cannot be imported, it writes a
+bounded `unavailable` report with no invented metrics. The current committed
+400-sample evidence is [`docs/gnm-quality-scale-comparison.json`](../../docs/gnm-quality-scale-comparison.json)
+and is `warn`; it is scale evidence only, not anatomy proof or promotion.
+
 The intended pipeline is:
 
 ```text

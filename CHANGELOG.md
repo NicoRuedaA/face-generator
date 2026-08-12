@@ -1,5 +1,12 @@
 ## Unreleased — Operativa GNM
 
+- Añade una comparación bounded report-only entre el pack GNM canónico de 200 y
+  candidatos de 400/800 muestras: diversidad, duplicados, vecinos normalizados,
+  rangos/varianzas, balance familiar, deltas de centroides, procedencia y
+  reruns deterministas. La evidencia actual de 400 muestras es `warn`; no
+  promueve candidatos, no cambia runtime ni demuestra anatomía y requiere
+  revisión humana antes de promoción. Sin GNM/NumPy el reporte queda en
+  `unavailable` sin inventar métricas.
 - Mejora la auditoría provisional de landmarks como quality gate report-only:
   informa `provisionalReview: required`, no promociona corrección anatómica,
   detalla excursiones de proyección y extremos XYZ crudos cuando NumPy está

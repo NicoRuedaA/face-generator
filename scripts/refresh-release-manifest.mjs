@@ -8,6 +8,9 @@ const operationalFiles = [
   "tools/gnm/build_runtime_pack.py",
   "tools/gnm/test_build_runtime_pack.py",
   "tools/gnm/test_gnm_quality.py",
+  "tools/gnm/compare_gnm_quality_scales.py",
+  "tools/gnm/test_compare_gnm_quality_scales.py",
+  "tools/gnm/run_gnm_scale_comparison.py",
   "tools/gnm/test_audit_gnm_landmarks.py",
   "tools/gnm/audit_gnm_landmarks.py",
   "tools/gnm/capture_acceptance_gallery.py",
@@ -44,6 +47,7 @@ const operationalFiles = [
   "package.json",
   "scripts/refresh-release-manifest.mjs",
   "tools/gnm/work/official-bundle.example.json",
+  "docs/gnm-quality-scale-comparison.json",
 ];
 
 function sha256(filePath) {

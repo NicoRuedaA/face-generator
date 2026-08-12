@@ -1,0 +1,583 @@
+{
+  "candidates": [
+    {
+      "centroidDeltasAgainstCanonical": {
+        "aligned": true,
+        "commonFamilyIds": [
+          "gnm-01-compact",
+          "gnm-02-compact-wide",
+          "gnm-03-balanced",
+          "gnm-04-tapered",
+          "gnm-05-angular",
+          "gnm-06-broad",
+          "gnm-07-long",
+          "gnm-08-high-forehead"
+        ],
+        "maximumAbsolute": 0.123909,
+        "perFamily": {
+          "gnm-01-compact": {
+            "l2": 0.1379399697,
+            "maxAbsolute": 0.123909,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.03118,
+              "chinWidth": 0.001974,
+              "craniumWidth": 0.019921,
+              "earSpan": 0.027088,
+              "eyeHeight": 0.001686,
+              "eyeSpacing": 0.005039,
+              "eyeWidth": 0.003742,
+              "faceHeight": 0.037801,
+              "foreheadHeight": 0.003523,
+              "jawWidth": 0.008696,
+              "mouthWidth": 0.002312,
+              "noseLength": 0.001465,
+              "noseWidth": 0.00079,
+              "templeSlope": 0.123909
+            }
+          },
+          "gnm-02-compact-wide": {
+            "l2": 0.0156463376,
+            "maxAbsolute": 0.009329,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.002213,
+              "chinWidth": 0.004526,
+              "craniumWidth": 0.006659,
+              "earSpan": 0.002976,
+              "eyeHeight": 0.001407,
+              "eyeSpacing": 2.9e-05,
+              "eyeWidth": 0.001322,
+              "faceHeight": 0.004177,
+              "foreheadHeight": 0.000433,
+              "jawWidth": 0.006048,
+              "mouthWidth": 0.002317,
+              "noseLength": 0.003288,
+              "noseWidth": 0.002253,
+              "templeSlope": 0.009329
+            }
+          },
+          "gnm-03-balanced": {
+            "l2": 0.1432341065,
+            "maxAbsolute": 0.116998,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.022204,
+              "chinWidth": 0.000365,
+              "craniumWidth": 0.011453,
+              "earSpan": 0.044395,
+              "eyeHeight": 0.001596,
+              "eyeSpacing": 0.008943,
+              "eyeWidth": 0.005186,
+              "faceHeight": 0.061782,
+              "foreheadHeight": 0.002109,
+              "jawWidth": 0.014117,
+              "mouthWidth": 0.003513,
+              "noseLength": 0.002957,
+              "noseWidth": 0.008999,
+              "templeSlope": 0.116998
+            }
+          },
+          "gnm-04-tapered": {
+            "l2": 0.0734475893,
+            "maxAbsolute": 0.054288,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.001143,
+              "chinWidth": 0.002498,
+              "craniumWidth": 0.001105,
+              "earSpan": 0.029667,
+              "eyeHeight": 0.00338,
+              "eyeSpacing": 0.001931,
+              "eyeWidth": 0.003001,
+              "faceHeight": 0.037817,
+              "foreheadHeight": 0.000201,
+              "jawWidth": 0.001484,
+              "mouthWidth": 0.005404,
+              "noseLength": 0.001956,
+              "noseWidth": 0.008301,
+              "templeSlope": 0.054288
+            }
+          },
+          "gnm-05-angular": {
+            "l2": 0.0298536218,
+            "maxAbsolute": 0.020101,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.007885,
+              "chinWidth": 0.004745,
+              "craniumWidth": 0.005198,
+              "earSpan": 0.003567,
+              "eyeHeight": 0.000772,
+              "eyeSpacing": 0.006332,
+              "eyeWidth": 0.001823,
+              "faceHeight": 0.003104,
+              "foreheadHeight": 0.00637,
+              "jawWidth": 0.013284,
+              "mouthWidth": 0.004606,
+              "noseLength": 0.004582,
+              "noseWidth": 0.007061,
+              "templeSlope": 0.020101
+            }
+          },
+          "gnm-06-broad": {
+            "l2": 0.0742463611,
+            "maxAbsolute": 0.043971,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.021398,
+              "chinWidth": 0.00662,
+              "craniumWidth": 0.02103,
+              "earSpan": 0.043971,
+              "eyeHeight": 0.001868,
+              "eyeSpacing": 0.015005,
+              "eyeWidth": 0.007264,
+              "faceHeight": 0.025432,
+              "foreheadHeight": 0.006943,
+              "jawWidth": 0.010852,
+              "mouthWidth": 0.013374,
+              "noseLength": 0.004059,
+              "noseWidth": 0.014952,
+              "templeSlope": 0.033497
+            }
+          },
+          "gnm-07-long": {
+            "l2": 0.0698577205,
+            "maxAbsolute": 0.047308,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.013456,
+              "chinWidth": 0.000498,
+              "craniumWidth": 0.021223,
+              "earSpan": 0.047308,
+              "eyeHeight": 0.008453,
+              "eyeSpacing": 0.019747,
+              "eyeWidth": 0.005523,
+              "faceHeight": 0.002552,
+              "foreheadHeight": 0.01061,
+              "jawWidth": 0.009254,
+              "mouthWidth": 0.004816,
+              "noseLength": 0.011369,
+              "noseWidth": 0.01278,
+              "templeSlope": 0.03159
+            }
+          },
+          "gnm-08-high-forehead": {
+            "l2": 0.1192606184,
+            "maxAbsolute": 0.104956,
+            "perFeatureAbsolute": {
+              "cheekWidth": 0.006463,
+              "chinWidth": 0.005322,
+              "craniumWidth": 0.014629,
+              "earSpan": 0.04043,
+              "eyeHeight": 0.010216,
+              "eyeSpacing": 0.020117,
+              "eyeWidth": 0.002987,
+              "faceHeight": 0.008527,
+              "foreheadHeight": 0.019582,
+              "jawWidth": 0.002358,
+              "mouthWidth": 0.006091,
+              "noseLength": 0.014377,
+              "noseWidth": 0.008071,
+              "templeSlope": 0.104956
+            }
+          }
+        }
+      },
+      "counts": {
+        "declaredMemberCount": 400,
+        "families": 8,
+        "familyMembers": 400,
+        "samples": 400
+      },
+      "exactDuplicateFeatureVectors": {
+        "count": 0,
+        "groups": []
+      },
+      "familyBalance": {
+        "counts": {
+          "gnm-01-compact": 72,
+          "gnm-02-compact-wide": 51,
+          "gnm-03-balanced": 49,
+          "gnm-04-tapered": 40,
+          "gnm-05-angular": 22,
+          "gnm-06-broad": 48,
+          "gnm-07-long": 62,
+          "gnm-08-high-forehead": 56
+        },
+        "maximum": 72,
+        "minimum": 22,
+        "ratio": 0.3055555556
+      },
+      "featureStats": {
+        "cheekWidth": {
+          "max": 0.7969663788,
+          "min": 0.5678017185,
+          "range": 0.2291646603,
+          "variance": 0.0014280656,
+          "varianceDefinition": "population"
+        },
+        "chinWidth": {
+          "max": 0.3024725434,
+          "min": 0.1542198981,
+          "range": 0.1482526453,
+          "variance": 0.0008098141,
+          "varianceDefinition": "population"
+        },
+        "craniumWidth": {
+          "max": 0.8295675093,
+          "min": 0.5668960382,
+          "range": 0.2626714711,
+          "variance": 0.0012821946,
+          "varianceDefinition": "population"
+        },
+        "earSpan": {
+          "max": 0.9555809798,
+          "min": 0.6138210432,
+          "range": 0.3417599366,
+          "variance": 0.00359131,
+          "varianceDefinition": "population"
+        },
+        "eyeHeight": {
+          "max": 0.1686825715,
+          "min": 0.1051088202,
+          "range": 0.0635737513,
+          "variance": 0.0001156782,
+          "varianceDefinition": "population"
+        },
+        "eyeSpacing": {
+          "max": 0.618560769,
+          "min": 0.4477048371,
+          "range": 0.1708559319,
+          "variance": 0.0008327774,
+          "varianceDefinition": "population"
+        },
+        "eyeWidth": {
+          "max": 0.1674873256,
+          "min": 0.0715814113,
+          "range": 0.0959059143,
+          "variance": 0.0001923681,
+          "varianceDefinition": "population"
+        },
+        "faceHeight": {
+          "max": 1.4765951327,
+          "min": 0.9999980088,
+          "range": 0.4765971239,
+          "variance": 0.0060883161,
+          "varianceDefinition": "population"
+        },
+        "foreheadHeight": {
+          "max": 0.2403412523,
+          "min": 0.1299536097,
+          "range": 0.1103876426,
+          "variance": 0.0004074251,
+          "varianceDefinition": "population"
+        },
+        "jawWidth": {
+          "max": 0.609152296,
+          "min": 0.403999837,
+          "range": 0.2051524589,
+          "variance": 0.0012813811,
+          "varianceDefinition": "population"
+        },
+        "mouthWidth": {
+          "max": 0.4146691357,
+          "min": 0.3018612592,
+          "range": 0.1128078765,
+          "variance": 0.000330048,
+          "varianceDefinition": "population"
+        },
+        "noseLength": {
+          "max": 0.2457951968,
+          "min": 0.1488084882,
+          "range": 0.0969867086,
+          "variance": 0.0002514436,
+          "varianceDefinition": "population"
+        },
+        "noseWidth": {
+          "max": 0.4713231026,
+          "min": 0.3299962643,
+          "range": 0.1413268382,
+          "variance": 0.0005773665,
+          "varianceDefinition": "population"
+        },
+        "templeSlope": {
+          "max": 1.1468879216,
+          "min": 0.703686198,
+          "range": 0.4432017235,
+          "variance": 0.0062887007,
+          "varianceDefinition": "population"
+        }
+      },
+      "nearestNeighbor": {
+        "median": 0.3451560325,
+        "minimum": 0.1899833723,
+        "normalized": true,
+        "percentiles": {
+          "p10": 0.2788433269,
+          "p25": 0.3060142675,
+          "p50": 0.3451560325,
+          "p75": 0.3920191652,
+          "p90": 0.4587915939,
+          "p95": 0.4931633552
+        }
+      },
+      "path": "candidate",
+      "provenance": {
+        "sampling": {
+          "count": 400,
+          "expression": "neutral-zero-vector",
+          "gnmVersion": "v3",
+          "schema": "sports-face-gnm-mesh-samples/v1",
+          "seed": 400,
+          "sigma": 1.15,
+          "variant": "head"
+        },
+        "seed": 400,
+        "sigma": 1.15,
+        "source": {
+          "gnmDerived": true,
+          "kind": "gnm-head-v3",
+          "meshFile": "gnm-heads-400.npz",
+          "projection": {
+            "flipVertical": true,
+            "horizontalAxis": "x",
+            "normalization": {
+              "bounds": {
+                "bottom": -0.17701676,
+                "left": -0.0911389,
+                "right": 0.09120616,
+                "top": -0.40711015
+              },
+              "frame": "template"
+            },
+            "verticalAxis": "y"
+          },
+          "sampling": {
+            "count": 400,
+            "expression": "neutral-zero-vector",
+            "gnmVersion": "v3",
+            "schema": "sports-face-gnm-mesh-samples/v1",
+            "seed": 400,
+            "sigma": 1.15,
+            "variant": "head"
+          },
+          "vertexMap": "gnm-vertex-map.json"
+        }
+      },
+      "reasons": [
+        "family balance ratio=0.3055555556 is below 0.5",
+        "maximum common-family centroid delta=0.123909 exceeds 0.1",
+        "minimum normalized nearest-neighbor distance=0.1899833723 is below 0.2"
+      ],
+      "status": "warn"
+    }
+  ],
+  "canonical": {
+    "counts": {
+      "declaredMemberCount": 200,
+      "families": 8,
+      "familyMembers": 200,
+      "samples": 200
+    },
+    "exactDuplicateFeatureVectors": {
+      "count": 0,
+      "groups": []
+    },
+    "familyBalance": {
+      "counts": {
+        "gnm-01-compact": 25,
+        "gnm-02-compact-wide": 27,
+        "gnm-03-balanced": 35,
+        "gnm-04-tapered": 17,
+        "gnm-05-angular": 18,
+        "gnm-06-broad": 33,
+        "gnm-07-long": 17,
+        "gnm-08-high-forehead": 28
+      },
+      "maximum": 35,
+      "minimum": 17,
+      "ratio": 0.4857142857
+    },
+    "featureStats": {
+      "cheekWidth": {
+        "max": 0.795189947,
+        "min": 0.5678017185,
+        "range": 0.2273882284,
+        "variance": 0.0013398991,
+        "varianceDefinition": "population"
+      },
+      "chinWidth": {
+        "max": 0.2964761231,
+        "min": 0.1621853847,
+        "range": 0.1342907384,
+        "variance": 0.0007438458,
+        "varianceDefinition": "population"
+      },
+      "craniumWidth": {
+        "max": 0.7831118098,
+        "min": 0.5947276632,
+        "range": 0.1883841466,
+        "variance": 0.0011329277,
+        "varianceDefinition": "population"
+      },
+      "earSpan": {
+        "max": 0.9555809798,
+        "min": 0.6138210432,
+        "range": 0.3417599366,
+        "variance": 0.003935414,
+        "varianceDefinition": "population"
+      },
+      "eyeHeight": {
+        "max": 0.1686825715,
+        "min": 0.1051088202,
+        "range": 0.0635737513,
+        "variance": 0.000123247,
+        "varianceDefinition": "population"
+      },
+      "eyeSpacing": {
+        "max": 0.6136779686,
+        "min": 0.4586449988,
+        "range": 0.1550329698,
+        "variance": 0.0008187247,
+        "varianceDefinition": "population"
+      },
+      "eyeWidth": {
+        "max": 0.1521857404,
+        "min": 0.0794953066,
+        "range": 0.0726904338,
+        "variance": 0.0001736414,
+        "varianceDefinition": "population"
+      },
+      "faceHeight": {
+        "max": 1.4765951327,
+        "min": 0.9999980088,
+        "range": 0.4765971239,
+        "variance": 0.0067159377,
+        "varianceDefinition": "population"
+      },
+      "foreheadHeight": {
+        "max": 0.2403412523,
+        "min": 0.1299536097,
+        "range": 0.1103876426,
+        "variance": 0.0004399072,
+        "varianceDefinition": "population"
+      },
+      "jawWidth": {
+        "max": 0.5922105655,
+        "min": 0.403999837,
+        "range": 0.1882107284,
+        "variance": 0.0011377502,
+        "varianceDefinition": "population"
+      },
+      "mouthWidth": {
+        "max": 0.4077844017,
+        "min": 0.3018612592,
+        "range": 0.1059231425,
+        "variance": 0.0003268678,
+        "varianceDefinition": "population"
+      },
+      "noseLength": {
+        "max": 0.2457951968,
+        "min": 0.1488084882,
+        "range": 0.0969867086,
+        "variance": 0.0002370376,
+        "varianceDefinition": "population"
+      },
+      "noseWidth": {
+        "max": 0.4713231026,
+        "min": 0.3299962643,
+        "range": 0.1413268382,
+        "variance": 0.0006000519,
+        "varianceDefinition": "population"
+      },
+      "templeSlope": {
+        "max": 1.1468879216,
+        "min": 0.703686198,
+        "range": 0.4432017235,
+        "variance": 0.0060540264,
+        "varianceDefinition": "population"
+      }
+    },
+    "nearestNeighbor": {
+      "median": 0.3979995725,
+      "minimum": 0.2581821178,
+      "normalized": true,
+      "percentiles": {
+        "p10": 0.3073340573,
+        "p25": 0.3424189852,
+        "p50": 0.3979995725,
+        "p75": 0.4443321078,
+        "p90": 0.502988452,
+        "p95": 0.585156518
+      }
+    },
+    "path": "canonical",
+    "provenance": {
+      "sampling": {},
+      "seed": 400,
+      "sigma": null,
+      "source": {
+        "gnmDerived": true,
+        "kind": "gnm-head-v3",
+        "meshFile": "gnm-heads-200.npz",
+        "projection": {
+          "flipVertical": true,
+          "horizontalAxis": "x",
+          "normalization": {
+            "bounds": {
+              "bottom": -0.17701676,
+              "left": -0.0911389,
+              "right": 0.09120616,
+              "top": -0.40711015
+            },
+            "frame": "template"
+          },
+          "verticalAxis": "y"
+        },
+        "vertexMap": "gnm-vertex-map.json"
+      }
+    },
+    "reasons": [],
+    "status": "pass"
+  },
+  "deterministicRerun": {
+    "landmarks": {
+      "byteIdentical": true,
+      "candidate": {
+        "bytes": 1060978,
+        "path": "candidate",
+        "sha256": "b5ed952e5b0e8ca48eb27e872504c97368b2486ccafedf37a7fd6eab5ccbdf11"
+      },
+      "rerun": {
+        "bytes": 1060978,
+        "path": "rerun",
+        "sha256": "b5ed952e5b0e8ca48eb27e872504c97368b2486ccafedf37a7fd6eab5ccbdf11"
+      }
+    },
+    "pack": {
+      "byteIdentical": true,
+      "candidate": {
+        "bytes": 13981,
+        "path": "candidate",
+        "sha256": "2735d865777d7ce4a204b2a7ffdbb84283256fee4dbbd490e2e9b65f8e65d7b6"
+      },
+      "rerun": {
+        "bytes": 13981,
+        "path": "rerun",
+        "sha256": "2735d865777d7ce4a204b2a7ffdbb84283256fee4dbbd490e2e9b65f8e65d7b6"
+      }
+    },
+    "reasons": [],
+    "status": "pass"
+  },
+  "reasons": [
+    "family balance ratio=0.3055555556 is below 0.5",
+    "maximum common-family centroid delta=0.123909 exceeds 0.1",
+    "minimum normalized nearest-neighbor distance=0.1899833723 is below 0.2"
+  ],
+  "requestedCount": 400,
+  "schema": "sports-face-gnm-quality-scale-comparison/v1",
+  "scope": "scale comparison only; no promotion, runtime change, anatomy proof, or human review replacement",
+  "status": "warn",
+  "thresholds": {
+    "canonicalGateUnchanged": "tools/gnm/test_gnm_quality.py remains the 200-sample acceptance gate",
+    "maxCommonFamilyCentroidDelta": 0.1,
+    "maxExactDuplicateVectors": 0,
+    "minFamilyBalanceRatio": 0.5,
+    "minNormalizedNearestNeighbor": 0.2
+  }
+}

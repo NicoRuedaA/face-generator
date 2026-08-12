@@ -188,6 +188,33 @@ npm run test:gnm-quality
 
 La puerta está descrita en [`docs/ACCEPTANCE_GNM_QUALITY.md`](ACCEPTANCE_GNM_QUALITY.md).
 
+#### Comparación bounded de escalas
+
+Esta closure phase compara un candidato de 400 u 800 muestras contra el pack
+canónico de 200 sin promoverlo ni cambiar ningún artefacto runtime. El validador
+stdlib-only registra diversidad de features, duplicados exactos, vecinos más
+cercanos normalizados, rango/varianza, balance de familias, estabilidad de
+centroides por IDs comunes, procedencia y byte-identidad de reruns:
+
+```bash
+npm run test:gnm-quality-scales
+npm run plan:gnm-quality-scales:400
+npm run compare:gnm-quality-scales:400
+```
+
+El reporte canónico de esta fase es
+[`gnm-quality-scale-comparison.json`](gnm-quality-scale-comparison.json). El
+entorno GNM/NumPy local sí estuvo disponible y produjo 400 muestras reales; el
+resultado es `warn`, no `pass`: no hay duplicados, los reruns son idénticos,
+pero el ratio de balance es `0.3055555556`, el vecino mínimo es `0.1899833723` y
+el delta máximo de centroides es `0.123909`. Estos umbrales son configurables y
+diagnósticos; no redefinen la aceptación canónica de 200 muestras.
+
+Si el entorno externo no está activo, el runner deja `status: unavailable` y la
+razón bloqueante, sin inventar métricas. Esta fase compara escala únicamente, no
+prueba anatomía, no cambia runtime/FaceDNA/SF2/GLB/SVG/PCA y exige revisión
+humana antes de cualquier promoción.
+
 El paquete portable de `sports/morph-gnm-v1` contiene ocho familias y un contrato
 de 14 features positivos y finitos:
 

@@ -127,6 +127,16 @@ def main() -> int:
     archive = np.load(args.meshes, allow_pickle=False)
     vertices_batch = np.asarray(archive["vertices"])
     template = np.asarray(archive["template"]) if "template" in archive.files else None
+    sampling_metadata = {}
+    if "metadata" in archive.files:
+        metadata_value = np.asarray(archive["metadata"])
+        if metadata_value.ndim == 0 and metadata_value.dtype.kind in "SU":
+            try:
+                parsed = json.loads(str(metadata_value.item()))
+            except json.JSONDecodeError:
+                parsed = {}
+            if isinstance(parsed, dict):
+                sampling_metadata = parsed
     mapping = json.loads(args.vertex_map.read_text(encoding="utf-8"))
     points = mapping.get("landmarks", {})
     if not points:
@@ -157,6 +167,7 @@ def main() -> int:
                 "flipVertical": args.flip_vertical,
                 **projection_metadata,
             },
+            "sampling": sampling_metadata,
         },
         "samples": raw_samples,
     }
