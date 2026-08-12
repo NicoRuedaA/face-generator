@@ -155,6 +155,16 @@ The canonical evidence is in `docs/gnm-webgl-ab/`. Missing WebGL2 is a bounded
 The prototype remains geometry-only: it has no UVs, textures, eyes, teeth,
 tongue, or animation. The neutral PCA IDs are not semantic controls.
 
+The capture records canvas dimensions, a proportional non-background occupancy
+and bounding box, plus a WebGL2 `readPixels` probe when the candidate really
+renders. The stdlib PNG fallback accepts only 8-bit RGB/RGBA, non-interlaced PNGs
+and uses the dominant RGB color plus a fixed 24-level tolerance; these fields are
+diagnostics for draw health and framing, not semantic or anatomical checks.
+The renderer uses base bounds expanded by a conservative sum of per-target
+coordinate displacement bounds, depth testing, and two-sided drawing because
+the retained mesh has mixed winding. It remains an opt-in prototype, not a
+production renderer.
+
 The standard-library-only canonical quality gate is also available directly:
 
 ```bash

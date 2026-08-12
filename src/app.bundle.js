@@ -2826,6 +2826,8 @@ const SportsFaceWebglRenderer = (({ getFaceValues, hashSeed }, { renderGnmMorphF
 /* Dependency-free WebGL2 prototype for the geometry-derived GNM morph GLB. */
 const WEBGL_MORPH_RENDER_STYLE = "sports/morph-webgl-v1";
 const WEBGL_MORPH_ASSET_URL = "./tools/gnm/work/head-morph.glb";
+const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
+const WEBGL_FRAME_MARGIN = 0.12;
 const TARGET_COUNT = 16;
 const DEFAULT_FALLBACK_MESSAGE = "WebGL2 no disponible; se ha usado el renderer GNM SVG.";
 const assetCache = new Map();
@@ -2833,6 +2835,10 @@ const canvasState = new WeakMap();
 
 function fail(message) { throw new Error(message); }
 function finite(value) { return Number.isFinite(value); }
+
+function clampWebglWeight(value) {
+  return Math.max(-WEBGL_MORPH_WEIGHT_LIMIT, Math.min(WEBGL_MORPH_WEIGHT_LIMIT, value));
+}
 
 function mapWebglWeights(profile) {
   const values = getFaceValues(profile);
@@ -2845,7 +2851,7 @@ function mapWebglWeights(profile) {
     const appearanceValue = appearance[index % appearance.length] / 11;
     const phase = ((seed ^ Math.imul(index + 1, 0x9e3779b9)) >>> 0) / 0x100000000;
     const raw = (identityValue - 0.5) * 0.42 + (appearanceValue - 0.35) * 0.12 + (phase - 0.5) * 0.18;
-    weights.push(Math.max(-0.75, Math.min(0.75, raw)));
+    weights.push(clampWebglWeight(raw));
   }
   return weights;
 }
@@ -2924,13 +2930,23 @@ function parseAsset(data) {
   });
   const bounds = { min: json.accessors[0].min, max: json.accessors[0].max };
   if (!Array.isArray(bounds.min) || !Array.isArray(bounds.max) || bounds.min.length !== 3 || bounds.max.length !== 3 || ![...bounds.min, ...bounds.max].every(finite)) fail("GLB bounds are invalid");
+  const readView = (entry) => new Float32Array(binary.buffer.slice(binary.byteOffset + entry.offset, binary.byteOffset + entry.offset + entry.view.byteLength));
   const finiteView = (entry) => {
-    const values = new Float32Array(binary.buffer.slice(binary.byteOffset + entry.offset, binary.byteOffset + entry.offset + entry.view.byteLength));
+    const values = readView(entry);
     if (!values.every(finite)) fail("GLB contains non-finite morph data");
+    return values;
   };
   finiteView(position);
-  targets.forEach(finiteView);
-  return { json, binary, vertexCount, position, indices, targets, bounds };
+  const morphDisplacementBound = [0, 0, 0];
+  targets.forEach((target) => {
+    const values = finiteView(target);
+    for (let axis = 0; axis < 3; axis += 1) {
+      let maximum = 0;
+      for (let index = axis; index < values.length; index += 3) maximum = Math.max(maximum, Math.abs(values[index]));
+      morphDisplacementBound[axis] += maximum * WEBGL_MORPH_WEIGHT_LIMIT;
+    }
+  });
+  return { json, binary, vertexCount, position, indices, targets, bounds, morphDisplacementBound };
 }
 
 function parseWebglGlb(data) { return parseAsset(data); }
@@ -2981,10 +2997,19 @@ function program(gl) {
     in vec3 vPosition;
     out vec4 color;
     void main() {
+      // The retained mesh has mixed winding, so orient derivatives toward the camera
+      // for coherent two-sided lighting instead of enabling unsafe back-face culling.
       vec3 normal = normalize(cross(dFdx(vPosition), dFdy(vPosition)));
-      vec3 light = normalize(vec3(-0.35, 0.65, 0.85));
-      float diffuse = 0.52 + 0.48 * abs(dot(normal, light));
-      color = vec4(vec3(0.72, 0.55, 0.43) * diffuse, 1.0);
+      normal = faceforward(normal, vec3(0.0, 0.0, -1.0), normal);
+      vec3 viewDirection = normalize(vec3(0.0, 0.0, 1.0));
+      vec3 keyLight = normalize(vec3(-0.45, 0.72, 1.0));
+      vec3 fillLight = normalize(vec3(0.70, 0.15, 0.55));
+      float diffuse = max(dot(normal, keyLight), 0.0);
+      float fill = max(dot(normal, fillLight), 0.0);
+      float rim = pow(1.0 - max(dot(normal, viewDirection), 0.0), 2.0);
+      vec3 base = vec3(0.72, 0.55, 0.43);
+      vec3 lit = base * (0.24 + 0.58 * diffuse + 0.16 * fill) + vec3(0.10, 0.045, 0.025) * rim;
+      color = vec4(lit, 1.0);
     }`);
   const result = gl.createProgram();
   gl.attachShader(result, vertex);
@@ -2996,15 +3021,26 @@ function program(gl) {
   return result;
 }
 
-function projection(bounds, aspect) {
-  const center = bounds.min.map((value, index) => (value + bounds.max[index]) / 2);
-  const size = bounds.max.map((value, index) => value - bounds.min[index]);
-  const height = Math.max(size[1], size[0] / Math.max(aspect, 0.01), size[2]) * 1.12;
+function expandWebglBounds(bounds, displacementBound = [0, 0, 0]) {
+  if (!bounds?.min || !bounds?.max || bounds.min.length !== 3 || bounds.max.length !== 3) fail("WebGL bounds must have three axes");
+  if (displacementBound.length !== 3 || ![...bounds.min, ...bounds.max, ...displacementBound].every(finite)) fail("WebGL bounds must be finite");
+  return {
+    min: bounds.min.map((value, index) => value - Math.abs(displacementBound[index])),
+    max: bounds.max.map((value, index) => value + Math.abs(displacementBound[index])),
+  };
+}
+
+function buildWebglProjection(bounds, aspect, displacementBound = [0, 0, 0]) {
+  if (!finite(aspect) || aspect <= 0) fail("WebGL projection aspect must be positive");
+  const expanded = expandWebglBounds(bounds, displacementBound);
+  const center = expanded.min.map((value, index) => (value + expanded.max[index]) / 2);
+  const size = expanded.max.map((value, index) => value - expanded.min[index]);
+  const height = Math.max(size[1], size[0] / aspect) * (1 + WEBGL_FRAME_MARGIN * 2);
   const width = height * aspect;
-  const depth = Math.max(size[2] * 2, 1);
+  const depth = Math.max(size[2] * (1 + WEBGL_FRAME_MARGIN * 2), 0.5);
   return new Float32Array([
     2 / width, 0, 0, 0, 0, 2 / height, 0, 0, 0, 0, -2 / depth, 0,
-    -2 * center[0] / width, -2 * center[1] / height, -center[2] / depth, 1,
+    -2 * center[0] / width, -2 * center[1] / height, 2 * center[2] / depth, 1,
   ]);
 }
 
@@ -3064,12 +3100,27 @@ function draw(canvas, asset, resources, weights) {
   gl.uniform1i(resources.uniforms.texture, 0);
   gl.uniform1fv(resources.uniforms.weights, weights);
   gl.uniform2f(resources.uniforms.textureSize, resources.textureSize[0], resources.textureSize[1]);
-  gl.uniformMatrix4fv(resources.uniforms.projection, false, projection(asset.bounds, aspect));
+  gl.uniformMatrix4fv(resources.uniforms.projection, false, buildWebglProjection(asset.bounds, aspect, asset.morphDisplacementBound));
   gl.enable(gl.DEPTH_TEST);
-  gl.clearColor(0.06, 0.08, 0.11, 1);
+  gl.depthFunc(gl.LEQUAL);
+  gl.clearDepth(1);
+  // Winding is mixed in the retained geometry; two-sided depth-tested drawing is intentional.
+  gl.disable(gl.CULL_FACE);
+  gl.frontFace(gl.CCW);
+  gl.clearColor(0.035, 0.05, 0.075, 1);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   gl.drawElements(gl.TRIANGLES, resources.indexCount, gl.UNSIGNED_INT, 0);
   if (gl.getError() !== gl.NO_ERROR) fail("WebGL resource or draw error");
+  return {
+    viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight],
+    aspect,
+    depthTest: true,
+    culling: { enabled: false, mode: "two-sided", reason: "retained mesh has mixed triangle winding" },
+    weightLimit: WEBGL_MORPH_WEIGHT_LIMIT,
+    maxWeight: Math.max(...weights.map((value) => Math.abs(value))),
+    morphDisplacementBound: asset.morphDisplacementBound,
+    framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete",
+  };
 }
 
 function fallback(canvas, profile, options, reason) {
@@ -3083,7 +3134,7 @@ function renderWebglFace(canvas, profile, options = {}) {
   delete fallbackOptions.assetUrl;
   return Promise.resolve().then(async () => {
     if (!canvas || typeof canvas.getContext !== "function") return fallback(canvas, profile, fallbackOptions, "WebGL canvas is unavailable");
-    const gl = canvas.getContext("webgl2", { alpha: false, antialias: true });
+    const gl = canvas.getContext("webgl2", { alpha: false, antialias: true, preserveDrawingBuffer: true });
     if (!gl) return fallback(canvas, profile, fallbackOptions, "WebGL2 context is unavailable");
     const asset = await fetchAsset(assetUrl);
     let state = canvasState.get(canvas);
@@ -3098,17 +3149,22 @@ function renderWebglFace(canvas, profile, options = {}) {
       } };
       canvasState.set(canvas, state);
     }
-    draw(canvas, asset, state, mapWebglWeights(profile));
-    return { canvas, fallback: false, renderer: WEBGL_MORPH_RENDER_STYLE };
+    const diagnostics = draw(canvas, asset, state, mapWebglWeights(profile));
+    canvas.__sportsFaceWebglDiagnostics = diagnostics;
+    return { canvas, fallback: false, renderer: WEBGL_MORPH_RENDER_STYLE, diagnostics };
   }).catch((error) => fallback(canvas, profile, fallbackOptions, error instanceof Error ? error.message : String(error)));
 }
 
 return {
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_MORPH_ASSET_URL,
+  WEBGL_MORPH_WEIGHT_LIMIT,
+  WEBGL_FRAME_MARGIN,
   mapWebglWeights,
   describeWebglMapping,
   parseWebglGlb,
+  expandWebglBounds,
+  buildWebglProjection,
   renderWebglFace,
   WEBGL_MORPH_RENDER_STYLE
 };

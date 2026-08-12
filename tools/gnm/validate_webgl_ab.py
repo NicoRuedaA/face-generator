@@ -14,6 +14,9 @@ SVG_RENDERER = "sports/morph-gnm-v1"
 WEBGL_RENDERER = "sports/morph-webgl-v1"
 SEEDS = (0, 1, 42, 12345, 424242, 8675309, 2147483647, 4294967295)
 ALLOWED_WEBGL = {"rendered", "fallback", "unavailable"}
+MIN_CANVAS_EDGE = 1
+MAX_RENDERED_OCCUPANCY = 0.98
+MIN_RENDERED_OCCUPANCY = 0.01
 
 
 def fail(message: str) -> None:
@@ -60,6 +63,23 @@ def validate(path: Path) -> dict:
             require(capture.get("requestFailures") == [], f"case {index + 1}: {label} request failures present")
             if capture.get("status") != "unavailable":
                 require(capture.get("file"), f"case {index + 1}: {label} screenshot missing")
+                metrics = capture.get("imageMetrics")
+                require(isinstance(metrics, dict), f"case {index + 1}: {label} image metrics missing")
+                width = metrics.get("width")
+                height = metrics.get("height")
+                require(isinstance(width, int) and isinstance(height, int) and width >= MIN_CANVAS_EDGE and height >= MIN_CANVAS_EDGE, f"case {index + 1}: {label} image dimensions invalid")
+                occupancy = metrics.get("occupancy")
+                require(isinstance(occupancy, (int, float)) and MIN_RENDERED_OCCUPANCY <= occupancy <= MAX_RENDERED_OCCUPANCY, f"case {index + 1}: {label} occupancy outside bounded diagnostic range")
+                box = metrics.get("boundingBox")
+                require(isinstance(box, list) and len(box) == 4 and 0 <= box[0] <= box[2] < width and 0 <= box[1] <= box[3] < height, f"case {index + 1}: {label} bounding box invalid")
+            if capture.get("status") == "rendered" and label == "WebGL":
+                browser_metrics = capture.get("canvasMetrics")
+                require(isinstance(browser_metrics, dict) and browser_metrics.get("probe") in {"readPixels", "readPixels-empty"}, f"case {index + 1}: WebGL readPixels probe missing")
+                require(browser_metrics.get("glError") == 0, f"case {index + 1}: WebGL readPixels reported GL error")
+                diagnostics = browser_metrics.get("diagnostics")
+                require(isinstance(diagnostics, dict) and diagnostics.get("depthTest") is True, f"case {index + 1}: WebGL depth diagnostic missing")
+                require(diagnostics.get("culling", {}).get("enabled") is False, f"case {index + 1}: WebGL culling diagnostic changed unexpectedly")
+                require(isinstance(diagnostics.get("maxWeight"), (int, float)) and diagnostics["maxWeight"] <= 0.75 + 1e-6, f"case {index + 1}: WebGL weight bound exceeded")
     return document
 
 

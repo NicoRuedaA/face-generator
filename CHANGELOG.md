@@ -21,6 +21,12 @@
   SVG GNM y WebGL2, con capturas PNG, reporte HTML, manifest JSON y validador
   stdlib-only. La evidencia es cualitativa, no pixel-equivalent; WebGL2 ausente
   queda como `fallback` o `unavailable`.
+- Endurece únicamente `sports/morph-webgl-v1` con encuadre determinista basado
+  en bounds y desplazamiento morph conservador, depth test diagnosticado,
+  sombreado GLSL ambiente/difuso/fill/rim y dibujo two-sided porque el GLB tiene
+  winding mixto. Añade métricas objetivas de canvas, ocupación, bounding box,
+  `readPixels` y errores GL a la evidencia A/B; no declara corrección semántica
+  ni WebGL production-ready.
 - Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,

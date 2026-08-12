@@ -4,10 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import collections
 import html
 import json
+import struct
 import sys
 import time
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -117,6 +120,119 @@ def wait_for_visible_canvas(page: Page, renderer: str, timeout_ms: int) -> dict[
             "used": status == "fallback",
             "reason": (page.locator("#toast").text_content() or "").strip() if status == "fallback" else None,
         },
+        "browserMetrics": browser_canvas_metrics(page, canvas, renderer) if canvas is not None else None,
+    }
+
+
+def browser_canvas_metrics(page: Page, canvas: Any, renderer: str) -> dict[str, Any]:
+    return page.evaluate(
+        """
+        ({ selector, renderer }) => {
+          const canvas = document.querySelector(selector);
+          const result = { width: canvas.width, height: canvas.height, cssWidth: canvas.clientWidth, cssHeight: canvas.clientHeight };
+          if (renderer !== 'sports/morph-webgl-v1') return { ...result, probe: 'screenshot-only' };
+          const gl = canvas.getContext('webgl2');
+          if (!gl) return { ...result, probe: 'webgl2-unavailable' };
+          gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+          gl.readBuffer(gl.BACK);
+          const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+          gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+          const histogram = new Map();
+          for (let offset = 0; offset < pixels.length; offset += 4) {
+            const key = `${pixels[offset]},${pixels[offset + 1]},${pixels[offset + 2]}`;
+            histogram.set(key, (histogram.get(key) || 0) + 1);
+          }
+          const clear = histogram.entries().reduce((best, entry) => entry[1] > best[1] ? entry : best)[0].split(',').map(Number);
+          const tolerance = 24;
+          gl.finish();
+          let count = 0, minX = gl.drawingBufferWidth, minY = gl.drawingBufferHeight, maxX = -1, maxY = -1;
+          for (let y = 0; y < gl.drawingBufferHeight; y += 1) for (let x = 0; x < gl.drawingBufferWidth; x += 1) {
+            const offset = (y * gl.drawingBufferWidth + x) * 4;
+            const occupied = Math.max(Math.abs(pixels[offset] - clear[0]), Math.abs(pixels[offset + 1] - clear[1]), Math.abs(pixels[offset + 2] - clear[2])) > tolerance && pixels[offset + 3] > 0;
+            if (occupied) { count += 1; minX = Math.min(minX, x); minY = Math.min(minY, y); maxX = Math.max(maxX, x); maxY = Math.max(maxY, y); }
+          }
+          return { ...result, probe: count > 0 ? 'readPixels' : 'readPixels-empty', clearColor: clear, tolerance, nonBackgroundPixels: count, occupancy: count / (gl.drawingBufferWidth * gl.drawingBufferHeight), boundingBox: maxX < 0 ? null : [minX, minY, maxX, maxY], glError: gl.getError(), diagnostics: canvas.__sportsFaceWebglDiagnostics || null };
+        }
+        """,
+        {"selector": "#portrait-webgl" if renderer == WEBGL_RENDERER else "#portrait", "renderer": renderer},
+    )
+
+
+def decode_png(path: Path) -> tuple[int, int, list[tuple[int, int, int, int]]]:
+    data = path.read_bytes()
+    if data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError(f"{path} is not a PNG")
+    offset = 8
+    payload = bytearray()
+    width = height = color_type = bit_depth = None
+    while offset < len(data):
+        length = struct.unpack(">I", data[offset:offset + 4])[0]
+        chunk_type = data[offset + 4:offset + 8]
+        chunk = data[offset + 8:offset + 8 + length]
+        offset += length + 12
+        if chunk_type == b"IHDR":
+            width, height, bit_depth, color_type, compression, filtering, interlace = struct.unpack(">IIBBBBB", chunk)
+            if bit_depth != 8 or color_type not in (2, 6) or compression != 0 or filtering != 0 or interlace != 0:
+                raise ValueError(f"unsupported PNG format in {path}")
+        elif chunk_type == b"IDAT":
+            payload.extend(chunk)
+    if width is None or height is None:
+        raise ValueError(f"PNG header missing in {path}")
+    channels = 4 if color_type == 6 else 3
+    stride = width * channels
+    decoded = zlib.decompress(payload)
+    rows: list[tuple[int, int, int, int]] = []
+    previous = bytearray(stride)
+    cursor = 0
+    for _ in range(height):
+        filter_type = decoded[cursor]
+        cursor += 1
+        row = bytearray(decoded[cursor:cursor + stride])
+        cursor += stride
+        for index in range(stride):
+            left = row[index - channels] if index >= channels else 0
+            above = previous[index]
+            upper_left = previous[index - channels] if index >= channels else 0
+            if filter_type == 1:
+                row[index] = (row[index] + left) & 255
+            elif filter_type == 2:
+                row[index] = (row[index] + above) & 255
+            elif filter_type == 3:
+                row[index] = (row[index] + ((left + above) // 2)) & 255
+            elif filter_type == 4:
+                estimate = left + above - upper_left
+                left_distance = abs(estimate - left)
+                above_distance = abs(estimate - above)
+                upper_left_distance = abs(estimate - upper_left)
+                predictor = left if left_distance <= above_distance and left_distance <= upper_left_distance else above if above_distance <= upper_left_distance else upper_left
+                row[index] = (row[index] + predictor) & 255
+            elif filter_type != 0:
+                raise ValueError(f"unsupported PNG filter {filter_type}")
+        rows.extend((row[index], row[index + 1], row[index + 2], row[index + 3] if channels == 4 else 255) for index in range(0, stride, channels))
+        previous = row
+    return width, height, rows
+
+
+def image_metrics(path: Path) -> dict[str, Any]:
+    width, height, pixels = decode_png(path)
+    background = collections.Counter(pixels).most_common(1)[0][0]
+    tolerance = 24
+    occupied = [index for index, pixel in enumerate(pixels) if max(abs(pixel[channel] - background[channel]) for channel in range(3)) > tolerance and pixel[3] > 0]
+    if not occupied:
+        box = None
+    else:
+        xs = [index % width for index in occupied]
+        ys = [index // width for index in occupied]
+        box = [min(xs), min(ys), max(xs), max(ys)]
+    return {
+        "width": width,
+        "height": height,
+        "background": list(background),
+        "tolerance": tolerance,
+        "nonBackgroundPixels": len(occupied),
+        "occupancy": len(occupied) / (width * height),
+        "boundingBox": box,
+        "probe": "stdlib-png-decoder",
     }
 
 
@@ -138,6 +254,7 @@ def capture_renderer(context: Any, url: str, seed: int, renderer: str, output_di
         filename = f"{'svg' if renderer == SVG_RENDERER else 'webgl'}-{profile_id(seed)}.png"
         if ready["canvas"] is not None:
             ready["canvas"].screenshot(path=str(output_dir / filename), animations="disabled")
+            ready["imageMetrics"] = image_metrics(output_dir / filename)
         else:
             filename = None
         asset_url = page.evaluate(
@@ -152,6 +269,8 @@ def capture_renderer(context: Any, url: str, seed: int, renderer: str, output_di
             "assetUrl": asset_url,
             "timingMs": {"navigation": navigation_ms, "render": render_ms},
             "fallback": ready["fallback"],
+            "canvasMetrics": ready["browserMetrics"],
+            "imageMetrics": ready.get("imageMetrics"),
             "viewport": {**VIEWPORT, "deviceScaleFactor": DEVICE_SCALE_FACTOR},
             "browser": {"name": browser_name, "version": context.browser.version, "userAgent": page.evaluate("navigator.userAgent")},
             "consoleErrors": console_errors,

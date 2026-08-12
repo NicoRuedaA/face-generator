@@ -52,12 +52,39 @@
           "file": "svg-seed-0000000000.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 532.39,
-            "render": 104.37
+            "navigation": 533.05,
+            "render": 113.14
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              1,
+              9,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62755,
+            "occupancy": 0.5079237891737892,
+            "boundingBox": [
+              18,
+              16,
+              311,
+              350
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -81,12 +108,77 @@
           "file": "webgl-seed-0000000000.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 546.43,
-            "render": 105.17
+            "navigation": 549.73,
+            "render": 120.04
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 24498,
+            "occupancy": 0.19884578858937832,
+            "boundingBox": [
+              88,
+              58,
+              262,
+              292
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.5195178170111876,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 24498,
+            "occupancy": 0.19884578858937832,
+            "boundingBox": [
+              88,
+              58,
+              262,
+              292
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -126,12 +218,39 @@
           "file": "svg-seed-0000000001.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 611.89,
-            "render": 104.44
+            "navigation": 624.5,
+            "render": 117.96
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              0,
+              0,
+              38,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62815,
+            "occupancy": 0.5084094146594147,
+            "boundingBox": [
+              0,
+              0,
+              350,
+              351
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -155,12 +274,77 @@
           "file": "webgl-seed-0000000001.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 548.41,
-            "render": 105.32
+            "navigation": 550.83,
+            "render": 120.3
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25862,
+            "occupancy": 0.20991712729604467,
+            "boundingBox": [
+              85,
+              58,
+              265,
+              294
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.29402022902201863,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25862,
+            "occupancy": 0.20991712729604467,
+            "boundingBox": [
+              85,
+              56,
+              265,
+              292
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -200,12 +384,39 @@
           "file": "svg-seed-0000000042.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 617.65,
-            "render": 103.64
+            "navigation": 617.76,
+            "render": 104.38
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              0,
+              0,
+              38,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62550,
+            "occupancy": 0.5062645687645687,
+            "boundingBox": [
+              0,
+              0,
+              350,
+              351
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -229,12 +440,77 @@
           "file": "webgl-seed-0000000042.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 546.6,
-            "render": 104.75
+            "navigation": 557.55,
+            "render": 119.7
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25094,
+            "occupancy": 0.20368341166061965,
+            "boundingBox": [
+              88,
+              57,
+              262,
+              294
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.33209860442358663,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25094,
+            "occupancy": 0.20368341166061965,
+            "boundingBox": [
+              88,
+              56,
+              262,
+              293
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -274,12 +550,39 @@
           "file": "svg-seed-0000012345.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 611.18,
-            "render": 104.72
+            "navigation": 622.05,
+            "render": 111.62
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              0,
+              0,
+              38,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62729,
+            "occupancy": 0.5077133514633515,
+            "boundingBox": [
+              0,
+              0,
+              350,
+              351
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -303,12 +606,77 @@
           "file": "webgl-seed-0000012345.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 540.56,
-            "render": 102.88
+            "navigation": 552.97,
+            "render": 123.27
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25032,
+            "occupancy": 0.2031801689921348,
+            "boundingBox": [
+              89,
+              56,
+              261,
+              293
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.42482255787199186,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25032,
+            "occupancy": 0.2031801689921348,
+            "boundingBox": [
+              89,
+              57,
+              261,
+              294
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -348,12 +716,39 @@
           "file": "svg-seed-0000424242.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 610.83,
-            "render": 104.63
+            "navigation": 621.22,
+            "render": 103.74
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              1,
+              9,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 63283,
+            "occupancy": 0.5121972934472935,
+            "boundingBox": [
+              18,
+              9,
+              310,
+              350
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -377,12 +772,77 @@
           "file": "webgl-seed-0000424242.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 549.67,
-            "render": 104.64
+            "navigation": 558.65,
+            "render": 120.24
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25311,
+            "occupancy": 0.20544476100031656,
+            "boundingBox": [
+              87,
+              57,
+              263,
+              293
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.2501646978011016,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25311,
+            "occupancy": 0.20544476100031656,
+            "boundingBox": [
+              87,
+              57,
+              263,
+              293
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -422,12 +882,39 @@
           "file": "svg-seed-0008675309.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 601.09,
-            "render": 103.55
+            "navigation": 628.77,
+            "render": 105.03
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              0,
+              14,
+              0,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 63009,
+            "occupancy": 0.5099796037296037,
+            "boundingBox": [
+              0,
+              0,
+              350,
+              351
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -451,12 +938,77 @@
           "file": "webgl-seed-0008675309.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 542.83,
-            "render": 104.08
+            "navigation": 559.69,
+            "render": 120.55
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25360,
+            "occupancy": 0.20584248504476424,
+            "boundingBox": [
+              87,
+              55,
+              263,
+              293
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.3234684118559076,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25360,
+            "occupancy": 0.20584248504476424,
+            "boundingBox": [
+              87,
+              57,
+              263,
+              295
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -496,12 +1048,39 @@
           "file": "svg-seed-2147483647.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 608.02,
-            "render": 103.56
+            "navigation": 615.2,
+            "render": 110.17
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              1,
+              9,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62005,
+            "occupancy": 0.5018534706034706,
+            "boundingBox": [
+              18,
+              16,
+              310,
+              350
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -525,12 +1104,77 @@
           "file": "webgl-seed-2147483647.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 541.57,
-            "render": 103.77
+            "navigation": 550.93,
+            "render": 118.22
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25003,
+            "occupancy": 0.20294478129235963,
+            "boundingBox": [
+              89,
+              55,
+              261,
+              293
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.2863841659510508,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25003,
+            "occupancy": 0.20294478129235963,
+            "boundingBox": [
+              89,
+              57,
+              261,
+              295
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -570,12 +1214,39 @@
           "file": "svg-seed-4294967295.png",
           "assetUrl": "tools/gnm/work/gnm-morphology-pack.js (embedded)",
           "timingMs": {
-            "navigation": 617.22,
-            "render": 104.29
+            "navigation": 616.41,
+            "render": 103.96
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 768,
+            "height": 768,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "screenshot-only"
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 352,
+            "background": [
+              1,
+              9,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 62029,
+            "occupancy": 0.5020477207977208,
+            "boundingBox": [
+              18,
+              16,
+              310,
+              350
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,
@@ -599,12 +1270,77 @@
           "file": "webgl-seed-4294967295.png",
           "assetUrl": "http://127.0.0.1:8080/tools/gnm/work/head-morph.glb",
           "timingMs": {
-            "navigation": 547.59,
-            "render": 103.34
+            "navigation": 530.18,
+            "render": 120.27
           },
           "fallback": {
             "used": false,
             "reason": null
+          },
+          "canvasMetrics": {
+            "width": 351,
+            "height": 351,
+            "cssWidth": 351,
+            "cssHeight": 351,
+            "probe": "readPixels",
+            "clearColor": [
+              9,
+              13,
+              19
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25921,
+            "occupancy": 0.21039601951282863,
+            "boundingBox": [
+              86,
+              56,
+              264,
+              294
+            ],
+            "glError": 0,
+            "diagnostics": {
+              "viewport": [
+                0,
+                0,
+                351,
+                351
+              ],
+              "aspect": 1,
+              "depthTest": true,
+              "culling": {
+                "enabled": false,
+                "mode": "two-sided",
+                "reason": "retained mesh has mixed triangle winding"
+              },
+              "weightLimit": 0.75,
+              "maxWeight": 0.4030728011844171,
+              "morphDisplacementBound": [
+                0.028897346957819536,
+                0.03346112048893701,
+                0.03502685083367396
+              ],
+              "framebufferStatus": "complete"
+            }
+          },
+          "imageMetrics": {
+            "width": 351,
+            "height": 351,
+            "background": [
+              9,
+              13,
+              19,
+              255
+            ],
+            "tolerance": 24,
+            "nonBackgroundPixels": 25921,
+            "occupancy": 0.21039601951282863,
+            "boundingBox": [
+              86,
+              56,
+              264,
+              294
+            ],
+            "probe": "stdlib-png-decoder"
           },
           "viewport": {
             "width": 1024,

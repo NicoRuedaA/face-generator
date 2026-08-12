@@ -11,7 +11,10 @@ import {
 } from "../src/face-model.js";
 import {
   WEBGL_MORPH_RENDER_STYLE,
+  WEBGL_MORPH_WEIGHT_LIMIT,
+  buildWebglProjection,
   describeWebglMapping,
+  expandWebglBounds,
   mapWebglWeights,
   parseWebglGlb,
 } from "../src/webgl-renderer.js";
@@ -216,8 +219,18 @@ assert.equal(describeRender(gnmProfile, GNM_MORPH_RENDER_STYLE, { gnmAdapter }).
 assert.equal(isRenderStyle(WEBGL_MORPH_RENDER_STYLE), true);
 assert.equal(describeRender(gnmProfile, WEBGL_MORPH_RENDER_STYLE).renderer, WEBGL_MORPH_RENDER_STYLE);
 assert.equal(mapWebglWeights(gnmProfile).length, 16);
-assert.ok(mapWebglWeights(gnmProfile).every((value) => value >= -0.75 && value <= 0.75));
+assert.ok(mapWebglWeights(gnmProfile).every((value) => value >= -WEBGL_MORPH_WEIGHT_LIMIT && value <= WEBGL_MORPH_WEIGHT_LIMIT));
 assert.equal(describeWebglMapping(gnmProfile).targetSemantics, "neutral PCA components; not anatomical controls");
+assert.deepEqual(expandWebglBounds({ min: [-1, 0, -2], max: [1, 2, 2] }, [0.1, 0.2, 0.3]), {
+  min: [-1.1, -0.2, -2.3],
+  max: [1.1, 2.2, 2.3],
+});
+const projection = buildWebglProjection({ min: [-1, 0, -2], max: [1, 2, 2] }, 1, [0.1, 0.2, 0.3]);
+assert.equal(projection.length, 16);
+assert.ok([...projection].every(Number.isFinite));
+assert.equal(projection[14], 0);
+assert.throws(() => buildWebglProjection({ min: [0, 0], max: [1, 1] }, 1), /three axes/);
+assert.throws(() => buildWebglProjection({ min: [0, 0, 0], max: [1, 1, 1] }, 0), /positive/);
 assert.throws(() => parseWebglGlb(new ArrayBuffer(20)), /header/);
 
 const indexHtml = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
