@@ -14,6 +14,7 @@ import {
 import {
   WEBGL_MORPH_RENDER_STYLE,
   describeWebglMapping,
+  resetWebglCamera,
   renderWebglFace,
 } from "./webgl-renderer.js";
 
@@ -49,4 +50,4 @@ export function describeRender(profile, style = DEFAULT_RENDER_STYLE, options = 
     : { renderer: DEFAULT_RENDER_STYLE, mapping: "native FaceDNA v2" };
 }
 
-export { buildGnmMorphSvg, buildMorphSvg, buildToonSvg, downloadPng, TOON_HEAD_ATTRIBUTION };
+export { buildGnmMorphSvg, buildMorphSvg, buildToonSvg, downloadPng, resetWebglCamera, TOON_HEAD_ATTRIBUTION };

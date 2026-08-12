@@ -2828,6 +2828,12 @@ const WEBGL_MORPH_RENDER_STYLE = "sports/morph-webgl-v1";
 const WEBGL_MORPH_ASSET_URL = "./tools/gnm/work/head-morph.glb";
 const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
 const WEBGL_FRAME_MARGIN = 0.12;
+const DEFAULT_WEBGL_CAMERA = Object.freeze({ yaw: 0, pitch: 0, distance: 1 });
+const WEBGL_CAMERA_LIMITS = Object.freeze({
+  yaw: [-Math.PI, Math.PI],
+  pitch: [-1.15, 1.15],
+  distance: [0.72, 1.65],
+});
 const TARGET_COUNT = 16;
 const DEFAULT_FALLBACK_MESSAGE = "WebGL2 no disponible; se ha usado el renderer GNM SVG.";
 const assetCache = new Map();
@@ -2835,6 +2841,15 @@ const canvasState = new WeakMap();
 
 function fail(message) { throw new Error(message); }
 function finite(value) { return Number.isFinite(value); }
+
+function clampWebglCamera(camera = DEFAULT_WEBGL_CAMERA) {
+  const value = (key) => camera?.[key] !== null && finite(Number(camera?.[key])) ? Number(camera[key]) : DEFAULT_WEBGL_CAMERA[key];
+  return {
+    yaw: Math.max(WEBGL_CAMERA_LIMITS.yaw[0], Math.min(WEBGL_CAMERA_LIMITS.yaw[1], value("yaw"))),
+    pitch: Math.max(WEBGL_CAMERA_LIMITS.pitch[0], Math.min(WEBGL_CAMERA_LIMITS.pitch[1], value("pitch"))),
+    distance: Math.max(WEBGL_CAMERA_LIMITS.distance[0], Math.min(WEBGL_CAMERA_LIMITS.distance[1], value("distance"))),
+  };
+}
 
 function clampWebglWeight(value) {
   return Math.max(-WEBGL_MORPH_WEIGHT_LIMIT, Math.min(WEBGL_MORPH_WEIGHT_LIMIT, value));
@@ -2985,6 +3000,7 @@ function program(gl) {
     uniform float uWeights[16];
     uniform vec2 uTextureSize;
     uniform mat4 uProjection;
+    uniform mat4 uCamera;
     out vec3 vPosition;
     void main() {
       vec3 position = aPosition;
@@ -2994,7 +3010,7 @@ function program(gl) {
         position += texelFetch(uMorphDeltas, ivec3(x, y, index), 0).xyz * uWeights[index];
       }
       vPosition = position;
-      gl_Position = uProjection * vec4(position, 1.0);
+      gl_Position = uProjection * uCamera * vec4(position, 1.0);
     }`);
   const fragment = shader(gl, gl.FRAGMENT_SHADER, `#version 300 es
     precision highp float;
@@ -3046,6 +3062,52 @@ function buildWebglProjection(bounds, aspect, displacementBound = [0, 0, 0]) {
     2 / width, 0, 0, 0, 0, 2 / height, 0, 0, 0, 0, -2 / depth, 0,
     -2 * center[0] / width, -2 * center[1] / height, 2 * center[2] / depth, 1,
   ]);
+}
+
+function multiplyWebglMatrices(left, right) {
+  const result = new Float32Array(16);
+  for (let column = 0; column < 4; column += 1) {
+    for (let row = 0; row < 4; row += 1) {
+      result[column * 4 + row] =
+        left[row] * right[column * 4] +
+        left[4 + row] * right[column * 4 + 1] +
+        left[8 + row] * right[column * 4 + 2] +
+        left[12 + row] * right[column * 4 + 3];
+    }
+  }
+  return result;
+}
+
+function translationWebglMatrix(x, y, z) {
+  return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, x, y, z, 1]);
+}
+
+function buildWebglCameraMatrix(bounds, aspect, camera = DEFAULT_WEBGL_CAMERA, displacementBound = [0, 0, 0]) {
+  const safeCamera = clampWebglCamera(camera);
+  if (safeCamera.yaw === 0 && safeCamera.pitch === 0 && safeCamera.distance === 1) return new Float32Array([
+    1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+  ]);
+  const expanded = expandWebglBounds(bounds, displacementBound);
+  const center = expanded.min.map((value, index) => (value + expanded.max[index]) / 2);
+  const yawCos = Math.cos(safeCamera.yaw);
+  const yawSin = Math.sin(safeCamera.yaw);
+  const pitchCos = Math.cos(safeCamera.pitch);
+  const pitchSin = Math.sin(safeCamera.pitch);
+  const rotationY = new Float32Array([
+    yawCos, 0, -yawSin, 0, 0, 1, 0, 0, yawSin, 0, yawCos, 0, 0, 0, 0, 1,
+  ]);
+  const rotationX = new Float32Array([
+    1, 0, 0, 0, 0, pitchCos, pitchSin, 0, 0, -pitchSin, pitchCos, 0, 0, 0, 0, 1,
+  ]);
+  const scale = 1 / safeCamera.distance;
+  const cameraTransform = multiplyWebglMatrices(
+    translationWebglMatrix(center[0], center[1], center[2]),
+    multiplyWebglMatrices(
+      new Float32Array([scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, scale, 0, 0, 0, 0, 1]),
+      multiplyWebglMatrices(rotationX, multiplyWebglMatrices(rotationY, translationWebglMatrix(-center[0], -center[1], -center[2]))),
+    ),
+  );
+  return cameraTransform;
 }
 
 function upload(gl, asset) {
@@ -3105,6 +3167,7 @@ function draw(canvas, asset, resources, weights) {
   gl.uniform1fv(resources.uniforms.weights, weights);
   gl.uniform2f(resources.uniforms.textureSize, resources.textureSize[0], resources.textureSize[1]);
   gl.uniformMatrix4fv(resources.uniforms.projection, false, buildWebglProjection(asset.bounds, aspect, asset.morphDisplacementBound));
+  gl.uniformMatrix4fv(resources.uniforms.camera, false, buildWebglCameraMatrix(asset.bounds, aspect, resources.camera, asset.morphDisplacementBound));
   gl.enable(gl.DEPTH_TEST);
   gl.depthFunc(gl.LEQUAL);
   gl.clearDepth(1);
@@ -3124,7 +3187,55 @@ function draw(canvas, asset, resources, weights) {
     maxWeight: Math.max(...weights.map((value) => Math.abs(value))),
     morphDisplacementBound: asset.morphDisplacementBound,
     framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete",
+    camera: { ...resources.camera },
   };
+}
+
+function redraw(canvas, state) {
+  canvas.__sportsFaceWebglDiagnostics = draw(canvas, state.asset, state, state.weights);
+}
+
+function attachCameraControls(canvas, state) {
+  if (state.cameraControlsAttached) return;
+  state.cameraControlsAttached = true;
+  let pointer = null;
+  canvas.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0) return;
+    pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener("pointermove", (event) => {
+    if (!pointer || pointer.id !== event.pointerId) return;
+    state.camera = clampWebglCamera({
+      yaw: state.camera.yaw + (event.clientX - pointer.x) * 0.012,
+      pitch: state.camera.pitch + (event.clientY - pointer.y) * 0.012,
+      distance: state.camera.distance,
+    });
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+    redraw(canvas, state);
+  });
+  const releasePointer = (event) => {
+    if (pointer?.id === event.pointerId) pointer = null;
+  };
+  canvas.addEventListener("pointerup", releasePointer);
+  canvas.addEventListener("pointercancel", releasePointer);
+  canvas.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    state.camera = clampWebglCamera({
+      ...state.camera,
+      distance: state.camera.distance * Math.exp(event.deltaY * 0.001),
+    });
+    redraw(canvas, state);
+  }, { passive: false });
+}
+
+function resetWebglCamera(canvas) {
+  const state = canvasState.get(canvas);
+  if (!state) return { ...DEFAULT_WEBGL_CAMERA };
+  state.camera = { ...DEFAULT_WEBGL_CAMERA };
+  redraw(canvas, state);
+  return { ...state.camera };
 }
 
 function fallback(canvas, profile, options, reason) {
@@ -3145,15 +3256,18 @@ function renderWebglFace(canvas, profile, options = {}) {
     if (!state || state.asset !== asset || state.gl !== gl) {
       const webglProgram = program(gl);
       const resources = upload(gl, asset);
-      state = { asset, gl, ...resources, program: webglProgram, uniforms: {
+      state = { asset, gl, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, weights: mapWebglWeights(profile), uniforms: {
         texture: gl.getUniformLocation(webglProgram, "uMorphDeltas"),
         weights: gl.getUniformLocation(webglProgram, "uWeights"),
         textureSize: gl.getUniformLocation(webglProgram, "uTextureSize"),
         projection: gl.getUniformLocation(webglProgram, "uProjection"),
+        camera: gl.getUniformLocation(webglProgram, "uCamera"),
       } };
       canvasState.set(canvas, state);
     }
-    const diagnostics = draw(canvas, asset, state, mapWebglWeights(profile));
+    attachCameraControls(canvas, state);
+    state.weights = mapWebglWeights(profile);
+    const diagnostics = draw(canvas, asset, state, state.weights);
     canvas.__sportsFaceWebglDiagnostics = diagnostics;
     return { canvas, fallback: false, renderer: WEBGL_MORPH_RENDER_STYLE, diagnostics };
   }).catch((error) => fallback(canvas, profile, fallbackOptions, error instanceof Error ? error.message : String(error)));
@@ -3164,17 +3278,22 @@ return {
   WEBGL_MORPH_ASSET_URL,
   WEBGL_MORPH_WEIGHT_LIMIT,
   WEBGL_FRAME_MARGIN,
+  DEFAULT_WEBGL_CAMERA,
+  WEBGL_CAMERA_LIMITS,
+  clampWebglCamera,
   mapWebglWeights,
   describeWebglMapping,
   parseWebglGlb,
   expandWebglBounds,
   buildWebglProjection,
+  buildWebglCameraMatrix,
+  resetWebglCamera,
   renderWebglFace,
   WEBGL_MORPH_RENDER_STYLE
 };
 })(SportsFaceModel, SportsFaceMorphRenderer);
 
-const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, describeWebglMapping, renderWebglFace }) => {
+const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, describeWebglMapping, resetWebglCamera, renderWebglFace }) => {
 /* Renderer selector. Selection is deliberately not part of FaceDNA/SF2. */
 const DEFAULT_RENDER_STYLE = "sports/default-v2";
 const TOON_RENDER_STYLE = "sports/toon-prototype";
@@ -3223,17 +3342,19 @@ return {
   buildMorphSvg,
   buildToonSvg,
   downloadPng,
+  resetWebglCamera,
   TOON_HEAD_ATTRIBUTION
 };
 })(SportsFaceLegacyRenderer, SportsFaceToonRenderer, SportsFaceMorphRenderer, SportsFaceWebglRenderer);
 
 (() => {
 const { FACE_VARS, ageProfile, cloneProfile, createProfile, describeProfile, formatFaceCode, getFaceValues, hashSeed, parseFaceCode, setFeature, setKit, setPresentation } = SportsFaceModel;
-const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, describeRender, downloadPng, renderPortrait } = SportsFaceRenderRouter;
+const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, describeRender, downloadPng, resetWebglCamera, renderPortrait } = SportsFaceRenderRouter;
 /* Sports Face MVP UI - SPDX-License-Identifier: GPL-2.0-only */
 
 const canvas = document.querySelector("#portrait");
 const webglCanvas = document.querySelector("#portrait-webgl");
+const webglCameraControls = document.querySelector("#webgl-camera-controls");
 const gallery = document.querySelector("#gallery");
 const seedInput = document.querySelector("#seed");
 const ageInput = document.querySelector("#age");
@@ -3383,6 +3504,7 @@ function refresh({ rebuildGallery = true } = {}) {
   if (renderStyle !== WEBGL_MORPH_RENDER_STYLE) {
     webglCanvas.hidden = true;
     canvas.hidden = false;
+    webglCameraControls.hidden = true;
   }
   const targetCanvas = renderStyle === WEBGL_MORPH_RENDER_STYLE ? webglCanvas : canvas;
   mainRenderPromise = renderPortrait(targetCanvas, profile, {
@@ -3396,6 +3518,7 @@ function refresh({ rebuildGallery = true } = {}) {
       const usedFallback = result?.fallback === true;
       webglCanvas.hidden = usedFallback;
       canvas.hidden = !usedFallback;
+      webglCameraControls.hidden = usedFallback;
       if (usedFallback) showToast(`WebGL2 fallback: ${result.reason}`, "error");
     }
     return result;
@@ -3403,6 +3526,11 @@ function refresh({ rebuildGallery = true } = {}) {
   syncControls();
   if (rebuildGallery) renderGallery();
 }
+
+document.querySelector("#reset-webgl-camera").addEventListener("click", () => {
+  resetWebglCamera(webglCanvas);
+  showToast("Cámara restablecida");
+});
 
 function newPlayer() {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0];

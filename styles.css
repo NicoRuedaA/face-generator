@@ -81,6 +81,8 @@ h2 { font-size: 1.45rem; letter-spacing: -0.025em; }
   border-radius: 16px;
   background: #10151c;
 }
+#portrait-webgl { touch-action: none; cursor: grab; }
+#portrait-webgl:active { cursor: grabbing; }
 .primary-actions, .row-actions { display: flex; flex-wrap: wrap; gap: 9px; }
 .primary-actions { margin-top: 14px; }
 .button {
@@ -98,6 +100,8 @@ h2 { font-size: 1.45rem; letter-spacing: -0.025em; }
 .button.primary:hover { background: #5de4aa; }
 .button.small { min-height: 38px; padding: 7px 11px; }
 .caption { margin: 12px 2px 2px; color: var(--muted); font-size: 0.84rem; line-height: 1.45; }
+.webgl-camera-controls { display: grid; gap: 7px; margin-top: 12px; }
+.webgl-camera-controls small { color: var(--muted); font-size: 0.78rem; line-height: 1.4; }
 
 .controls, .gallery-panel, .debug-panel { padding: 24px; }
 .section-heading { margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }

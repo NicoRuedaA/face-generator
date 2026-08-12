@@ -13,7 +13,10 @@ import {
 import {
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_MORPH_WEIGHT_LIMIT,
+  DEFAULT_WEBGL_CAMERA,
   buildWebglProjection,
+  buildWebglCameraMatrix,
+  clampWebglCamera,
   describeWebglMapping,
   expandWebglBounds,
   mapWebglWeights,
@@ -263,6 +266,17 @@ const projection = buildWebglProjection({ min: [-1, 0, -2], max: [1, 2, 2] }, 1,
 assert.equal(projection.length, 16);
 assert.ok([...projection].every(Number.isFinite));
 assert.equal(projection[14], 0);
+assert.deepEqual(DEFAULT_WEBGL_CAMERA, { yaw: 0, pitch: 0, distance: 1 });
+assert.deepEqual(clampWebglCamera({ yaw: 99, pitch: -99, distance: 0 }), { yaw: Math.PI, pitch: -1.15, distance: 0.72 });
+assert.deepEqual(clampWebglCamera({ yaw: -99, pitch: 99, distance: 99 }), { yaw: -Math.PI, pitch: 1.15, distance: 1.65 });
+assert.deepEqual(clampWebglCamera({ yaw: "invalid", pitch: null, distance: NaN }), DEFAULT_WEBGL_CAMERA);
+assert.deepEqual([...buildWebglCameraMatrix({ min: [-1, 0, -2], max: [1, 2, 2] }, 1, DEFAULT_WEBGL_CAMERA, [0.1, 0.2, 0.3])], [
+  1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+]);
+assert.notDeepEqual(
+  [...buildWebglCameraMatrix({ min: [-1, 0, -2], max: [1, 2, 2] }, 1, { yaw: 0.3, pitch: -0.2, distance: 1.2 }, [0.1, 0.2, 0.3])],
+  [...buildWebglCameraMatrix({ min: [-1, 0, -2], max: [1, 2, 2] }, 1, DEFAULT_WEBGL_CAMERA, [0.1, 0.2, 0.3])],
+);
 assert.throws(() => buildWebglProjection({ min: [0, 0], max: [1, 1] }, 1), /three axes/);
 assert.throws(() => buildWebglProjection({ min: [0, 0, 0], max: [1, 1, 1] }, 0), /positive/);
 assert.throws(() => parseWebglGlb(new ArrayBuffer(20)), /header/);
@@ -278,6 +292,9 @@ for (const html of [indexHtml, moduleIndexHtml]) {
   for (const mode of EXPRESSION_MODES) assert.match(html, new RegExp(`value="${mode}"`));
   for (const label of ["Automática", "Neutral", "Alerta", "Relajada", "Concentrada"]) assert.match(html, new RegExp(label));
   assert.match(html, /id="portrait-webgl"/);
+  assert.match(html, /id="webgl-camera-controls"/);
+  assert.match(html, /id="reset-webgl-camera"/);
+  assert.match(html, /arrastra para orbitar/);
 }
 
 const familyProbes = [

@@ -23,11 +23,13 @@ import {
   WEBGL_MORPH_RENDER_STYLE,
   describeRender,
   downloadPng,
+  resetWebglCamera,
   renderPortrait,
 } from "./render-router.js";
 
 const canvas = document.querySelector("#portrait");
 const webglCanvas = document.querySelector("#portrait-webgl");
+const webglCameraControls = document.querySelector("#webgl-camera-controls");
 const gallery = document.querySelector("#gallery");
 const seedInput = document.querySelector("#seed");
 const ageInput = document.querySelector("#age");
@@ -177,6 +179,7 @@ function refresh({ rebuildGallery = true } = {}) {
   if (renderStyle !== WEBGL_MORPH_RENDER_STYLE) {
     webglCanvas.hidden = true;
     canvas.hidden = false;
+    webglCameraControls.hidden = true;
   }
   const targetCanvas = renderStyle === WEBGL_MORPH_RENDER_STYLE ? webglCanvas : canvas;
   mainRenderPromise = renderPortrait(targetCanvas, profile, {
@@ -190,6 +193,7 @@ function refresh({ rebuildGallery = true } = {}) {
       const usedFallback = result?.fallback === true;
       webglCanvas.hidden = usedFallback;
       canvas.hidden = !usedFallback;
+      webglCameraControls.hidden = usedFallback;
       if (usedFallback) showToast(`WebGL2 fallback: ${result.reason}`, "error");
     }
     return result;
@@ -197,6 +201,11 @@ function refresh({ rebuildGallery = true } = {}) {
   syncControls();
   if (rebuildGallery) renderGallery();
 }
+
+document.querySelector("#reset-webgl-camera").addEventListener("click", () => {
+  resetWebglCamera(webglCanvas);
+  showToast("Cámara restablecida");
+});
 
 function newPlayer() {
   const seed = crypto.getRandomValues(new Uint32Array(1))[0];

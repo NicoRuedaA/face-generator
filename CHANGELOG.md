@@ -54,6 +54,11 @@
   equipación, expresión o semilla con los mismos bits de identidad no alteran la
   geometría. Los componentes PCA continúan siendo direcciones derivadas de
   geometría, no controles anatómicos semánticos.
+- Añade controles opt-in de inspección para WebGL2: órbita con arrastre, zoom con
+  rueda y restablecimiento accesible de cámara. El estado por canvas es bounded,
+  el frente por defecto sigue siendo determinista y los gestos redibujan recursos
+  GPU existentes sin refetch ni reupload. WebGL continúa geometry-only y no añade
+  texturas ni assets oficiales.
 
 ## 0.4.0 — Morph Lab
 

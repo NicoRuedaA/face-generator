@@ -19,6 +19,10 @@
     <section class="portrait-panel card">
       <canvas id="portrait" width="768" height="768" aria-label="Retrato generado en Canvas 2D"></canvas>
       <canvas id="portrait-webgl" width="768" height="768" aria-label="Retrato generado con WebGL2" hidden></canvas>
+      <div id="webgl-camera-controls" class="webgl-camera-controls" hidden>
+        <button id="reset-webgl-camera" class="button small" type="button">Restablecer cámara</button>
+        <small>Inspección: arrastra para orbitar y usa la rueda para acercar o alejar.</small>
+      </div>
       <div class="primary-actions">
         <button id="new-player" class="button primary">Nuevo jugador</button>
         <button id="age-five" class="button">+5 años</button>

@@ -194,6 +194,13 @@ The canonical evidence is in `docs/gnm-webgl-ab/`. Missing WebGL2 is a bounded
 The prototype remains geometry-only: it has no UVs, textures, eyes, teeth,
 tongue, or animation. The neutral PCA IDs are not semantic controls.
 
+When the opt-in WebGL2 style is selected in the UI, the canvas additionally
+offers bounded inspection-only controls: pointer drag orbit, wheel zoom, and an
+accessible camera reset. The default front view remains deterministic, and
+camera gestures redraw existing GPU resources without refetching or reuploading
+the GLB. These controls do not add textures, official assets, FaceDNA, or SF2
+state.
+
 The capture records canvas dimensions, a proportional non-background occupancy
 and bounding box, plus a WebGL2 `readPixels` probe when the candidate really
 renders. The stdlib PNG fallback accepts only 8-bit RGB/RGBA, non-interlaced PNGs

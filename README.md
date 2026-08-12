@@ -36,7 +36,7 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Toon Polish | `sports/toon-prototype` | Pulido visual basado en el subconjunto modificado de ToonHead: expresiones neutralizadas, pelo, barba, gafas, envejecimiento y equipación deportiva. |
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
-| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test y sombreado GLSL simple; cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
+| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
@@ -101,6 +101,15 @@ controles semánticos. La evidencia también registra dimensiones, ocupación y
 bounding box mediante una sonda `readPixels` WebGL2 y un decodificador PNG stdlib;
 son métricas proporcionales de salud/framing, no una afirmación de corrección
 anatómica o semántica.
+
+#### Controles de inspección WebGL2
+
+Solo cuando se selecciona `sports/morph-webgl-v1`, el canvas WebGL2 permite
+arrastrar para orbitar, usar la rueda para acercar o alejar y pulsar
+`Restablecer cámara`. El estado está acotado y vive por canvas; el reset devuelve
+siempre la vista frontal por defecto. Son controles de inspección únicamente:
+no cambian FaceDNA, SF2, pesos morph ni assets, y no añaden texturas ni assets
+oficiales.
 
 ### Intake de bundle oficial GNM
 

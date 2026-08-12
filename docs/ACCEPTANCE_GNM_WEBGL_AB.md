@@ -26,6 +26,12 @@ python3 tools/gnm/capture_webgl_ab.py --url http://127.0.0.1:8080/index.module.h
 python3 tools/gnm/validate_webgl_ab.py /tmp/gnm-webgl-ab/comparison.json
 ```
 
+La inspección interactiva no forma parte de la captura canónica: la vista inicial
+permanece frontal y determinista. En la interfaz WebGL2, una persona puede
+arrastrar el canvas para orbitar, usar la rueda para zoom y pulsar
+`Restablecer cámara`. Los valores están acotados, usan pointer capture y no
+afectan FaceDNA, SF2, pesos morph ni la carga de assets.
+
 ## Contrato fijo
 
 | Campo | Valor |

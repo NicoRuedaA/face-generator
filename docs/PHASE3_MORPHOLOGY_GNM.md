@@ -315,6 +315,14 @@ capas y cae al SVG GNM si falta WebGL2, el asset es inválido o falla un recurso
 SVG continúa siendo el default, GNM no entra en runtime y se mantienen las
 cautelas de licencia y procedencia.
 
+El canvas WebGL2 tiene controles opt-in de inspección: arrastre con pointer
+capture para orbitar, rueda para zoom y un botón accesible para restablecer la
+cámara. Yaw, pitch y distancia se acotan a rangos seguros; el estado es por
+canvas y cada gesto redibuja usando los recursos ya subidos, sin refetch ni
+reupload. La cámara por defecto es frontal y determinista para mantener
+comparables las capturas A/B sin interacción. Estos controles no cambian
+FaceDNA, SF2, pesos morph ni el alcance geometry-only.
+
 ## Comparativa A/B SVG/WebGL2
 
 La evidencia canónica de esta slice está en [`gnm-webgl-ab/`](gnm-webgl-ab/)
