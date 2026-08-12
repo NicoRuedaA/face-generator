@@ -34,6 +34,18 @@
       "embeddedIn": "src/app.bundle.js",
       "browserDataArtifact": "tools/gnm/work/gnm-morphology-pack.js",
       "landmarkMap": "provisional",
+      "landmarkQualityGate": {
+        "status": "report-only",
+        "provisionalReview": "required",
+        "anatomicalCorrectness": "not_proven",
+        "idChanges": false,
+        "evidence": [
+          "projection-excursions",
+          "raw-mesh-extrema-when-numpy-available",
+          "source-filename-consistency",
+          "retained-byte-identity"
+        ]
+      },
       "familySelection": {
         "method": "face-dna-semantic-shape",
         "inputs": [
@@ -110,7 +122,8 @@
     "tools/gnm/build_runtime_pack.py": "c6c0fae8b5205a71ad712753c6827a1cc8552e66379e6c2b06c6937f3200a17c",
     "tools/gnm/test_build_runtime_pack.py": "bdc253bfe07ef8f56fbd23b74661eb03c0b47d322136cb252e709fd5df9d53ac",
     "tools/gnm/test_gnm_quality.py": "3684b109b04ef5fbfb313a0d691b59a8d00d06f3c99783c3d44fbb21adf48ea8",
-    "tools/gnm/audit_gnm_landmarks.py": "89c292a93c92ca2acc0639d7d1d47285663aea0560cc8cbed5967fa982af2e36",
+    "tools/gnm/test_audit_gnm_landmarks.py": "12c65be634f6e3aca44b86ceeadae111b2d50097fbe5e02a7459f732e08ff083",
+    "tools/gnm/audit_gnm_landmarks.py": "9c7ac3a1af5e8a184022f053a26b8c572871c7c3d77999986b15e92fcf327f72",
     "tools/gnm/capture_acceptance_gallery.py": "5de7d69e1b3cf739ff721fa01067cfad882fccf0b3a3026378ccb9f253796ec3",
     "tools/gnm/export_gnm_glb.py": "4c4fb0a6cf7d57d349ee4aaef0c9547bb2aa7c813d8ea38728b2cf15959d6cf6",
     "tools/gnm/validate_gnm_glb.py": "618dd0e89874d1e3f30cafab630cce7bf610c1d5d3085cd84084145f15f4c982",
@@ -131,19 +144,19 @@
     "index.module.html": "e4d1d43190119050d42e7c23d35258b4ecc4c835f1fe9cd7d0c3d47283d95b9e",
     "styles.css": "cefb41f59744bc6383966c110a450ea345ce144b86aa97d923f1aaa668140368",
     "tools/gnm/work/head-morph.glb": "bed55bac58b21bf4168e66d1806ac6f3a14684eb841d5df1b6cb6a2bc554d79b",
-    "tools/gnm/README.md": "583633c5579c87f8de9db15f10dc06a49e9516a27e5012bb25feb7d59d132829",
-    "README.md": "5b434828cf0fc72307723a59da13ee8578806006c33b307aafe6294a6f33fbfa",
-    "docs/PHASE3_MORPHOLOGY_GNM.md": "f2d15493aba3b8ca307e76cd92357964f0f4589c934704f87c79facb2ab0cca0",
+    "tools/gnm/README.md": "9a60abc6508d54801f45a8a24032b311167e4748a4d0e6896bdcdd76d48f495f",
+    "README.md": "6ff873125be145754c18e2c67ccef972a6ce723ef446c6f3cca943c2e81e686c",
+    "docs/PHASE3_MORPHOLOGY_GNM.md": "d23177e749bf1c6fcb53b1e0bb053aac07cc1594ba3dd0bbb712e836260c8574",
     "docs/ACCEPTANCE_GNM_QUALITY.md": "5c3fe99b064a835b86da16c9cf89fe9df1673c975122af3b4c84269edf78ec9c",
-    "docs/ACCEPTANCE_GNM_LANDMARKS.md": "c13db84122542eb0a4bb1e0165570e8921eb9ea906bc7683bc0a43eabc8a7c5b",
+    "docs/ACCEPTANCE_GNM_LANDMARKS.md": "04899fc7140f18808666f131f7b0113bac6128277e498b2dadfe523d488698fb",
     "docs/ACCEPTANCE_GNM_GALLERY.md": "0104fda7b86f5591307690eee1ce20de8efbad0fa541a6cc1ea735c1338b8073",
     "docs/ACCEPTANCE_GNM_GLB.md": "2f3bb691d2b626a55635fd1d7d8741477c50a61cef4b721ebfb646e6e02a309a",
     "docs/ACCEPTANCE_GNM_WEBGL_AB.md": "8ea16dc5ab5bcbf76eca63f944b0a4079f1af7d66388bb678ec9f2427edec932",
     "docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md": "99b76737cec813752069986b6ab966d904ed44565c5e044e99d3d229c4cc3f52",
     "docs/ACCEPTANCE_V040.md": "925a89f22614b913dabe5555cae3431fdb1e7407a43cb9f342f1690afb3658e2",
-    "CHANGELOG.md": "1510d8fbf4a48f4821b45965bca9ae9bfc422fcbf191cabb97d1b5ec839db5a9",
-    "package.json": "a5f1bd1eb5b1da42af3849e9d7ad284a3763413c90cdf48ed797ebc922d232f5",
-    "scripts/refresh-release-manifest.mjs": "8e3d3d9b604bf69a3e61a7001db5584b3b17679f33274ec5aa2e4b6b695c96c8",
+    "CHANGELOG.md": "37116486720f9a80564ecd39023faa8a8cdc9a7c435a557bd97a7aac1b5368dc",
+    "package.json": "7ca31e52af54bc14be29d3b96a65d3602b51b26031c06c5f6a82933b85eb057e",
+    "scripts/refresh-release-manifest.mjs": "3cbc612508d5d460e8a6277a8b79bed791d7196c82a8b9fe0cc2c56071892517",
     "tools/gnm/work/official-bundle.example.json": "36183bc33bd046b940da60e4282ff0fa14135f86e6fe55f483e42929bff5041f"
   }
 }

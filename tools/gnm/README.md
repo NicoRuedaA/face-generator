@@ -77,10 +77,15 @@ npm run test:gnm-quality
 ```
 
 The Phase 1 landmark audit is also standard-library-first. It always validates
-the JSON map, projected samples, bilateral orientation, fixed-frame bounds and
-retained-artifact consistency. If `gnm-heads-200.npz` exists, it additionally
-uses NumPy to compare map coordinates with the template and inspect raw-mesh
-bilateral orientation:
+the JSON map, projected samples, bilateral orientation, fixed-frame bounds,
+retained-artifact consistency and report-only provenance evidence. The report
+includes the excursion count, percentage, worst sample/landmark/axis/value/
+distance, and source filename paths. A source filename mismatch is WARN when
+retained landmarks are byte-identical; it is not silently treated as a failure.
+If `gnm-heads-200.npz` exists, it additionally uses NumPy to compare map
+coordinates with the template, inspect raw-mesh bilateral orientation, and
+report raw XYZ extrema. Without NumPy it emits a bounded WARN and no fabricated
+extrema:
 
 ```bash
 npm run test:gnm-landmarks
@@ -89,6 +94,9 @@ npm run test:gnm-landmarks
 The command exits successfully for the documented provisional `PASS with WARN`
 baseline. It exits nonzero for duplicate or out-of-range IDs, bilateral
 inversions, count mismatches, or retained-artifact integrity failures.
+Every report carries `provisionalReview: "required"` and
+`anatomicalCorrectness: "not_proven"`. This quality-gate slice improves evidence
+only; it does not correct landmark IDs or prove anatomy.
 
 ## Phase 2: export the retained template
 

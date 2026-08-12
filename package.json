@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-landmarks",
+    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks",
     "test:model": "node ./tests/model.test.mjs",
     "test:baseline": "node ./baseline/verify-baseline.mjs",
     "generate:baseline": "node ./baseline/generate-baseline.mjs",
@@ -14,6 +14,7 @@
     "test:morph": "node ./tests/morphology.test.mjs",
     "test:gnm-tools": "python3 ./tools/gnm/build_morphology_pack.py --input ./tools/gnm/starter-landmark-samples.json --output /tmp/sports-face-gnm-pack-test.json --families 8 --seed 400 && python3 ./tools/gnm/validate_morphology_pack.py /tmp/sports-face-gnm-pack-test.json && python3 ./tools/gnm/test_gnm_morphology_pack.py && python3 ./tools/gnm/test_build_runtime_pack.py",
     "test:gnm-quality": "python3 ./tools/gnm/test_gnm_quality.py",
+    "test:gnm-landmark-audit": "python3 ./tools/gnm/test_audit_gnm_landmarks.py",
     "test:gnm-landmarks": "python3 ./tools/gnm/audit_gnm_landmarks.py",
     "build:gnm-glb": "python ./tools/gnm/export_gnm_glb.py",
     "test:gnm-glb": "python ./tools/gnm/test_gnm_glb.py",

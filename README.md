@@ -136,6 +136,14 @@ El estado actual del pack es:
 - Mapeo semántico `face-dna-shape-v1` basado únicamente en `head` y `faceProportion`, con reglas explícitas y revisadas. No es un mapeo aprendido ni se deriva de la semilla.
 - Microexpresiones deterministas compartidas por los dos estilos Morph Lab.
 
+La puerta de calidad de landmarks es deliberadamente report-only: amplía la
+evidencia con excursiones de proyección, extremos de malla cruda y procedencia
+de nombres de archivo, pero no corrige IDs ni demuestra corrección anatómica.
+El reporte siempre conserva `provisionalReview: required` y
+`anatomicalCorrectness: not_proven`. El drift actual entre `heads-test.npz` en
+el mapa y `gnm-heads-200.npz` en los artefactos se informa como WARN porque los
+landmarks canónicos y retenidos son idénticos byte a byte.
+
 ### Fase 2: exportación GLB offline
 
 Con el entorno externo de GNM activado (debe aportar NumPy), exporta y valida la

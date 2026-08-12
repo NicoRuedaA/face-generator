@@ -213,6 +213,13 @@ template y la orientación bilateral sobre la malla. El baseline actual es
 `PASS with WARN`: los avisos de bounds y asimetría describen la normalización
 estable y no son evidencia suficiente de IDs anatómicamente incorrectos.
 
+La mejora de quality gate de esta slice es solo de evidencia: el reporte añade
+`provisionalReview: required`, `anatomicalCorrectness: not_proven`, porcentaje y
+peor excursión de proyección, extremos XYZ de la malla cruda cuando NumPy está
+disponible y consistencia de nombres de fuente. El drift de
+`heads-test.npz`/`gnm-heads-200.npz` es WARN con rutas exactas e identidad de
+contenido comprobada; no se cambian IDs ni artefactos y no se afirma anatomía.
+
 La evidencia visual reproducible del baseline 2D se genera fuera del release
 con Chromium/CDP:
 

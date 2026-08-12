@@ -8,6 +8,7 @@ const operationalFiles = [
   "tools/gnm/build_runtime_pack.py",
   "tools/gnm/test_build_runtime_pack.py",
   "tools/gnm/test_gnm_quality.py",
+  "tools/gnm/test_audit_gnm_landmarks.py",
   "tools/gnm/audit_gnm_landmarks.py",
   "tools/gnm/capture_acceptance_gallery.py",
   "tools/gnm/export_gnm_glb.py",

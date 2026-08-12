@@ -1,5 +1,10 @@
 ## Unreleased — Operativa GNM
 
+- Mejora la auditoría provisional de landmarks como quality gate report-only:
+  informa `provisionalReview: required`, no promociona corrección anatómica,
+  detalla excursiones de proyección y extremos XYZ crudos cuando NumPy está
+  disponible, y registra el drift de nombres de fuente como WARN con evidencia
+  de identidad byte a byte. No cambia IDs ni artefactos GNM.
 - Añade un workflow que ejecuta `npm test` antes de publicar el sitio estático mínimo en GitHub Pages.
 - Añade `tools/gnm/build_runtime_pack.py`, un orquestador determinista para
   generar y validar candidatos GNM de 200 cabezas sin reemplazar el paquete de
