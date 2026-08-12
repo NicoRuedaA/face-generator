@@ -31,6 +31,11 @@
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,
   `Alerta`, `Relajada`, `Concentrada`) exclusivo de Morph Lab.
+- Añade una puerta stdlib-only de intake para un futuro bundle oficial GNM:
+  manifest fail-closed, procedencia/licencia, permiso explícito de
+  redistribución, hashes, completitud geométrica y estados `proposed` ->
+  `reviewed` -> `accepted`. Esta fase no acepta ni redistribuye assets oficiales
+  ni cambia el runtime.
 
 ## 0.4.0 — Morph Lab
 

@@ -5,6 +5,33 @@ morphology pack may be embedded in the offline bundle and selected explicitly
 as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
 Only the portable JSON pack crosses the browser boundary.
 
+## Official GNM asset intake gate
+
+This repository does not include or redistribute an official GNM UV/material or
+anatomy bundle. The intake contract is documentation/tooling only and starts
+with a proposed placeholder manifest:
+
+```bash
+npm run validate:gnm-official-example
+npm run test:gnm-official-bundle
+```
+
+For a real external candidate, create a manifest outside release/runtime asset
+paths and validate it with the exact command below:
+
+```bash
+python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
+```
+
+`proposed` manifests may reference missing files. `reviewed` and `accepted`
+manifests must contain the complete mesh, UV, materials/textures, eyes, teeth
+and tongue roles with matching hashes and topology counts. `accepted` also
+requires a human-approved redistribution permission record; a repository
+license is not sufficient. Keep `runtimeAllowed` false until that record is
+explicit and accepted. Do not put UVs, textures, eyes, teeth or tongue into the
+browser/runtime before acceptance. See
+[`docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md`](../../docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md).
+
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
 binary glTF 2.0 file for offline inspection. The later WebGL2 slice is opt-in;
 SVG remains the default and GNM itself is never loaded by runtime.

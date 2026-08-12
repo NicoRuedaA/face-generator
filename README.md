@@ -97,6 +97,27 @@ bounding box mediante una sonda `readPixels` WebGL2 y un decodificador PNG stdli
 son métricas proporcionales de salud/framing, no una afirmación de corrección
 anatómica o semántica.
 
+### Intake de bundle oficial GNM
+
+La siguiente slice añade una puerta de procedencia y licencia para un futuro
+bundle oficial, sin descargarlo ni redistribuirlo. El ejemplo es un manifest
+`proposed` con placeholders y `runtimeAllowed: false`:
+
+```bash
+npm run validate:gnm-official-example
+npm run test:gnm-official-bundle
+python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
+```
+
+Los estados son `proposed` -> `reviewed` -> `accepted`. La aceptación exige
+archivos completos y hasheados para mesh, UVs, materiales/texturas, ojos,
+dientes y lengua, topología consistente, evidencia de licencia y una decisión
+humana explícita de redistribución. No se infiere permiso desde la licencia del
+repositorio. No se añaden UVs, texturas, ojos, dientes o lengua al
+navegador/runtime antes de `accepted`; esta fase no aceptó ni redistribuyó
+assets oficiales. El contrato completo está en
+[`docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md`](docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md).
+
 ## Estado de GNM
 
 GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.

@@ -291,3 +291,23 @@ Siguen fuera de alcance UVs, texturas, ojos, dientes, lengua y animación. Los I
 PCA neutrales no son controles semánticos. La captura requiere Playwright y
 Chromium local; la validación de un `comparison.json` existente solo usa la
 biblioteca estándar de Python.
+
+## Siguiente slice: intake oficial y procedencia
+
+La siguiente fase es documentación/tooling únicamente. Añade un contrato
+stdlib-only para que un futuro bundle oficial pueda pasar por los estados
+`proposed` -> `reviewed` -> `accepted` sin fingir que ya fue aceptado:
+
+```bash
+npm run validate:gnm-official-example
+npm run test:gnm-official-bundle
+python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
+```
+
+La puerta exige la revisión humana de procedencia, revisión de la licencia y
+una decisión explícita de redistribución con referencia, además de hashes,
+archivos completos para mesh/UVs/materiales-texturas/ojos/dientes/lengua y
+topología identidad-template consistente. La licencia del repositorio no se
+interpreta como permiso. `runtimeAllowed` debe permanecer en `false` hasta la
+aprobación explícita. No se añaden esos assets al navegador/runtime antes de
+`accepted`; esta fase no aceptó ni redistribuyó assets oficiales.

@@ -39,3 +39,9 @@ proyecto declara Apache License 2.0. GNM no es una dependencia de runtime.
 El bundle puede incrustar un paquete morfológico portable generado offline a
 partir de datos de GNM; ese paquete solo se consume al seleccionar
 `sports/morph-gnm-v1` explícitamente.
+
+Esta fase tampoco acepta ni redistribuye un bundle oficial. El contrato de
+intake exige registrar la procedencia exacta, el texto de licencia y una
+decisión humana explícita sobre redistribución; la licencia del repositorio por
+sí sola no basta. UVs, texturas, ojos, dientes y lengua permanecen fuera del
+navegador/runtime hasta que el manifest pase a `accepted`.

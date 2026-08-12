@@ -18,6 +18,8 @@ const operationalFiles = [
   "tools/gnm/test_gnm_morph_targets.py",
   "tools/gnm/capture_webgl_ab.py",
   "tools/gnm/validate_webgl_ab.py",
+  "tools/gnm/validate_official_bundle.py",
+  "tools/gnm/test_official_bundle.py",
   "src/webgl-renderer.js",
   "src/render-router.js",
   "src/app.js",
@@ -35,10 +37,12 @@ const operationalFiles = [
   "docs/ACCEPTANCE_GNM_GALLERY.md",
   "docs/ACCEPTANCE_GNM_GLB.md",
   "docs/ACCEPTANCE_GNM_WEBGL_AB.md",
+  "docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md",
   "docs/ACCEPTANCE_V040.md",
   "CHANGELOG.md",
   "package.json",
   "scripts/refresh-release-manifest.mjs",
+  "tools/gnm/work/official-bundle.example.json",
 ];
 
 function sha256(filePath) {

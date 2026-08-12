@@ -1,0 +1,63 @@
+{
+  "schema": "sports-face-gnm-official-bundle/v1",
+  "status": "proposed",
+  "runtimeAllowed": false,
+  "source": {
+    "repositoryUrl": "https://example.invalid/official-gnm-repository",
+    "upstreamRevision": "UNRECORDED",
+    "archiveSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "license": {
+    "name": "UNRECORDED",
+    "spdxId": "UNRECORDED",
+    "textPath": "REPLACE_WITH_LICENSE_TEXT.txt",
+    "textSha256": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "permission": {
+    "decision": "pending",
+    "reviewer": "UNASSIGNED",
+    "decisionDate": "UNSET",
+    "decisionReference": "UNRECORDED",
+    "basis": "Repository license alone is not a redistribution permission decision."
+  },
+  "geometry": {
+    "expectedVertexCount": 0,
+    "expectedTriangleCount": 0,
+    "identityTemplateTopology": {
+      "consistent": false,
+      "identityCount": 0,
+      "templateVertexCount": 0,
+      "templateTriangleCount": 0,
+      "identityVertexCount": 0,
+      "identityTriangleCount": 0
+    }
+  },
+  "assets": {
+    "mesh": {
+      "path": "REPLACE_WITH_MESH.glb",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "uvs": {
+      "path": "REPLACE_WITH_UVS.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "materialsTextures": {
+      "path": "REPLACE_WITH_MATERIALS_TEXTURES.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "eyes": {
+      "path": "REPLACE_WITH_EYES.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "teeth": {
+      "path": "REPLACE_WITH_TEETH.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "tongue": {
+      "path": "REPLACE_WITH_TONGUE.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "expressions": null
+  },
+  "notes": "Canonical placeholder only. No official GNM files are included, accepted, redistributed, or runtime-allowed by this example."
+}
