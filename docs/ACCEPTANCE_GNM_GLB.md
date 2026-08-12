@@ -33,8 +33,8 @@ must be added only from official GNM data in a later slice.
 
 ## Scope boundary
 
-This phase does not change runtime or SVG behavior. The browser does not load the
-GLB, GNM, or NumPy, and this phase does not implement WebGL rendering.
+The raw Phase 2 path does not change runtime or SVG behavior. The browser does not
+load GNM or NumPy for this artifact.
 
 ## Phase 3 bounded slice
 
@@ -62,4 +62,20 @@ maximum absolute residual `0.147963` in source mesh units.
 The NPZ `identities` array is `(200, 253)` parameter data, not mesh data. The
 builder therefore uses the verified per-sample `vertices` array `(200, 17,821,
 3)` and records this provenance; it fails closed if valid sample meshes are not
-available. No GLB morph-target integration is included in this slice.
+available.
+
+## Opt-in WebGL2 slice
+
+`npm run build:gnm-glb-morph` generates `tools/gnm/work/head-morph.glb` from the
+canonical metadata and payload. The GLB contains the base `template + meanDelta`,
+16 float32 `VEC3` additive targets, `primitive.targets` in index order, and neutral
+`extras.targetNames`. The browser option `sports/morph-webgl-v1` parses this
+self-contained asset and packs target deltas into a WebGL2 `sampler2DArray` with
+16 layers. It is an opt-in prototype, not the default; missing WebGL2, asset
+failure, malformed data, or resource errors fall back to `sports/morph-gnm-v1`
+SVG and report the reason. GNM itself is not in runtime.
+
+The FaceDNA/SF2 mapping is deterministic and bounded, but PCA directions are
+geometry-derived and neutral names are deliberately non-anatomical. Textures,
+eyes, teeth, tongue, animation, and semantic PCA controls remain out of scope.
+Keep the external GNM provenance and licensing caveats before distribution.

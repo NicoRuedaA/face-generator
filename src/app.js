@@ -20,12 +20,14 @@ import {
   MORPH_RENDER_STYLE,
   RENDER_STYLES,
   TOON_RENDER_STYLE,
+  WEBGL_MORPH_RENDER_STYLE,
   describeRender,
   downloadPng,
   renderPortrait,
 } from "./render-router.js";
 
 const canvas = document.querySelector("#portrait");
+const webglCanvas = document.querySelector("#portrait-webgl");
 const gallery = document.querySelector("#gallery");
 const seedInput = document.querySelector("#seed");
 const ageInput = document.querySelector("#age");
@@ -71,6 +73,7 @@ function loadLandmarkPreference() {
 }
 let showLandmarks = loadLandmarkPreference();
 let mainRenderPromise = Promise.resolve(canvas);
+let renderRevision = 0;
 let toastTimer = null;
 
 function showToast(message, type = "ok") {
@@ -136,9 +139,9 @@ function syncControls() {
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
-  toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-  landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-  expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+   toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+   landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+   expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
   landmarksInput.checked = showLandmarks;
 }
 
@@ -157,7 +160,8 @@ function renderGallery() {
     const miniCanvas = document.createElement("canvas");
     miniCanvas.width = 192;
     miniCanvas.height = 192;
-    renderPortrait(miniCanvas, itemProfile, { style: renderStyle, expressionMode, showAge: false, showLandmarks: false }).catch((error) => showToast(error.message, "error"));
+     const galleryStyle = renderStyle === WEBGL_MORPH_RENDER_STYLE ? GNM_MORPH_RENDER_STYLE : renderStyle;
+     renderPortrait(miniCanvas, itemProfile, { style: galleryStyle, expressionMode, showAge: false, showLandmarks: false }).catch((error) => showToast(error.message, "error"));
     button.append(miniCanvas);
     button.addEventListener("click", () => {
       profile = cloneProfile(itemProfile);
@@ -169,7 +173,27 @@ function renderGallery() {
 }
 
 function refresh({ rebuildGallery = true } = {}) {
-  mainRenderPromise = renderPortrait(canvas, profile, { style: renderStyle, expressionMode, showLandmarks }).catch((error) => { showToast(error.message, "error"); throw error; });
+  const revision = ++renderRevision;
+  if (renderStyle !== WEBGL_MORPH_RENDER_STYLE) {
+    webglCanvas.hidden = true;
+    canvas.hidden = false;
+  }
+  const targetCanvas = renderStyle === WEBGL_MORPH_RENDER_STYLE ? webglCanvas : canvas;
+  mainRenderPromise = renderPortrait(targetCanvas, profile, {
+    style: renderStyle,
+    expressionMode,
+    showLandmarks,
+    fallbackCanvas: canvas,
+  }).then((result) => {
+    if (revision !== renderRevision) return result;
+    if (renderStyle === WEBGL_MORPH_RENDER_STYLE) {
+      const usedFallback = result?.fallback === true;
+      webglCanvas.hidden = usedFallback;
+      canvas.hidden = !usedFallback;
+      if (usedFallback) showToast(`WebGL2 fallback: ${result.reason}`, "error");
+    }
+    return result;
+  }).catch((error) => { showToast(error.message, "error"); throw error; });
   syncControls();
   if (rebuildGallery) renderGallery();
 }
@@ -223,7 +247,7 @@ document.querySelector("#load-code").addEventListener("click", () => {
 
 document.querySelector("#download-png").addEventListener("click", async () => {
   await mainRenderPromise;
-  downloadPng(canvas, `sports-face-${renderStyle.split("/").pop()}-${profile.seed}.png`);
+  downloadPng(renderStyle === WEBGL_MORPH_RENDER_STYLE && !webglCanvas.hidden ? webglCanvas : canvas, `sports-face-${renderStyle.split("/").pop()}-${profile.seed}.png`);
   showToast("PNG preparado");
 });
 
@@ -245,6 +269,8 @@ renderStyleInput.addEventListener("change", () => {
   refresh();
   showToast([MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle)
     ? "Morph Lab activado; landmarks y FaceDNA permanecen separados"
+    : renderStyle === WEBGL_MORPH_RENDER_STYLE
+      ? "WebGL2 opt-in activado; fallará de forma segura a GNM SVG"
     : renderStyle === TOON_RENDER_STYLE
       ? "Toon Polish activado; FaceDNA no ha cambiado"
       : "Renderer original activado");

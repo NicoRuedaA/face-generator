@@ -9,10 +9,14 @@
 - Documenta instalación externa de GNM, revisión del mapa provisional,
   promoción, regeneración del bundle y comprobaciones de release.
 - Añade la exportación y validación offline del template GNM retenido como GLB
-  geometry-only; no implementa WebGL ni inventa UVs, texturas o submallas ausentes.
+  geometry-only; no inventa UVs, texturas o submallas ausentes.
 - Añade la primera slice acotada de Fase 3: reducción PCA/SVD offline de las 200
   mallas GNM a 16 morph targets neutrales con payload binario float32 validado;
-  no implementa WebGL, carga en navegador, integración GLB ni nombres semánticos.
+  la integración WebGL posterior mantiene los nombres neutrales y no añade controles semánticos.
+- Integra esos 16 targets en `tools/gnm/work/head-morph.glb` con base
+  `template + meanDelta` y añade `sports/morph-webgl-v1`, un prototipo WebGL2
+  opt-in con textura `sampler2DArray` y fallback seguro al SVG GNM. SVG sigue
+  siendo el default; los targets son geometry-derived y sus nombres son neutrales.
 - Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
   ojos, cejas y boca sin convertir el retrato neutral en una animación.
 - Añade selector persistente de microexpresión (`Automática`, `Neutral`,

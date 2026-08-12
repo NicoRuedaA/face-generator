@@ -75,8 +75,8 @@ def validate(document: dict, binary: bytes) -> tuple[int, int, int]:
     require(isinstance(scenes, list) and len(scenes) == 1, "expected exactly one scene")
     require(isinstance(nodes, list) and len(nodes) == 1, "expected exactly one node")
     require(isinstance(meshes, list) and len(meshes) == 1, "expected exactly one mesh")
-    require(isinstance(accessors, list) and len(accessors) == 2, "expected position and index accessors")
-    require(isinstance(views, list) and len(views) == 2, "expected position and index bufferViews")
+    require(isinstance(accessors, list) and len(accessors) in (2, 18), "expected position/index or position/index/morph accessors")
+    require(isinstance(views, list) and len(views) in (2, 18), "expected position/index or position/index/morph bufferViews")
     require(isinstance(buffers, list) and len(buffers) == 1, "expected exactly one buffer")
     require(document.get("scene") == 0, "default scene must be scene 0")
     require(scenes[0].get("nodes") == [0], "scene must reference node 0")
@@ -116,6 +116,21 @@ def validate(document: dict, binary: bytes) -> tuple[int, int, int]:
     primitive = document["meshes"][0]["primitives"][0]
     require(primitive.get("attributes") == {"POSITION": 0}, "primitive must expose POSITION accessor 0")
     require(primitive.get("indices") == 1 and primitive.get("mode") == 4, "primitive must use indexed triangles")
+    if len(accessors) == 18:
+        targets = primitive.get("targets")
+        names = document["meshes"][0].get("extras", {}).get("targetNames")
+        require(isinstance(targets, list) and len(targets) == 16, "morph primitive must contain 16 targets")
+        require(names == [f"gnm-pca-{index + 1:02d}" for index in range(16)], "morph target names must be neutral and ordered")
+        for index, target in enumerate(targets):
+            require(target == {"POSITION": index + 2}, f"morph target {index} must reference its POSITION accessor")
+            accessor = accessors[index + 2]
+            view = views[index + 2]
+            require(accessor.get("bufferView") == index + 2, f"morph accessor {index} has the wrong bufferView")
+            require(accessor.get("componentType") == 5126 and accessor.get("type") == "VEC3", f"morph accessor {index} must be float32 VEC3")
+            require(accessor.get("count") == counts[0], f"morph accessor {index} has the wrong count")
+            require(view.get("byteLength") == counts[0] * 12, f"morph bufferView {index} length is invalid")
+            require(view.get("target") == 34962, f"morph bufferView {index} has the wrong target")
+            require(view.get("byteOffset", 0) % 12 == 0, f"morph bufferView {index} is not VEC3 aligned")
     require(len(position.get("min", [])) == 3 and len(position.get("max", [])) == 3, "position bounds must contain three values")
     bounds = position["min"] + position["max"]
     require(all(isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) for value in bounds), "position bounds must be finite")

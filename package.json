@@ -17,6 +17,8 @@
     "test:gnm-landmarks": "python3 ./tools/gnm/audit_gnm_landmarks.py",
     "build:gnm-glb": "python ./tools/gnm/export_gnm_glb.py",
     "test:gnm-glb": "python ./tools/gnm/test_gnm_glb.py",
+    "build:gnm-glb-morph": "python ./tools/gnm/export_gnm_glb.py --output ./tools/gnm/work/head-morph.glb --morph-metadata ./tools/gnm/work/gnm-morph-targets.json",
+    "test:gnm-glb-morph": "python ./tools/gnm/test_gnm_glb.py",
     "build:gnm-morph-targets": "python ./tools/gnm/build_gnm_morph_targets.py",
     "test:gnm-morph-targets": "python ./tools/gnm/test_gnm_morph_targets.py",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"

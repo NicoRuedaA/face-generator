@@ -4,13 +4,14 @@
 
 Implementada en `v0.4.0`.
 
-La fase añade el laboratorio morfológico y dos estilos explícitos:
+La fase añade el laboratorio morfológico y cinco estilos explícitos:
 
 ```text
 sports/default-v2
 sports/toon-prototype
 sports/morph-v1
 sports/morph-gnm-v1
+sports/morph-webgl-v1
 ```
 
 `sports/morph-v1` continúa siendo el estilo analítico predeterminado. El estilo
@@ -97,7 +98,8 @@ python tools/gnm/validate_gnm_glb.py tools/gnm/work/head.glb
 El GLB contiene una sola escena, nodo y mesh, con posiciones float32, índices
 uint32, material neutro y bounds finitos. La salida actual es de 17.821 vértices,
 35.324 triángulos y 105.972 índices. Es un artefacto geometry-only para uso
-offline; no modifica el runtime/SVG y todavía no implementa WebGL.
+offline; no sustituye el renderer analítico ni modifica FaceDNA. El GLB WebGL2
+opt-in se documenta más abajo y SVG continúa siendo el default.
 
 El NPZ retenido no contiene UVs, texturas, ojos, dientes, lengua ni morph targets.
 No se simulan ni se rellenan esos datos: deben añadirse solamente desde datos
@@ -256,3 +258,12 @@ No se ha modificado:
 - migración SF1 → SF2;
 - baseline de 100 identidades;
 - renderer Toon Polish v0.3.1.
+
+La siguiente slice acotada añade `sports/morph-webgl-v1` como prototipo opt-in.
+Carga `tools/gnm/work/head-morph.glb`, cuyo base es `template + meanDelta` y cuyos
+16 targets son deltas PCA geometry-derived con nombres neutrales `gnm-pca-01` a
+`gnm-pca-16`. No son controles anatómicos ni componentes PCA semánticos. El
+renderer usa WebGL2 sin dependencias, empaqueta los deltas en una textura de 16
+capas y cae al SVG GNM si falta WebGL2, el asset es inválido o falla un recurso.
+SVG continúa siendo el default, GNM no entra en runtime y se mantienen las
+cautelas de licencia y procedencia.

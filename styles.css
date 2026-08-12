@@ -74,7 +74,7 @@ h2 { font-size: 1.45rem; letter-spacing: -0.025em; }
 }
 
 .portrait-panel { padding: 18px; align-self: start; position: sticky; top: 18px; }
-#portrait {
+#portrait, #portrait-webgl {
   display: block;
   width: 100%;
   height: auto;

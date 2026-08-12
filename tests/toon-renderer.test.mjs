@@ -4,6 +4,7 @@ import { createProfile, formatFaceCode, hashSeed, setFeature } from "../src/face
 import {
   DEFAULT_RENDER_STYLE,
   GNM_MORPH_RENDER_STYLE,
+  WEBGL_MORPH_RENDER_STYLE,
   RENDER_STYLES,
   MORPH_RENDER_STYLE,
   TOON_RENDER_STYLE,
@@ -12,7 +13,7 @@ import {
 } from "../src/render-router.js";
 import { TOON_HEAD_ATTRIBUTION } from "../src/toon-head-assets.js";
 
-assert.deepEqual(RENDER_STYLES.map((item) => item.id), [DEFAULT_RENDER_STYLE, TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE]);
+assert.deepEqual(RENDER_STYLES.map((item) => item.id), [DEFAULT_RENDER_STYLE, TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE]);
 assert.equal(RENDER_STYLES[1].label, "Sports Toon Polish v0.3.1");
 assert.equal(TOON_HEAD_ATTRIBUTION.creator, "Johan Melin");
 assert.equal(TOON_HEAD_ATTRIBUTION.license, "CC BY 4.0");

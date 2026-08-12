@@ -2,7 +2,7 @@
 
 ![Vista previa del generador](preview.png)
 
-Sports Face MVP es un prototipo web para generar retratos 2D reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y cuatro opciones de renderizado.
+Sports Face MVP es un prototipo web para generar retratos 2D reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y cinco opciones de renderizado.
 
 **Estado:** prototipo técnico funcional, no producto de producción. La distribución abre el retrato con un bundle offline. Morph Lab GNM es una integración experimental: el pack actual usa 200 cabezas, 31 landmarks provisionales, 14 features y 8 familias. Los landmarks todavía requieren revisión y no constituyen un mapeo anatómico validado.
 
@@ -36,6 +36,7 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Toon Polish | `sports/toon-prototype` | Pulido visual basado en el subconjunto modificado de ToonHead: expresiones neutralizadas, pelo, barba, gafas, envejecimiento y equipación deportiva. |
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
+| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias y cae al renderer GNM SVG si el contexto o el asset no están disponibles. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
@@ -62,7 +63,16 @@ con residual `4.7404%`, RMSE `0.0172562` y error absoluto máximo `0.147963`.
 npm run build:gnm-morph-targets
 npm run test:gnm-morph-targets
 python tools/gnm/validate_gnm_morph_targets.py tools/gnm/work/gnm-morph-targets.json
+npm run build:gnm-glb-morph
+npm run test:gnm-glb-morph
+python tools/gnm/validate_gnm_glb.py tools/gnm/work/head-morph.glb
 ```
+
+La integración GLB usa `template + meanDelta` como base y añade 16 deltas PCA en
+orden estable. Los nombres son neutrales y los pesos del renderer son una
+proyección bounded determinista de FaceDNA/SF2; no son controles anatómicos ni
+componentes PCA semánticos. WebGL2 es un prototipo opt-in, GNM no entra en
+runtime y SVG sigue siendo el camino predeterminado.
 
 ## Estado de GNM
 
@@ -138,7 +148,7 @@ La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo 
 - Separación entre identidad permanente, apariencia mutable, edad y equipación.
 - Composición por capas con gráficos vectoriales provisionales propios y exportación PNG.
 - Envejecimiento y galería de identidades para revisar variedad.
-- Renderizado Canvas 2D, SVG intermedio para Morph Lab y bundle offline reproducible.
+- Renderizado Canvas 2D, SVG intermedio para Morph Lab, WebGL2 opt-in y bundle offline reproducible.
 
 ## Arquitectura y mapa de archivos
 
@@ -152,7 +162,8 @@ La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo 
 | `src/toon-head-assets.js` | Datos vectoriales del subconjunto ToonHead y assets deportivos. |
 | `src/morphology.js` | Features, familias, landmarks, selección semántica GNM y microexpresiones. |
 | `src/morph-renderer.js` | Deformación local, composición SVG y renderizado de ambos estilos Morph Lab. |
-| `src/render-router.js` | Catálogo y selección de los cuatro renderizadores. |
+| `src/render-router.js` | Catálogo y selección de los cinco renderizadores. |
+| `src/webgl-renderer.js` | Renderer WebGL2 opt-in, parser GLB, textura de targets y fallback GNM SVG. |
 | `src/app.js` | Interfaz, controles, galería, persistencia de preferencias y exportación. |
 | `src/app.bundle.js` | Bundle generado para abrir `index.html` directamente. |
 | `tools/gnm/` | Pipeline completamente offline, validadores, esquemas y documentación GNM. |
@@ -219,5 +230,5 @@ Si el producto final debe ser propietario, no incorpores directamente este proto
 2. Regenerar y validar el pack GNM después de cada cambio del mapa, manteniendo la promoción explícita.
 3. Comparar el pack medido con el starter pack analítico y evaluar diversidad, estabilidad y casi duplicados en muestras mayores.
 4. Sustituir progresivamente los assets temporales por arte deportivo propio y documentar sus licencias.
-5. Ampliar la cobertura visual y de aceptación para los cuatro renderizadores y las microexpresiones.
+5. Ampliar la cobertura visual y de aceptación para los cinco renderizadores y las microexpresiones.
 6. Hacer una revisión legal antes de cualquier distribución comercial o reimplementación propietaria.

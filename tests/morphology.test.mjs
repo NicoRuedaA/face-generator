@@ -10,6 +10,12 @@ import {
   setPresentation,
 } from "../src/face-model.js";
 import {
+  WEBGL_MORPH_RENDER_STYLE,
+  describeWebglMapping,
+  mapWebglWeights,
+  parseWebglGlb,
+} from "../src/webgl-renderer.js";
+import {
   GNM_MORPH_RENDER_STYLE,
   GNM_MORPHOLOGY_ADAPTER,
   GNM_MORPHOLOGY_SCHEMA,
@@ -207,14 +213,24 @@ assert.ok(!shortGnmSvg.includes("NaN"));
 assert.ok(RENDER_STYLES.some((style) => style.id === GNM_MORPH_RENDER_STYLE));
 assert.equal(isRenderStyle(GNM_MORPH_RENDER_STYLE), true);
 assert.equal(describeRender(gnmProfile, GNM_MORPH_RENDER_STYLE, { gnmAdapter }).renderer, GNM_MORPH_RENDER_STYLE);
+assert.equal(isRenderStyle(WEBGL_MORPH_RENDER_STYLE), true);
+assert.equal(describeRender(gnmProfile, WEBGL_MORPH_RENDER_STYLE).renderer, WEBGL_MORPH_RENDER_STYLE);
+assert.equal(mapWebglWeights(gnmProfile).length, 16);
+assert.ok(mapWebglWeights(gnmProfile).every((value) => value >= -0.75 && value <= 0.75));
+assert.equal(describeWebglMapping(gnmProfile).targetSemantics, "neutral PCA components; not anatomical controls");
+assert.throws(() => parseWebglGlb(new ArrayBuffer(20)), /header/);
 
 const indexHtml = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const moduleIndexHtml = fs.readFileSync(new URL("../index.module.html", import.meta.url), "utf8");
+const morphGlbBuffer = fs.readFileSync(new URL("../tools/gnm/work/head-morph.glb", import.meta.url));
+const morphGlbArrayBuffer = morphGlbBuffer.buffer.slice(morphGlbBuffer.byteOffset, morphGlbBuffer.byteOffset + morphGlbBuffer.byteLength);
+assert.equal(parseWebglGlb(morphGlbArrayBuffer).targets.length, 16);
 for (const html of [indexHtml, moduleIndexHtml]) {
   assert.match(html, /id="expression-mode-field"/);
   assert.match(html, /id="expression-mode"/);
   for (const mode of EXPRESSION_MODES) assert.match(html, new RegExp(`value="${mode}"`));
   for (const label of ["Automática", "Neutral", "Alerta", "Relajada", "Concentrada"]) assert.match(html, new RegExp(label));
+  assert.match(html, /id="portrait-webgl"/);
 }
 
 const familyProbes = [

@@ -6,8 +6,8 @@ as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
 Only the portable JSON pack crosses the browser boundary.
 
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
-binary glTF 2.0 file for offline inspection. The GLB is not loaded by the
-browser and does not implement the WebGL runtime.
+binary glTF 2.0 file for offline inspection. The later WebGL2 slice is opt-in;
+SVG remains the default and GNM itself is never loaded by runtime.
 
 ## Quick path: regenerate a candidate
 
@@ -85,9 +85,7 @@ official GNM data in a later slice. See
 
 This bounded Phase 3 slice creates an auditable offline package from the 200
 retained neutral identity meshes. It is geometry-derived prototype data, not
-official semantic GNM controls. It does not implement WebGL, browser loading,
-or GLB morph-target integration. The SVG renderer remains the default and
-`src/` is unchanged.
+official semantic GNM controls. The SVG renderer remains the default.
 
 The builder inspects the NPZ before choosing source data. In the retained
 archive, `identities` has shape `(200, 253)` and contains parameter vectors, so
@@ -114,6 +112,28 @@ absolute residual `0.147963`.
 `src/app.bundle.js` and writes `tools/gnm/work/gnm-morphology-pack.js`.
 `npm run refresh:release` updates SHA-256 entries for the release's operational
 files. Neither command installs or imports GNM in the browser/runtime.
+
+## Phase 3: GLB morph integration and WebGL2 prototype
+
+Build and validate the portable browser asset with NumPy available to the
+offline exporter only:
+
+```bash
+npm run build:gnm-glb-morph
+npm run test:gnm-glb-morph
+python tools/gnm/validate_gnm_glb.py tools/gnm/work/head-morph.glb
+```
+
+The exporter validates adjacent metadata and `.bin` hash, exact byte ranges,
+finite float32 payloads, vertex count, target ranges, and neutral target order.
+The GLB base is `template + meanDelta`; target buffers are additive deltas. The
+runtime style `sports/morph-webgl-v1` uses one position attribute and a 16-layer
+`RGBA32F` texture rather than requiring 17 vertex attributes. It maps FaceDNA/SF2
+deterministically to bounded neutral PCA weights, without calling PCA components
+anatomical or semantic controls. Missing WebGL2 or asset/resource errors fall
+back to the existing GNM SVG renderer. The GLB is geometry-derived, GNM itself is
+not runtime data, and this remains a prototype with the existing provenance and
+licensing caveats.
 
 The standard-library-only canonical quality gate is also available directly:
 
