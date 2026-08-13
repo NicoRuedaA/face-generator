@@ -35,7 +35,7 @@ jobs:
           mkdir -p _site/src _site/tools/gnm/work
           cp index.html index.module.html styles.css _site/
           cp src/*.js _site/src/
-           cp tools/gnm/work/gnm-morphology-pack.js tools/gnm/work/head-morph.glb _site/tools/gnm/work/
+           cp tools/gnm/work/gnm-morphology-pack.js tools/gnm/work/head-morph.glb tools/gnm/work/gnm-official-head-render.glb tools/gnm/work/gnm-official-head-render.json tools/gnm/work/official-render-bundle.json tools/gnm/work/LICENSE-GNM.txt _site/tools/gnm/work/
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:

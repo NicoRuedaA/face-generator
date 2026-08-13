@@ -260,7 +260,7 @@ def capture_renderer(context: Any, url: str, seed: int, renderer: str, output_di
         else:
             filename = None
         asset_url = page.evaluate(
-            "renderer => renderer === 'sports/morph-webgl-v1' ? new URL('tools/gnm/work/head-morph.glb', location.href).href : new URL('tools/gnm/work/gnm-official-head.glb', location.href).href",
+            "renderer => renderer === 'sports/morph-webgl-v1' ? new URL('tools/gnm/work/head-morph.glb', location.href).href : new URL('tools/gnm/work/gnm-official-head-render.glb', location.href).href",
             renderer,
         )
         capture = {

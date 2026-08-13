@@ -1,5 +1,12 @@
 ## Unreleased — Operativa GNM
 
+- Añade el GLB render-only oficial GNM optimizado de forma lossless: `665,904`
+  bytes frente a `138,998,408` bytes canónicos (`99.52%` menos), `18,437`
+  vértices únicos, seis componentes, UVs/posiciones float32 exactas e índices
+  uint16. El runtime y Pages usan solo este asset; el GLB canónico archivado y
+  sus bases permanecen sin cambios. Las bases de identidad/expresión quedan
+  omitidas y offline/opcionales; el mapeo semántico continúa desactivado.
+
 - Integra el primer paquete 3D oficial de GNM Head v3.0 en el alcance público no
   comercial autorizado por el propietario del proyecto: GLB portable con skin,
   ojos, dientes/encías y lengua separados, UVs oficiales sin colapsar seams,

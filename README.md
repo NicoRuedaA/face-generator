@@ -2,7 +2,7 @@
 
 ![Vista previa del generador](preview.png)
 
-Sports Face MVP es un prototipo web para generar retratos 2D reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y cinco opciones de renderizado.
+Sports Face MVP es un prototipo web para generar retratos reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y seis opciones de renderizado.
 
 **Estado:** prototipo técnico funcional, no producto de producción. La distribución abre el retrato con un bundle offline. El primer paquete 3D oficial GNM v3.0 está aceptado solo para el MVP público no comercial autorizado por `project-owner`; usa materiales procedurales neutros y no incluye el bundle completo de texturas.
 
@@ -37,7 +37,7 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
 | Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
-| GNM Official 3D | `sports/morph-webgl-official-v1` | Paquete GLB oficial GNM v3.0 opt-in con seis componentes, UVs por esquina, bases oficiales y materiales procedurales neutros. No asigna semántica FaceDNA/expresión no demostrada y cae al SVG GNM. |
+| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. El render mide `665,904` bytes frente a `138,998,408` bytes del GLB canónico (99.52% menos). No asigna semántica FaceDNA/expresión no demostrada y cae al SVG GNM. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
@@ -142,11 +142,18 @@ La autorización registrada es `project-owner`, `2026-08-12`,
 vértices fuente, `35.324` triángulos, `17.662` quads, seis componentes, 253
 direcciones de identidad y 383 de expresión. Las UVs oficiales `triangle_uvs`
 se conservan con corner-split; no se colapsan seams. El mapeo semántico queda
-desactivado por seguridad y la identidad permanece invariante.
+desactivado por seguridad y la identidad permanece invariante. El runtime usa el
+render GLB optimizado (`18,437` vértices render, `35,324` triángulos); el GLB
+canónico de `138,998,408` bytes permanece archivado y sin cambios. Su payload de
+bases (`253` identidad, `383` expresión) se omite del asset render y queda
+offline/opcional hasta diseñar una integración segura.
 
 ```bash
 npm run build:gnm-official
 npm run validate:gnm-official
+npm run build:gnm-official-render
+npm run validate:gnm-official-render
+npm run test:gnm-official-render
 npm run capture:gnm-official-smoke
 ```
 

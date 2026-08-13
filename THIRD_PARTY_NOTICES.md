@@ -45,4 +45,5 @@ and official NPZ SHA-256
 - Runtime style: `sports/morph-webgl-official-v1`, opt-in only; default and prior geometry-only WebGL remain intact.
 - Components: skin, left/right eye, upper/lower teeth and gums, tongue.
 - Materials: neutral procedural materials only. No complete official material texture bundle is included; `edgeflow_bw_4k.png` is visualization-only and is not used as a texture.
-- Mapping: official identity/expression bases are retained as metadata/payload, but semantic FaceDNA/expression mapping is disabled because the names do not safely establish anatomical semantics. Identity-only invariance is preserved.
+- Render optimization: the canonical `138,998,408` byte GLB is unchanged; the runtime render GLB is `665,904` bytes (`99.52%` smaller), with `18,437` unique render vertices and exact float32 POSITION/UV bytes. No quantization or lossy conversion is used. Official identity/expression basis payloads are omitted from the render asset and remain offline/optional.
+- Mapping: semantic FaceDNA/expression mapping is disabled because the names do not safely establish anatomical semantics. Identity-only invariance is preserved.

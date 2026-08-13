@@ -64,7 +64,7 @@ assert.equal(MORPHOLOGY_SOURCE.gnmDerived, false);
 assert.equal(GNM_MORPHOLOGY_SCHEMA, "sports-face-morphology-pack/v1");
 
 const gnmPack = JSON.parse(fs.readFileSync(new URL("../tools/gnm/work/gnm-morphology-pack.json", import.meta.url), "utf8"));
-const officialGlb = fs.readFileSync(new URL("../tools/gnm/work/gnm-official-head.glb", import.meta.url));
+const officialGlb = fs.readFileSync(new URL("../tools/gnm/work/gnm-official-head-render.glb", import.meta.url));
 const officialAsset = parseWebglGlb(officialGlb.buffer.slice(officialGlb.byteOffset, officialGlb.byteOffset + officialGlb.byteLength));
 assert.equal(officialAsset.official, true);
 assert.deepEqual(officialAsset.primitives.map((primitive) => primitive.name), ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"]);

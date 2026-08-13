@@ -271,13 +271,13 @@ público no comercial autorizado por `project-owner` el `2026-08-12`, referencia
 SHA-256 `03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14` y
 Apache-2.0.
 
-El importer `tools/gnm/import_official_gnm_npz.py` genera
-`tools/gnm/work/gnm-official-head.glb` y su metadata. El paquete contiene
-`17.821` vértices fuente, `35.324` triángulos, `17.662` quads y seis primitivas:
-skin, left/right eye, upper/lower teeth and gums y tongue. Las `triangle_uvs`
-oficiales se preservan exactamente con un vértice GLB por esquina de triángulo,
-por lo que los seams no se colapsan. Las bases oficiales de identidad (`253`) y
-expresión (`383`) viajan como payload binario y metadata dentro del GLB.
+El importer `tools/gnm/import_official_gnm_npz.py` genera el GLB canónico
+archival `tools/gnm/work/gnm-official-head.glb` y su metadata. El paquete
+contiene `17.821` vértices fuente, `35.324` triángulos, `17.662` quads y seis
+primitivas: skin, left/right eye, upper/lower teeth and gums y tongue. Las
+`triangle_uvs` oficiales se preservan exactamente. Las bases oficiales de
+identidad (`253`) y expresión (`383`) permanecen en el paquete canónico para
+uso offline/archival, no en el render runtime.
 
 No se incluye un bundle completo de texturas materiales. Cada componente recibe
 un material procedural neutro. Los nombres oficiales no prueban una
@@ -285,16 +285,41 @@ correspondencia segura con FaceDNA o los modos de expresión, así que el runtim
 usa plantilla neutral y un diagnóstico transparente; no asigna significados
 anatómicos arbitrarios. La invariancia de identity-only se conserva.
 
-El estilo `sports/morph-webgl-official-v1` es opt-in, mantiene los controles de
-cámara y cae a `sports/morph-gnm-v1` si WebGL2 o el asset fallan. El estilo
-`sports/morph-webgl-v1`, `head-morph.glb`, SVG y el default anterior permanecen
-intactos.
+El estilo `sports/morph-webgl-official-v1` es opt-in, carga el GLB render-only
+optimizado, mantiene los controles de cámara y cae a `sports/morph-gnm-v1` si
+WebGL2 o el asset fallan. El estilo `sports/morph-webgl-v1`, `head-morph.glb`,
+SVG y el default anterior permanecen intactos.
 
 ```bash
 npm run build:gnm-official
 npm run validate:gnm-official
 npm run test:gnm-official-asset
+npm run validate:gnm-official-render
+npm run test:gnm-official-render
 npm run capture:gnm-official-smoke
+```
+
+#### Optimización render-only oficial
+
+El runtime oficial usa `gnm-official-head-render.glb`, generado desde el GLB
+canónico sin NumPy ni GNM. La deduplicación exacta por primera ocurrencia de
+pares `(POSITION, TEXCOORD_0)` remapea los índices a uint16 y conserva bytes
+float32 de posiciones y UVs, orden de triángulos, seis componentes, materiales y
+contrato de cámara. El resultado mide `665,904` bytes y contiene `18,437`
+vértices únicos y `35,324` triángulos: `99.52%` menos que los `138,998,408`
+bytes canónicos. No hay cuantización ni conversión con pérdida.
+
+El GLB canónico permanece intacto y lo exige su validador completo. El asset
+render declara `renderOnly: true` y `basisIncluded: false`; las 253 bases de
+identidad y 383 de expresión quedan offline/opcionales, y el mapeo semántico
+continúa desactivado. Pages solo publica el render, metadata, manifest accepted y
+`LICENSE-GNM.txt`, bajo la autorización pública no comercial explícita de
+`project-owner` (`2026-08-12`, `sports-face-mvp-noncommercial-mvp-authorization`).
+
+```bash
+npm run build:gnm-official-render
+npm run validate:gnm-official-render
+npm run test:gnm-official-render
 ```
 
 ### Selección semántica de familias

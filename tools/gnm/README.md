@@ -17,6 +17,8 @@ npm run validate:gnm-official-example
 npm run test:gnm-official-bundle
 /home/nico/src/GNM/gnm/shape/.venv/bin/python tools/gnm/import_official_gnm_npz.py
 python3 tools/gnm/validate_official_gnm_asset.py tools/gnm/work/official-bundle.json
+npm run validate:gnm-official-render
+npm run test:gnm-official-render
 npm run capture:gnm-official-smoke
 ```
 
@@ -38,6 +40,25 @@ neither to FaceDNA nor application expression modes because the source names do
 not safely establish those semantics. Identity-only invariance remains explicit.
 No complete official material texture bundle is included. See
 [`docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md`](../../docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md).
+
+The runtime uses the separate render-only optimization, generated without GNM or
+NumPy:
+
+```bash
+npm run build:gnm-official-render
+npm run validate:gnm-official-render
+npm run test:gnm-official-render
+```
+
+It reduces the canonical `138,998,408` byte GLB to `665,904` bytes (`99.52%`
+smaller) and `18,437` unique render vertices while preserving every decoded
+triangle POSITION/UV byte exactly. Deduplication uses deterministic first
+occurrence `(POSITION, TEXCOORD_0)` pairs and remaps to uint16 indices; no
+quantization or lossy conversion is permitted. The six component/material
+contract and camera/render contract remain unchanged. The render asset is
+`renderOnly: true`, `basisIncluded: false`; identity/expression bases remain
+offline/optional and semantic mapping remains disabled. The canonical GLB and
+full canonical validator still remain the archival package.
 
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
 binary glTF 2.0 file for offline inspection. The later WebGL2 slice is opt-in;

@@ -1,0 +1,70 @@
+{
+  "schema": "sports-face-gnm-official-render-bundle/v1",
+  "status": "accepted",
+  "runtimeAllowed": true,
+  "source": {
+    "repositoryUrl": "https://github.com/google/GNM",
+    "upstreamRevision": "8ea2906a31aab7f8b550e33968f3c0a86051a92d",
+    "archiveSha256": "03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14",
+    "canonicalSource": {
+      "path": "gnm-official-head.glb",
+      "sizeBytes": 138998408,
+      "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d"
+    }
+  },
+  "license": {
+    "name": "Apache License 2.0",
+    "spdxId": "Apache-2.0",
+    "textPath": "LICENSE-GNM.txt",
+    "textSha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
+  },
+  "permission": {
+    "decision": "approved",
+    "reviewer": "project-owner",
+    "decisionDate": "2026-08-12",
+    "decisionReference": "sports-face-mvp-noncommercial-mvp-authorization",
+    "scope": "Public redistribution for this noncommercial MVP only; replace with custom assets when the MVP result is desirable."
+  },
+  "geometry": {
+    "canonicalVertexCount": 17821,
+    "canonicalTriangleCount": 35324,
+    "optimizedVertexCount": 18437,
+    "triangleCount": 35324,
+    "componentTriangleCounts": {
+      "skin": 24820,
+      "left_eye": 1512,
+      "right_eye": 1512,
+      "upper_teeth_and_gums": 2828,
+      "lower_teeth_and_gums": 2828,
+      "tongue": 1824
+    }
+  },
+  "assets": {
+    "mesh": {
+      "path": "gnm-official-head-render.glb",
+      "sha256": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f",
+      "sizeBytes": 665904
+    },
+    "metadata": {
+      "path": "gnm-official-head-render.json",
+      "sha256": "a7b1276cd55b52e028d1b7718aa6a5b41dd30c70c0cb19088e966e27531ff7a2"
+    }
+  },
+  "assetPackage": {
+    "renderOnly": true,
+    "basisIncluded": false,
+    "metadataPath": "gnm-official-head-render.json",
+    "glbPath": "gnm-official-head-render.glb",
+    "components": [
+      "skin",
+      "left_eye",
+      "right_eye",
+      "upper_teeth_and_gums",
+      "lower_teeth_and_gums",
+      "tongue"
+    ],
+    "officialTexturesIncluded": false,
+    "runtimeMaterials": "neutral-procedural"
+  },
+  "notes": "Accepted official GNM-derived render-only package for the explicitly authorized public noncommercial MVP scope. Semantic identity/expression mapping remains disabled; basis payload is offline/optional and is not redistributed in this render asset."
+}

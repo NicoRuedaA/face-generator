@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset",
+    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset && npm run test:gnm-official-render",
     "test:model": "node ./tests/model.test.mjs",
     "test:baseline": "node ./baseline/verify-baseline.mjs",
     "generate:baseline": "node ./baseline/generate-baseline.mjs",
@@ -34,6 +34,9 @@
     "build:gnm-official": "/home/nico/src/GNM/gnm/shape/.venv/bin/python tools/gnm/import_official_gnm_npz.py",
     "validate:gnm-official": "python3 tools/gnm/validate_official_gnm_asset.py tools/gnm/work/official-bundle.json",
     "test:gnm-official-asset": "python3 tools/gnm/test_official_gnm_asset.py",
+    "build:gnm-official-render": "python3 tools/gnm/optimize_official_gnm_glb.py",
+    "validate:gnm-official-render": "python3 tools/gnm/validate_official_gnm_render.py tools/gnm/work/gnm-official-head-render.glb tools/gnm/work/gnm-official-head-render.json tools/gnm/work/official-render-bundle.json --license tools/gnm/work/LICENSE-GNM.txt",
+    "test:gnm-official-render": "python3 tools/gnm/test_official_gnm_render.py",
     "test:browser-smoke": "python3 /home/nico/.agents/skills/webapp-testing/scripts/with_server.py --server \"python3 -m http.server 8080\" --port 8080 -- python3 tests/browser_smoke.py",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"
   },

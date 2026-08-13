@@ -13,7 +13,9 @@ def main() -> int:
         page_errors: list[str] = []
         for entry in ("index.html", "index.module.html"):
             page = browser.new_page()
+            asset_requests: list[str] = []
             page.route("**/favicon.ico", lambda route: route.fulfill(status=204, body=""))
+            page.on("request", lambda request: asset_requests.append(request.url) if request.url.endswith("gnm-official-head-render.glb") else None)
             page.on("console", lambda message: messages.append(f"{message.type}: {message.text}"))
             page.on("pageerror", lambda error: page_errors.append(f"{entry}: {error}"))
             page.goto(f"http://127.0.0.1:8080/{entry}")
@@ -39,6 +41,10 @@ def main() -> int:
                 assert diagnostics["components"] == 6, diagnostics
                 assert diagnostics["materials"] == 6, diagnostics
                 assert diagnostics["officialTexturesIncluded"] is False, diagnostics
+                assert diagnostics["renderOnly"] is True, diagnostics
+                assert diagnostics["basisIncluded"] is False, diagnostics
+                assert diagnostics["assetSchema"] == "sports-face-gnm-official-head/v1", diagnostics
+                assert any(url.endswith("tools/gnm/work/gnm-official-head-render.glb") for url in asset_requests), asset_requests
                 box = canvas.bounding_box()
                 assert box, f"{entry}: WebGL canvas has no bounds"
                 center_x = box["x"] + box["width"] / 2

@@ -5,7 +5,7 @@ import { renderGnmMorphFace } from "./morph-renderer.js";
 export const WEBGL_MORPH_RENDER_STYLE = "sports/morph-webgl-v1";
 export const WEBGL_MORPH_ASSET_URL = "./tools/gnm/work/head-morph.glb";
 export const WEBGL_OFFICIAL_RENDER_STYLE = "sports/morph-webgl-official-v1";
-export const WEBGL_OFFICIAL_ASSET_URL = "./tools/gnm/work/gnm-official-head.glb";
+export const WEBGL_OFFICIAL_ASSET_URL = "./tools/gnm/work/gnm-official-head-render.glb";
 export const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
 export const WEBGL_FRAME_MARGIN = 0.12;
 export const DEFAULT_WEBGL_CAMERA = Object.freeze({ yaw: 0, pitch: 0, distance: 1 });
@@ -172,7 +172,8 @@ function accessorView(json, binary, accessorIndex, componentType, type) {
   const componentCount = type === "VEC3" ? 3 : type === "VEC2" ? 2 : 1;
   if (!accessor || !view || accessor.componentType !== componentType || accessor.type !== type) fail(`invalid official accessor ${accessorIndex}`);
   const offset = (view.byteOffset || 0) + (accessor.byteOffset || 0);
-  const bytes = accessor.count * componentCount * 4;
+  const componentBytes = componentType === 5123 ? 2 : 4;
+  const bytes = accessor.count * componentCount * componentBytes;
   if (offset % 4 !== 0 || view.byteLength !== bytes || offset + bytes > binary.byteLength) fail(`invalid official bufferView ${accessorIndex}`);
   return { accessor, view, offset };
 }
@@ -186,7 +187,9 @@ function parseOfficialAsset(json, binary) {
     if (primitive.mode !== 4 || primitive.material !== index || primitive.extras?.componentName !== names[index]) fail("official GLB component order is invalid");
     const position = accessorView(json, binary, primitive.attributes?.POSITION, 5126, "VEC3");
     const uv = accessorView(json, binary, primitive.attributes?.TEXCOORD_0, 5126, "VEC2");
-    const indices = accessorView(json, binary, primitive.indices, 5125, "SCALAR");
+    const indexComponentType = json.accessors?.[primitive.indices]?.componentType;
+    if (![5123, 5125].includes(indexComponentType)) fail("official GLB indices must use uint16 or uint32");
+    const indices = accessorView(json, binary, primitive.indices, indexComponentType, "SCALAR");
     if (position.accessor.count !== uv.accessor.count || indices.accessor.count % 3 !== 0) fail("official primitive counts are invalid");
     const material = json.materials[index];
     if (material.extras?.materialSource !== "neutral-procedural" || material.extras?.officialTexturesIncluded !== false) fail("official material is not explicitly neutral procedural");
@@ -197,8 +200,14 @@ function parseOfficialAsset(json, binary) {
     max: result.max.map((value, axis) => Math.max(value, primitive.position.accessor.max[axis])),
   }), { min: [Infinity, Infinity, Infinity], max: [-Infinity, -Infinity, -Infinity] });
   const official = json.extras.sportsFaceGnmOfficial;
-  if (official.basis?.identity?.count !== 253 || official.basis?.expression?.count !== 383 || official.mapping?.identity?.applied !== false || official.mapping?.expression?.applied !== false) fail("official basis or mapping metadata is unsafe");
-  return { official: true, json, binary, primitives, bounds, morphDisplacementBound: [0, 0, 0], vertexCount: 17821 };
+  const renderOnly = official.renderOnly === true;
+  if (renderOnly) {
+    if (official.basisIncluded !== false || official.basis || official.lossless?.quantization !== "none") fail("official render-only metadata is unsafe");
+  } else if (official.basis?.identity?.count !== 253 || official.basis?.expression?.count !== 383) {
+    fail("official basis metadata is unsafe");
+  }
+  if (official.mapping?.identity?.applied !== false || official.mapping?.expression?.applied !== false) fail("official mapping metadata is unsafe");
+  return { official: true, json, binary, primitives, bounds, morphDisplacementBound: [0, 0, 0], vertexCount: primitives.reduce((total, primitive) => total + primitive.position.accessor.count, 0) };
 }
 
 export function parseWebglGlb(data) { return parseAsset(data); }
@@ -415,10 +424,11 @@ function uploadOfficial(gl, asset) {
     const position = read(primitive.position, Float32Array);
     const positionBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer); gl.bufferData(gl.ARRAY_BUFFER, position, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-    const indices = read(primitive.indices, Uint32Array);
+    const IndexType = primitive.indices.accessor.componentType === 5123 ? Uint16Array : Uint32Array;
+    const indices = read(primitive.indices, IndexType);
     const indexBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     gl.bindVertexArray(null);
-    return { vao, indexCount: indices.length, color: primitive.color };
+    return { vao, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, color: primitive.color };
   });
   return { primitives };
 }
@@ -480,11 +490,12 @@ function drawOfficial(canvas, asset, resources) {
   for (const primitive of resources.primitives) {
     gl.bindVertexArray(primitive.vao);
     gl.uniform4fv(resources.uniforms.color, primitive.color);
-    gl.drawElements(gl.TRIANGLES, primitive.indexCount, gl.UNSIGNED_INT, 0);
+    gl.drawElements(gl.TRIANGLES, primitive.indexCount, primitive.indexType, 0);
   }
   gl.bindVertexArray(null);
   if (gl.getError() !== gl.NO_ERROR) fail("official WebGL resource or draw error");
-  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, mapping: "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
+  const official = asset.json.extras.sportsFaceGnmOfficial;
+  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: official.basisIncluded === true, assetSchema: official.schema, mapping: "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
 }
 
 function redraw(canvas, state) {

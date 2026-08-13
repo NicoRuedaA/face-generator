@@ -1,0 +1,192 @@
+{
+  "schema": "sports-face-gnm-official-head-render/v1",
+  "version": "render-only-v1",
+  "renderOnly": true,
+  "basisIncluded": false,
+  "source": {
+    "npzSha256": "03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14",
+    "repository": "https://github.com/google/GNM",
+    "revision": "8ea2906a31aab7f8b550e33968f3c0a86051a92d"
+  },
+  "canonicalSource": {
+    "path": "gnm-official-head.glb",
+    "sizeBytes": 138998408,
+    "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d"
+  },
+  "geometry": {
+    "canonicalVertexCount": 17821,
+    "canonicalTriangleCount": 35324,
+    "optimizedVertexCount": 18437,
+    "triangleCount": 35324,
+    "componentTriangleCounts": {
+      "skin": 24820,
+      "left_eye": 1512,
+      "right_eye": 1512,
+      "upper_teeth_and_gums": 2828,
+      "lower_teeth_and_gums": 2828,
+      "tongue": 1824
+    }
+  },
+  "components": [
+    {
+      "cornerVertexCount": 74460,
+      "name": "skin",
+      "primitiveIndex": 0,
+      "sourceVertexCount": 12466,
+      "triangleCount": 24820,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 12608,
+      "indexComponentType": "UNSIGNED_SHORT"
+    },
+    {
+      "cornerVertexCount": 4536,
+      "name": "left_eye",
+      "primitiveIndex": 1,
+      "sourceVertexCount": 771,
+      "triangleCount": 1512,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 795,
+      "indexComponentType": "UNSIGNED_SHORT"
+    },
+    {
+      "cornerVertexCount": 4536,
+      "name": "right_eye",
+      "primitiveIndex": 2,
+      "sourceVertexCount": 771,
+      "triangleCount": 1512,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 795,
+      "indexComponentType": "UNSIGNED_SHORT"
+    },
+    {
+      "cornerVertexCount": 8484,
+      "name": "upper_teeth_and_gums",
+      "primitiveIndex": 3,
+      "sourceVertexCount": 1440,
+      "triangleCount": 2828,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 1636,
+      "indexComponentType": "UNSIGNED_SHORT"
+    },
+    {
+      "cornerVertexCount": 8484,
+      "name": "lower_teeth_and_gums",
+      "primitiveIndex": 4,
+      "sourceVertexCount": 1440,
+      "triangleCount": 2828,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 1636,
+      "indexComponentType": "UNSIGNED_SHORT"
+    },
+    {
+      "cornerVertexCount": 5472,
+      "name": "tongue",
+      "primitiveIndex": 5,
+      "sourceVertexCount": 933,
+      "triangleCount": 1824,
+      "uvSeams": "preserved-by-corner-split",
+      "uvSource": "triangle_uvs",
+      "optimizedVertexCount": 967,
+      "indexComponentType": "UNSIGNED_SHORT"
+    }
+  ],
+  "sourceMapping": [
+    {
+      "component": "skin",
+      "primitiveIndex": 0,
+      "canonicalPrimitiveVertexCount": 74460,
+      "canonicalSourceVertexIndicesAccessor": 2,
+      "optimizedVertexCount": 12608,
+      "sourceVertexIndicesAccessor": 2,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    },
+    {
+      "component": "left_eye",
+      "primitiveIndex": 1,
+      "canonicalPrimitiveVertexCount": 4536,
+      "canonicalSourceVertexIndicesAccessor": 6,
+      "optimizedVertexCount": 795,
+      "sourceVertexIndicesAccessor": 6,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    },
+    {
+      "component": "right_eye",
+      "primitiveIndex": 2,
+      "canonicalPrimitiveVertexCount": 4536,
+      "canonicalSourceVertexIndicesAccessor": 10,
+      "optimizedVertexCount": 795,
+      "sourceVertexIndicesAccessor": 10,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    },
+    {
+      "component": "upper_teeth_and_gums",
+      "primitiveIndex": 3,
+      "canonicalPrimitiveVertexCount": 8484,
+      "canonicalSourceVertexIndicesAccessor": 14,
+      "optimizedVertexCount": 1636,
+      "sourceVertexIndicesAccessor": 14,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    },
+    {
+      "component": "lower_teeth_and_gums",
+      "primitiveIndex": 4,
+      "canonicalPrimitiveVertexCount": 8484,
+      "canonicalSourceVertexIndicesAccessor": 18,
+      "optimizedVertexCount": 1636,
+      "sourceVertexIndicesAccessor": 18,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    },
+    {
+      "component": "tongue",
+      "primitiveIndex": 5,
+      "canonicalPrimitiveVertexCount": 5472,
+      "canonicalSourceVertexIndicesAccessor": 22,
+      "optimizedVertexCount": 967,
+      "sourceVertexIndicesAccessor": 22,
+      "method": "first-occurrence exact POSITION/TEXCOORD_0 pair"
+    }
+  ],
+  "uvHandling": "Exact float32 POSITION/TEXCOORD_0 pairs are deduplicated by first occurrence; triangle order and UV seams are preserved.",
+  "lossless": {
+    "positions": "exact float32 bytes",
+    "uvs": "exact float32 bytes",
+    "indices": "topology-preserving remap",
+    "quantization": "none",
+    "lossyConversion": false
+  },
+  "basis": {
+    "included": false,
+    "offlineOptional": true,
+    "identityCount": 253,
+    "expressionCount": 383,
+    "semanticMapping": "disabled"
+  },
+  "materials": {
+    "kind": "neutral-procedural",
+    "officialTexturesIncluded": false
+  },
+  "mapping": {
+    "expression": {
+      "applied": false,
+      "reason": "Official expression_names describe regions, not the application's expression modes.",
+      "safe": false
+    },
+    "identity": {
+      "applied": false,
+      "reason": "Official identity_names are neutral head_/eyes_/teeth_ IDs, not FaceDNA semantic variables.",
+      "safe": false
+    },
+    "identityOnlyInvariant": true
+  },
+  "glb": {
+    "path": "gnm-official-head-render.glb",
+    "sizeBytes": 665904,
+    "sha256": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f"
+  },
+  "notes": "Render-only lossless optimization for the explicitly authorized public noncommercial MVP. The canonical archival GLB and basis payload remain unchanged and offline/optional."
+}
