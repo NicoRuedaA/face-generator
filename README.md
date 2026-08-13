@@ -196,6 +196,41 @@ La conclusión conservadora es `semanticMapping: "unestablished"` y
 coeficiente/objetivo GNM. Esta fase no cambia FaceDNA, morphology, runtime,
 GLBs ni Basis Lab; Basis Lab permanece numérico/técnico.
 
+#### Fase 7A: dataset offline de calibración humana
+
+La Fase 7A define un dataset pequeño y determinista de anotaciones humanas.
+El template `tools/gnm/work/gnm-calibration-dataset.json` está vacío:
+**sin muestras no existe mapeo**. Las etiquetas son libres para revisión
+técnica, no verdad anatómica. Se guardan SF2 canónico, metadatos estables,
+coeficientes técnicos, hashes y split; no geometría, arrays de bases, secretos,
+PII ni rutas absolutas. `semanticMapping` permanece `unestablished`,
+`runtimeBasisLoaded` es `false` y la aprobación es falsa por defecto.
+
+```bash
+npm run calibration:gnm-init
+npm run calibration:gnm-validate
+npm run calibration:gnm-test
+```
+
+Ejemplo de anotación humana (no ejecutado durante esta fase):
+
+```bash
+python3 tools/gnm/calibration_dataset.py add \
+  --sample-id review-0001 \
+  --face-code 'SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh' \
+  --coefficients 0 0 0 0 0 0 0 0 \
+  --label 'technical review label' --status unreviewed --annotator-role technical
+```
+
+El split determinista usa `sample-id-sha256-v1` y semilla
+`phase-7a-calibration`; `0..7` es `train` y `8..9` es `validation`.
+
+```bash
+python3 tools/gnm/calibration_dataset.py split \
+  --dataset tools/gnm/work/gnm-calibration-dataset.json \
+  --output-dir /tmp/gnm-calibration-splits
+```
+
 ## Estado de GNM
 
 GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.

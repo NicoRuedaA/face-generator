@@ -1,0 +1,110 @@
+{
+  "coefficientBounds": {
+    "max": 0.25,
+    "min": -0.25
+  },
+  "datasetHashSha256": "795e1f985484c9c579fb23efc3b1048b7c585321dc6622893c4ea7e19ac432ed",
+  "datasetType": "offline-human-calibration-annotations",
+  "evidenceBaseRevision": "465f5cb",
+  "humanApproved": false,
+  "runtimeBasisLoaded": false,
+  "samples": [],
+  "schema": "sports-face-gnm-calibration-dataset/v1",
+  "semanticMapping": "unestablished",
+  "sourceAssets": [
+    {
+      "name": "canonicalGlb",
+      "path": "tools/gnm/work/gnm-official-head.glb",
+      "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d"
+    },
+    {
+      "name": "canonicalMetadata",
+      "path": "tools/gnm/work/gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+    },
+    {
+      "name": "renderGlb",
+      "path": "tools/gnm/work/gnm-official-head-render.glb",
+      "sha256": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f"
+    },
+    {
+      "name": "basisLabPayload",
+      "path": "tools/gnm/work/gnm-official-basis-lab.bin",
+      "sha256": "d36b42a9454ff8bfcd60eb94689ab558ab66f2d2e905e659783a0352a6ee4d4b"
+    },
+    {
+      "name": "basisLabMetadata",
+      "path": "tools/gnm/work/gnm-official-basis-lab.json",
+      "sha256": "1b0be450da17b4616ce7abaeeef11c3786b81a7f7ea47d6771f858e92b1f0b68"
+    }
+  ],
+  "splitPolicy": {
+    "algorithm": "SHA-256(UTF-8(seed + NUL + sampleId)); first four digest bytes as big-endian uint32; uint32 modulo 10 < 8 is train, otherwise validation",
+    "seed": "phase-7a-calibration",
+    "trainPercent": 80,
+    "validationPercent": 20,
+    "version": "sample-id-sha256-v1"
+  },
+  "vectorSelection": {
+    "basisSelectionHash": "9c839e30b3e591f4a2057f7b379d0337d15090e998299724454c92e5feea97fc",
+    "vectors": [
+      {
+        "family": "identity",
+        "index": 0,
+        "label": "GNM identity basis 000",
+        "name": "head_000",
+        "order": 0
+      },
+      {
+        "family": "identity",
+        "index": 1,
+        "label": "GNM identity basis 001",
+        "name": "head_001",
+        "order": 1
+      },
+      {
+        "family": "identity",
+        "index": 2,
+        "label": "GNM identity basis 002",
+        "name": "head_002",
+        "order": 2
+      },
+      {
+        "family": "identity",
+        "index": 3,
+        "label": "GNM identity basis 003",
+        "name": "head_003",
+        "order": 3
+      },
+      {
+        "family": "expression",
+        "index": 0,
+        "label": "GNM expression basis 000",
+        "name": "left_eye_region_000",
+        "order": 4
+      },
+      {
+        "family": "expression",
+        "index": 1,
+        "label": "GNM expression basis 001",
+        "name": "left_eye_region_001",
+        "order": 5
+      },
+      {
+        "family": "expression",
+        "index": 2,
+        "label": "GNM expression basis 002",
+        "name": "left_eye_region_002",
+        "order": 6
+      },
+      {
+        "family": "expression",
+        "index": 3,
+        "label": "GNM expression basis 003",
+        "name": "left_eye_region_003",
+        "order": 7
+      }
+    ]
+  },
+  "version": 1
+}

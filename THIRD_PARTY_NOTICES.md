@@ -67,3 +67,9 @@ and official NPZ SHA-256
   groups and provisional landmark-region energy are not anatomical claims. No
   FaceDNA-to-GNM paired dataset exists, and no runtime or Basis Lab mapping is
   enabled.
+- Phase 7A calibration dataset: `tools/gnm/calibration_dataset.py` and its
+  checked-in empty template are offline-only metadata tooling. Labels are
+  free-form technical review labels, not anatomical truth; no sample means no
+  mapping. Geometry, basis arrays, secrets, PII, and absolute paths are not
+  stored. `semanticMapping` remains `unestablished`, `runtimeBasisLoaded`
+  remains `false`, and human approval is opt-in.

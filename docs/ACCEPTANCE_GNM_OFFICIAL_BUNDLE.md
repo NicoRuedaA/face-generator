@@ -168,6 +168,34 @@ serialized report must remain at or below `600,000` bytes. Landmark IDs are
 validated against coordinate-selected radius membership; regional assignments
 are explicitly non-exclusive, and regional energies must not be summed.
 
+## Phase 7A deterministic calibration annotation dataset
+
+Phase 7A is accepted as an offline-only dataset contract. The checked-in
+`tools/gnm/work/gnm-calibration-dataset.json` is deterministic and empty:
+**no samples means no mapping**. Human labels are free-form review labels, not
+anatomical truth. The dataset records canonical SF2/profile metadata, the exact
+ordered eight-vector coefficients, technical names, source/selection hashes,
+split seed/version, and evidence revision; it stores no geometry or basis
+arrays.
+
+The contract requires `semanticMapping: "unestablished"`,
+`runtimeBasisLoaded: false`, and `humanApproved: false` by default. Approval is
+explicit. Validation rejects duplicate IDs, invalid/non-canonical SF2,
+out-of-range coefficients, hash/vector drift, inconsistent splits, absolute
+paths, and PII-like fields.
+
+```bash
+npm run calibration:gnm-init
+npm run calibration:gnm-validate
+npm run calibration:gnm-test
+python3 tools/gnm/calibration_dataset.py split \
+  --dataset tools/gnm/work/gnm-calibration-dataset.json \
+  --output-dir /tmp/gnm-calibration-splits
+```
+
+The example human-add command is documented in the README and is not executed
+as part of acceptance. Projections do not modify the source dataset.
+
 ## Review checklist
 
 - [ ] The repository URL has no embedded credentials.

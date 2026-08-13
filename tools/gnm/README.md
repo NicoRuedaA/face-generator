@@ -121,6 +121,54 @@ landmark summary validates every declared source ID against the coordinate-selec
 radius, reports overlap (`regionsAreNonExclusive: true`), and warns that regional
 energies must not be summed.
 
+### Phase 7A: offline calibration annotation dataset
+
+Phase 7A adds a metadata-only contract for human review. The checked-in
+template has no samples; **no samples means no mapping**. Labels are free-form
+review labels, not anatomical truth. It stores canonical SF2/profile metadata,
+the exact ordered eight coefficients, source and selection hashes, and a
+deterministic split policy, but never geometry, basis arrays, secrets, PII, or
+absolute paths.
+
+```bash
+npm run calibration:gnm-init
+npm run calibration:gnm-validate
+npm run calibration:gnm-test
+```
+
+Example only; do not run an `add` without a human-reviewed annotation:
+
+```bash
+python3 tools/gnm/calibration_dataset.py add \
+  --sample-id review-0001 \
+  --face-code 'SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh' \
+  --coefficients 0 0 0 0 0 0 0 0 \
+  --label 'technical review label' --status unreviewed --annotator-role technical
+```
+
+Coefficients outside `[-0.25, 0.25]` are rejected by default; `--clamp` is
+explicit. SF2 checksum-valid inputs, including uppercase and leading-zero
+forms, are accepted and normalized to canonical profile metadata. Split
+`sample-id-sha256-v1` hashes `phase-7a-calibration`, a NUL, and the sample ID;
+modulo-ten buckets `0..7` are `train`, and `8..9` are `validation`.
+
+```bash
+python3 tools/gnm/calibration_dataset.py split \
+  --dataset tools/gnm/work/gnm-calibration-dataset.json \
+  --output-dir /tmp/gnm-calibration-splits
+```
+
+Approval is opt-in (`--human-approved`); metadata keeps
+`semanticMapping: unestablished` and `runtimeBasisLoaded: false`.
+
+Free-form `label`, `notes`, and `annotatorRole` values are deliberately useful
+but restricted: email-like and phone-like text, credentials/tokens, absolute
+paths, traversal components, NULs, and PII field names (including nested
+`contactEmail`) are rejected. The library/API requires `human_approved` to be
+an actual boolean; the CLI's `--human-approved` flag supplies `true`, and its
+default is `false`. Split outputs must be distinct from each other and from
+the source dataset after path resolution.
+
 ### Phase 4: opt-in technical Basis Lab
 
 The separate `sports/morph-webgl-official-basis-lab-v1` style loads

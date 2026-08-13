@@ -1,5 +1,13 @@
 ## Unreleased — Operativa GNM
 
+- Añade la Fase 7A: contrato offline determinista para anotaciones humanas de
+  calibración. El template queda vacío —sin muestras no existe mapeo— y las
+  etiquetas son libres para revisión técnica, no verdad anatómica. Conserva
+  SF2, metadatos estables, ocho coeficientes bounded, hashes, procedencia y
+  split reproducible; no guarda geometría, arrays, secretos, PII ni rutas
+  absolutas. `semanticMapping` sigue `unestablished`, el runtime no carga bases
+  y `humanApproved` es falso salvo aprobación explícita.
+
 - Añade la Fase 6 de evidencia cuantitativa offline: reporte stdlib-only con
   hashes/revisión, dimensiones `253`/`383`/`17.821`, energía por base, familia,
   componente y prefijo técnico, inventario FaceDNA/morphology y análisis

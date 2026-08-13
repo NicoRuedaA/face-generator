@@ -407,6 +407,39 @@ consistencia bilateral, pruebas causales one-hot, controles negativos, aprobaci�
 humana y metadata de mapping versionada. No se cambia runtime, FaceDNA,
 morphology, GLBs ni el Basis Lab técnico.
 
+### Fase 7A: contrato offline de anotaciones de calibración
+
+La siguiente slice conserva la frontera offline y prepara revisión humana sin
+inventar muestras. `tools/gnm/calibration_dataset.py` valida el template
+determinista `tools/gnm/work/gnm-calibration-dataset.json`, que contiene
+schema/version, bounds `[-0.25, 0.25]`, los ocho vectores ordenados y su hash,
+hashes de fuentes, revisión base y política de split. El template no contiene
+muestras: **sin muestras no existe mapeo**.
+
+Cada anotación almacena el SF2 canónico y metadatos estables, ocho coeficientes,
+nombres técnicos, etiqueta libre, estado y notas opcionales. Una etiqueta no es
+una afirmación anatómica. PII, secretos y rutas absolutas están prohibidos;
+`humanApproved` es falso salvo aprobación explícita. El dataset mantiene
+`semanticMapping: unestablished` y `runtimeBasisLoaded: false`.
+
+```bash
+npm run calibration:gnm-init
+npm run calibration:gnm-validate
+npm run calibration:gnm-test
+python3 tools/gnm/calibration_dataset.py add \
+  --sample-id review-0001 \
+  --face-code 'SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh' \
+  --coefficients 0 0 0 0 0 0 0 0 \
+  --label 'technical review label' --annotator-role technical
+python3 tools/gnm/calibration_dataset.py split \
+  --dataset tools/gnm/work/gnm-calibration-dataset.json \
+  --output-dir /tmp/gnm-calibration-splits
+```
+
+El comando `add` es ilustrativo y no se ejecuta en esta fase. El split
+`sample-id-sha256-v1` usa `phase-7a-calibration`; ocho cubetas son `train` y
+dos `validation`. Las proyecciones no modifican el dataset fuente.
+
 ### Selección semántica de familias
 
 La familia GNM no se elige con la semilla del perfil. Se aplica la versión de
