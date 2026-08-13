@@ -13,6 +13,10 @@ import {
 import {
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_MORPH_WEIGHT_LIMIT,
+  OFFICIAL_COMPONENT_NAMES,
+  OFFICIAL_LIGHTING_FEATURES,
+  OFFICIAL_MATERIAL_MODEL_VERSION,
+  OFFICIAL_MATERIAL_PALETTE,
   DEFAULT_WEBGL_CAMERA,
   buildWebglProjection,
   buildWebglCameraMatrix,
@@ -69,7 +73,15 @@ const officialAsset = parseWebglGlb(officialGlb.buffer.slice(officialGlb.byteOff
 assert.equal(officialAsset.official, true);
 assert.deepEqual(officialAsset.primitives.map((primitive) => primitive.name), ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"]);
 assert.equal(officialAsset.primitives.length, 6);
-assert.equal(describeOfficialWebglMapping().mapping.applied, false);
+assert.deepEqual(officialAsset.primitives.map((primitive) => primitive.name), [...OFFICIAL_COMPONENT_NAMES]);
+const officialDescription = describeOfficialWebglMapping();
+assert.equal(officialDescription.mapping.applied, false);
+assert.equal(officialDescription.materialModel, OFFICIAL_MATERIAL_MODEL_VERSION);
+assert.deepEqual(officialDescription.lighting, OFFICIAL_LIGHTING_FEATURES);
+assert.equal(officialDescription.componentMaterialInfo.length, 6);
+assert.deepEqual(officialDescription.componentMaterialInfo.map((material) => material.component), [...OFFICIAL_COMPONENT_NAMES]);
+assert.equal(OFFICIAL_MATERIAL_PALETTE.every((material) => material.materialSource === undefined), true);
+assert.equal(OFFICIAL_MATERIAL_PALETTE.every((material) => material.baseColor.every(Number.isFinite)), true);
 const gnmAdapter = createGnmMorphologyAdapter(gnmPack);
 assert.equal(GNM_MORPHOLOGY_ADAPTER, null);
 globalThis.sportsFaceGnmPack = gnmPack;

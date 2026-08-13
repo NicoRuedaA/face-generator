@@ -1,5 +1,14 @@
 ## Unreleased — Operativa GNM
 
+- Mejora la calidad visual del renderer oficial con el modelo inmutable
+  `neutral-procedural-components-v2`: seis materiales procedurales neutros por
+  componente, roughness perceptual, respuesta especular, ambiente hemisférico,
+  key/fill/rim y cavidad bounded derivada de señales estables de vista/normal.
+  No añade texturas, dependencias, semántica anatómica ni cambios a los GLB o al
+  payload de Basis Lab. Los diagnósticos exponen versión, seis materiales y
+  flags de iluminación; el shader GLSL ES 3.00 conserva two-sided, cámara y
+  fallback seguro.
+
 - Añade el estilo opt-in `sports/morph-webgl-official-basis-lab-v1` con payload
   binario separado de `1,843,736` bytes, cuatro primeras bases por familia,
   sliders técnicos bounded, verificación estricta de hash/schema/budget y

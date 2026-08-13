@@ -16,6 +16,29 @@ sports/morph-webgl-official-v1
 sports/morph-webgl-official-basis-lab-v1
 ```
 
+### Fase 5: calidad visual oficial
+
+La Fase 5 conserva sin cambios los contratos de carga, geometría, cámara y
+deformación de la Fase 4. El estilo oficial usa el modelo inmutable
+`neutral-procedural-components-v2`, definido en `src/webgl-renderer.js`.
+
+Cada uno de los seis componentes técnicos (`skin`, `left_eye`, `right_eye`,
+`upper_teeth_and_gums`, `lower_teeth_and_gums`, `tongue`) recibe un color neutro
+determinista, roughness perceptual y fuerza especular independientes. No hay
+muestreo de texturas ni colores que pretendan representar tonos de piel o
+semántica anatómica.
+
+El fragment shader GLSL ES 3.00 calcula normales mediante derivadas de pantalla,
+las orienta con `faceforward` para conservar el dibujo two-sided de la malla de
+winding mixto y aplica ambiente hemisférico, luces key/fill/rim, una respuesta
+especular ligera y un término de cavidad acotado usando únicamente acuerdos
+normal/luz estables. Todas las salidas se acotan y los errores de compilación,
+enlace o runtime continúan usando el fallback SVG GNM.
+
+Los diagnósticos oficiales exponen `materialModel`, `materialModelVersion`, seis
+registros `componentMaterialInfo` y flags `lighting`. Basis Lab reutiliza
+exactamente este modelo sin cambiar su payload ni su deformación CPU.
+
 `sports/morph-v1` continúa siendo el estilo analítico predeterminado. El estilo
 `sports/morph-gnm-v1` consume únicamente el paquete portable generado offline;
 no sustituye el renderer analítico ni modifica FaceDNA.

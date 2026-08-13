@@ -57,3 +57,7 @@ and official NPZ SHA-256
   `1,843,736` bytes and selects only the first four identity and first four
   expression vectors. It uses technical labels, exact float32 values and
   sourceVertexId projection; it establishes no anatomical or FaceDNA mapping.
+- Phase 5 visual model: `neutral-procedural-components-v2` is project-authored
+  runtime code. It adds no textures or external dependencies; its six component
+  colors and lightweight lighting diagnostics are technical presentation choices,
+  not official GNM material claims or anatomical semantics.

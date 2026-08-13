@@ -95,6 +95,18 @@ the first four expression directions (`left_eye_region_000` through
 global 3 MiB budget. Coefficients are technical only and bounded to
 `[-0.25, 0.25]`; no FaceDNA/SF2 mutation or GLB modification occurs.
 
+### Phase 5: official visual quality
+
+`src/webgl-renderer.js` owns the immutable official material model
+`neutral-procedural-components-v2`. It provides six component-specific neutral
+material records and no texture inputs. The official fragment shader uses
+GLSL ES 3.00 derivative normals, stable view-space hemisphere/key/fill/rim
+lighting, bounded roughness/specular response, and a cavity-like term from
+normal/light agreement. Mixed winding remains two-sided and camera controls
+remain unchanged. Diagnostics report the model version, six component records,
+and lighting flags. Basis Lab uses the same shader without changing its payload
+or deformation contract.
+
 ```bash
 npm run build:gnm-official-basis-lab
 npm run validate:gnm-official-basis-lab

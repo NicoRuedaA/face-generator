@@ -94,6 +94,22 @@ are clamped to `[-0.25, 0.25]`; labels never claim anatomy. Lab diagnostics use
 `runtimeBasisLoaded: true`. Any failure falls back without an uncaught page
 error. The existing official neutral style remains unchanged.
 
+## Phase 5 visual-quality acceptance
+
+The official neutral style reports material model
+`neutral-procedural-components-v2` and six deterministic technical material
+records in primitive order. Each record identifies its component, base color,
+perceptual roughness, and specular strength, and is explicitly
+`materialSource: neutral-procedural` with `officialTexturesIncluded: false`.
+
+The official shader remains WebGL2/GLSL ES 3.00 and does not sample textures.
+It uses derivative normals with `faceforward`, disabled culling for mixed
+winding, hemisphere ambient, key/fill/rim lights, bounded lightweight
+specular response, and a cavity-like normal/light agreement term. Diagnostics
+expose all six feature flags (`hemisphere`, `key`, `fill`, `rim`, `specular`,
+`cavity`). Basis Lab reuses the same visual model while preserving its separate
+payload request and CPU deformation semantics.
+
 ## Conservative basis diagnostic result
 
 The committed report is `tools/gnm/work/gnm-official-basis-diagnostic.json`. It

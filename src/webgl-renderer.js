@@ -11,6 +11,30 @@ export const WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL = "./tools/gnm/work/gnm-offici
 export const WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL = "./tools/gnm/work/gnm-official-basis-lab.json";
 export const BASIS_LAB_MAX_BYTES = 3 * 1024 * 1024;
 export const BASIS_LAB_COEFFICIENT_LIMIT = 0.25;
+export const OFFICIAL_MATERIAL_MODEL_VERSION = "neutral-procedural-components-v2";
+export const OFFICIAL_COMPONENT_NAMES = Object.freeze([
+  "skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue",
+]);
+export const OFFICIAL_LIGHTING_FEATURES = Object.freeze({
+  hemisphere: true,
+  key: true,
+  fill: true,
+  rim: true,
+  specular: true,
+  cavity: true,
+});
+const freezeMaterial = (material) => Object.freeze({
+  ...material,
+  baseColor: Object.freeze([...material.baseColor]),
+});
+export const OFFICIAL_MATERIAL_PALETTE = Object.freeze([
+  freezeMaterial({ component: "skin", materialIndex: 0, baseColor: [0.62, 0.65, 0.68], perceptualRoughness: 0.68, specularStrength: 0.18 }),
+  freezeMaterial({ component: "left_eye", materialIndex: 1, baseColor: [0.74, 0.78, 0.82], perceptualRoughness: 0.22, specularStrength: 0.52 }),
+  freezeMaterial({ component: "right_eye", materialIndex: 2, baseColor: [0.70, 0.75, 0.80], perceptualRoughness: 0.24, specularStrength: 0.50 }),
+  freezeMaterial({ component: "upper_teeth_and_gums", materialIndex: 3, baseColor: [0.80, 0.78, 0.72], perceptualRoughness: 0.38, specularStrength: 0.32 }),
+  freezeMaterial({ component: "lower_teeth_and_gums", materialIndex: 4, baseColor: [0.76, 0.74, 0.69], perceptualRoughness: 0.42, specularStrength: 0.28 }),
+  freezeMaterial({ component: "tongue", materialIndex: 5, baseColor: [0.58, 0.40, 0.42], perceptualRoughness: 0.50, specularStrength: 0.24 }),
+]);
 const BASIS_LAB_CANONICAL_SHA256 = "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d";
 const BASIS_LAB_RENDER_SHA256 = "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f";
 export const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
@@ -92,6 +116,10 @@ export function describeOfficialWebglMapping() {
     source: "official GNM Head v3.0 template and basis metadata",
     targetSemantics: "neutral official template; no semantic basis mapping",
     officialTexturesIncluded: false,
+    materialModel: OFFICIAL_MATERIAL_MODEL_VERSION,
+    materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION,
+    lighting: { ...OFFICIAL_LIGHTING_FEATURES },
+    componentMaterialInfo: materialDiagnostics(),
     mapping: {
       identityOnly: true,
       applied: false,
@@ -110,6 +138,10 @@ export function describeOfficialBasisLabMapping(coefficients = {}) {
     source: "separately delivered projected official GNM basis subset",
     targetSemantics: "technical basis directions; no anatomical controls",
     basisIncluded: true,
+    materialModel: OFFICIAL_MATERIAL_MODEL_VERSION,
+    materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION,
+    lighting: { ...OFFICIAL_LIGHTING_FEATURES },
+    componentMaterialInfo: materialDiagnostics(),
     identityCount: 4,
     expressionCount: 4,
     selectedVectors: BASIS_LAB_VECTOR_LABELS,
@@ -122,6 +154,15 @@ const BASIS_LAB_VECTOR_LABELS = Object.freeze([
   "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
   "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
 ]);
+
+function materialDiagnostics() {
+  return OFFICIAL_MATERIAL_PALETTE.map((material) => ({
+    ...material,
+    baseColor: [...material.baseColor],
+    materialSource: "neutral-procedural",
+    officialTexturesIncluded: false,
+  }));
+}
 
 function parseGlb(data) {
   if (!(data instanceof ArrayBuffer) || data.byteLength < 20) fail("GLB is shorter than its header");
@@ -247,7 +288,7 @@ function accessorView(json, binary, accessorIndex, componentType, type) {
 function parseOfficialAsset(json, binary) {
   if (json.asset?.version !== "2.0" || json.scene !== 0 || json.scenes?.length !== 1 || json.nodes?.length !== 1 || json.meshes?.length !== 1) fail("official GLB scene structure is unsupported");
   const mesh = json.meshes[0];
-  const names = ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"];
+  const names = OFFICIAL_COMPONENT_NAMES;
   if (mesh.primitives?.length !== names.length || json.materials?.length !== names.length || json.buffers?.[0]?.byteLength !== binary.byteLength) fail("official GLB component structure is invalid");
   const primitives = mesh.primitives.map((primitive, index) => {
     if (primitive.mode !== 4 || primitive.material !== index || primitive.extras?.componentName !== names[index]) fail("official GLB component order is invalid");
@@ -354,21 +395,52 @@ function officialProgram(gl) {
     layout(location=0) in vec3 aPosition;
     uniform mat4 uProjection;
     uniform mat4 uCamera;
-    out vec3 vPosition;
-    void main() { vPosition = aPosition; gl_Position = uProjection * uCamera * vec4(aPosition, 1.0); }`);
+    out vec3 vViewPosition;
+    void main() {
+      vec4 viewPosition = uCamera * vec4(aPosition, 1.0);
+      vViewPosition = viewPosition.xyz;
+      gl_Position = uProjection * viewPosition;
+    }`);
   const fragment = shader(gl, gl.FRAGMENT_SHADER, `#version 300 es
     precision highp float;
-    uniform vec4 uColor;
-    in vec3 vPosition;
+    uniform int uMaterialIndex;
+    uniform vec4 uBaseColors[6];
+    uniform float uPerceptualRoughness[6];
+    uniform float uSpecularStrength[6];
+    in vec3 vViewPosition;
     out vec4 color;
+    vec3 safeNormalize(vec3 value, vec3 fallback) {
+      float lengthSquared = dot(value, value);
+      return lengthSquared > 0.000001 ? value * inversesqrt(lengthSquared) : fallback;
+    }
     void main() {
-      vec3 normal = normalize(cross(dFdx(vPosition), dFdy(vPosition)));
-      normal = faceforward(normal, vec3(0.0, 0.0, -1.0), normal);
-      vec3 keyLight = normalize(vec3(-0.45, 0.72, 1.0));
-      vec3 fillLight = normalize(vec3(0.70, 0.15, 0.55));
-      float diffuse = max(dot(normal, keyLight), 0.0);
+      int materialIndex = clamp(uMaterialIndex, 0, 5);
+      vec4 material = uBaseColors[materialIndex];
+      float perceptualRoughness = clamp(uPerceptualRoughness[materialIndex], 0.0, 1.0);
+      float specularStrength = clamp(uSpecularStrength[materialIndex], 0.0, 1.0);
+      vec3 normal = safeNormalize(cross(dFdx(vViewPosition), dFdy(vViewPosition)), vec3(0.0, 0.0, 1.0));
+      vec3 viewDirection = safeNormalize(-vViewPosition, vec3(0.0, 0.0, 1.0));
+      // The retained mesh has mixed winding. Faceforward preserves two-sided rendering
+      // while orienting derivative normals toward the stable view-space camera.
+      normal = faceforward(normal, -viewDirection, normal);
+      vec3 keyLight = safeNormalize(vec3(-0.45, 0.72, 1.0), vec3(0.0, 0.0, 1.0));
+      vec3 fillLight = safeNormalize(vec3(0.70, 0.15, 0.55), vec3(0.0, 0.0, 1.0));
+      vec3 rimLight = safeNormalize(vec3(0.15, 0.35, -0.85), vec3(0.0, 0.0, -1.0));
+      float hemisphereFactor = clamp(normal.y * 0.5 + 0.5, 0.0, 1.0);
+      vec3 hemisphere = mix(vec3(0.10, 0.115, 0.13), vec3(0.30, 0.32, 0.35), hemisphereFactor);
+      float key = max(dot(normal, keyLight), 0.0);
       float fill = max(dot(normal, fillLight), 0.0);
-      color = vec4(uColor.rgb * (0.24 + 0.58 * diffuse + 0.16 * fill), uColor.a);
+      float rim = pow(1.0 - max(dot(normal, viewDirection), 0.0), 3.0) * max(dot(normal, rimLight), 0.0);
+      float roughness = max(0.045, perceptualRoughness * perceptualRoughness);
+      vec3 halfVector = safeNormalize(keyLight + viewDirection, normal);
+      float shininess = mix(8.0, 128.0, 1.0 - roughness);
+      float specular = pow(max(dot(normal, halfVector), 0.0), shininess) * specularStrength;
+      float lightAgreement = clamp(key * 0.72 + fill * 0.28, 0.0, 1.0);
+      float cavity = mix(0.78, 1.0, smoothstep(0.0, 0.85, lightAgreement));
+      vec3 lit = material.rgb * (hemisphere + vec3(0.58, 0.56, 0.54) * key + vec3(0.20, 0.22, 0.25) * fill);
+      lit = lit * cavity + vec3(0.14, 0.16, 0.19) * rim + vec3(specular);
+      if (any(isnan(lit)) || any(isinf(lit))) lit = material.rgb;
+      color = vec4(clamp(lit, vec3(0.0), vec3(1.0)), 1.0);
     }`);
   const result = gl.createProgram();
   gl.attachShader(result, vertex); gl.attachShader(result, fragment); gl.linkProgram(result);
@@ -495,7 +567,7 @@ function uploadOfficial(gl, asset, basisLab = null) {
     const indices = read(primitive.indices, IndexType);
     const indexBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     gl.bindVertexArray(null);
-    const result = { vao, positionBuffer, basePosition: position, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, color: primitive.color, vertexOffset: basisLab ? vertexOffset : 0 };
+    const result = { vao, positionBuffer, basePosition: position, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, materialIndex: asset.primitives.indexOf(primitive), vertexOffset: basisLab ? vertexOffset : 0 };
     vertexOffset += position.length / 3;
     return result;
   });
@@ -557,8 +629,11 @@ function drawOfficial(canvas, asset, resources, coefficients = null) {
   gl.clearColor(0.035, 0.05, 0.075, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   const projection = buildWebglProjection(asset.bounds, aspect);
   const camera = buildWebglCameraMatrix(asset.bounds, aspect, resources.camera);
-  gl.uniformMatrix4fv(resources.uniforms.projection, false, projection);
-  gl.uniformMatrix4fv(resources.uniforms.camera, false, camera);
+   gl.uniformMatrix4fv(resources.uniforms.projection, false, projection);
+   gl.uniformMatrix4fv(resources.uniforms.camera, false, camera);
+   gl.uniform4fv(resources.uniforms.baseColors, OFFICIAL_MATERIAL_PALETTE.flatMap((material) => [...material.baseColor, 1]));
+   gl.uniform1fv(resources.uniforms.perceptualRoughness, OFFICIAL_MATERIAL_PALETTE.map((material) => material.perceptualRoughness));
+   gl.uniform1fv(resources.uniforms.specularStrength, OFFICIAL_MATERIAL_PALETTE.map((material) => material.specularStrength));
   for (const primitive of resources.primitives) {
     if (resources.basisLab) {
       const positions = new Float32Array(primitive.basePosition);
@@ -577,13 +652,13 @@ function drawOfficial(canvas, asset, resources, coefficients = null) {
       gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
     }
     gl.bindVertexArray(primitive.vao);
-    gl.uniform4fv(resources.uniforms.color, primitive.color);
+    gl.uniform1i(resources.uniforms.materialIndex, primitive.materialIndex);
     gl.drawElements(gl.TRIANGLES, primitive.indexCount, primitive.indexType, 0);
   }
   gl.bindVertexArray(null);
   if (gl.getError() !== gl.NO_ERROR) fail("official WebGL resource or draw error");
   const official = asset.json.extras.sportsFaceGnmOfficial;
-  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: resources.basisLab !== null, identityCount: resources.basisLab ? 4 : 0, expressionCount: resources.basisLab ? 4 : 0, selectedVectors: resources.basisLab?.metadata.selection ? [...resources.basisLab.metadata.selection.identity, ...resources.basisLab.metadata.selection.expression] : [], activeCoefficients, semanticMapping: "disabled", runtimeBasisLoaded: resources.basisLab !== null, assetSchema: official.schema, mapping: resources.basisLab ? "technical basis coefficients only; semantic mapping disabled" : "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
+  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, culling: { enabled: false, mode: "two-sided", reason: "retained mesh has mixed triangle winding" }, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: resources.basisLab !== null, identityCount: resources.basisLab ? 4 : 0, expressionCount: resources.basisLab ? 4 : 0, selectedVectors: resources.basisLab?.metadata.selection ? [...resources.basisLab.metadata.selection.identity, ...resources.basisLab.metadata.selection.expression] : [], activeCoefficients, semanticMapping: "disabled", runtimeBasisLoaded: resources.basisLab !== null, assetSchema: official.schema, materialModel: OFFICIAL_MATERIAL_MODEL_VERSION, materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION, lighting: { ...OFFICIAL_LIGHTING_FEATURES }, componentMaterialInfo: materialDiagnostics(), mapping: resources.basisLab ? "technical basis coefficients only; semantic mapping disabled" : "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
 }
 
 function redraw(canvas, state) {
@@ -662,7 +737,10 @@ export function renderWebglFace(canvas, profile, options = {}) {
         textureSize: gl.getUniformLocation(webglProgram, "uTextureSize"),
         projection: gl.getUniformLocation(webglProgram, "uProjection"),
         camera: gl.getUniformLocation(webglProgram, "uCamera"),
-        color: gl.getUniformLocation(webglProgram, "uColor"),
+         materialIndex: gl.getUniformLocation(webglProgram, "uMaterialIndex"),
+         baseColors: gl.getUniformLocation(webglProgram, "uBaseColors"),
+         perceptualRoughness: gl.getUniformLocation(webglProgram, "uPerceptualRoughness"),
+         specularStrength: gl.getUniformLocation(webglProgram, "uSpecularStrength"),
       } };
       canvasState.set(canvas, state);
     }

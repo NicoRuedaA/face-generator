@@ -27,9 +27,11 @@ def main() -> int:
             selected = page.locator("#render-style")
             assert selected.input_value() == "sports/default-v2", selected.input_value()
             assert not page.locator("#webgl-camera-controls").is_visible(), f"{entry}: WebGL controls should be hidden by default"
+            assert not asset_requests, f"{entry}: default renderer requested official WebGL assets: {asset_requests}"
 
             selected.select_option("sports/morph-webgl-official-v1")
             page.wait_for_timeout(1800)
+            neutral_asset_request_count = len(asset_requests)
             webgl_visible = page.locator("#portrait-webgl").is_visible()
             fallback_visible = page.locator("#portrait").is_visible()
             diagnostic = page.locator("#toast").text_content() or ""
@@ -45,7 +47,38 @@ def main() -> int:
                 assert diagnostics["renderOnly"] is True, diagnostics
                 assert diagnostics["basisIncluded"] is False, diagnostics
                 assert diagnostics["assetSchema"] == "sports-face-gnm-official-head/v1", diagnostics
+                assert diagnostics["materialModel"] == "neutral-procedural-components-v2", diagnostics
+                assert diagnostics["materialModelVersion"] == "neutral-procedural-components-v2", diagnostics
+                assert diagnostics["lighting"] == {"hemisphere": True, "key": True, "fill": True, "rim": True, "specular": True, "cavity": True}, diagnostics
+                assert len(diagnostics["componentMaterialInfo"]) == 6, diagnostics
+                assert [material["component"] for material in diagnostics["componentMaterialInfo"]] == ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"], diagnostics
+                assert [material["materialIndex"] for material in diagnostics["componentMaterialInfo"]] == list(range(6)), diagnostics
+                assert all(material["materialSource"] == "neutral-procedural" and material["officialTexturesIncluded"] is False for material in diagnostics["componentMaterialInfo"]), diagnostics
+                assert not any(url.endswith("gnm-official-basis-lab.bin") or url.endswith("gnm-official-basis-lab.json") for url in asset_requests[:neutral_asset_request_count]), asset_requests
                 assert any(url.endswith("tools/gnm/work/gnm-official-head-render.glb") for url in asset_requests), asset_requests
+
+                def pixel_sample() -> dict:
+                    return page.evaluate("""() => {
+                        const canvas = document.querySelector('#portrait-webgl');
+                        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+                        if (!gl || canvas.width <= 0 || canvas.height <= 0) {
+                            return { readbackFailure: 'webgl2-unavailable-or-empty-canvas', samples: [] };
+                        }
+                        while (gl.getError() !== gl.NO_ERROR) {}
+                        const coordinates = [[0, 0], [Math.floor(canvas.width / 2), Math.floor(canvas.height / 2)], [canvas.width - 1, canvas.height - 1]];
+                        const samples = [];
+                        for (const [x, y] of coordinates) {
+                            const pixel = new Uint8Array(4);
+                            gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+                            samples.push(...pixel);
+                        }
+                        const error = gl.getError();
+                        return { readbackFailure: error === gl.NO_ERROR ? null : `gl-error-${error}`, samples };
+                    }""")
+
+                official_pixel_sample = pixel_sample()
+                assert official_pixel_sample["readbackFailure"] is None, official_pixel_sample
+                assert official_pixel_sample["samples"] and all(isinstance(value, int) and 0 <= value <= 255 for value in official_pixel_sample["samples"]), official_pixel_sample
                 box = canvas.bounding_box()
                 assert box, f"{entry}: WebGL canvas has no bounds"
                 center_x = box["x"] + box["width"] / 2
@@ -86,7 +119,11 @@ def main() -> int:
                 assert basis_diagnostics["identityCount"] == 4 and basis_diagnostics["expressionCount"] == 4, basis_diagnostics
                 assert len(basis_diagnostics["selectedVectors"]) == 8, basis_diagnostics
                 assert basis_diagnostics["activeCoefficients"] == [0] * 8, basis_diagnostics
-                assert any(url.endswith("gnm-official-basis-lab.bin") for url in asset_requests), asset_requests
+                assert basis_diagnostics["materialModel"] == "neutral-procedural-components-v2", basis_diagnostics
+                assert basis_diagnostics["lighting"] == {"hemisphere": True, "key": True, "fill": True, "rim": True, "specular": True, "cavity": True}, basis_diagnostics
+                assert [material["materialIndex"] for material in basis_diagnostics["componentMaterialInfo"]] == list(range(6)), basis_diagnostics
+                basis_requests = asset_requests[neutral_asset_request_count:]
+                assert basis_requests and all(url.endswith("gnm-official-basis-lab.bin") or url.endswith("gnm-official-basis-lab.json") for url in basis_requests), basis_requests
                 def pixel_hash() -> str:
                     return page.evaluate("""() => {
                         const data = document.querySelector('#portrait-webgl').getContext('webgl2', { preserveDrawingBuffer: true })
@@ -101,6 +138,25 @@ def main() -> int:
                         for (const value of data) hash = Math.imul(hash ^ value, 16777619);
                         return (hash >>> 0).toString(16).padStart(8, '0');
                     }""")
+                basis_pixel_sample = page.evaluate("""() => {
+                    const canvas = document.querySelector('#portrait-webgl');
+                    const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+                    if (!gl || canvas.width <= 0 || canvas.height <= 0) {
+                        return { readbackFailure: 'webgl2-unavailable-or-empty-canvas', samples: [] };
+                    }
+                    while (gl.getError() !== gl.NO_ERROR) {}
+                    const coordinates = [[0, 0], [Math.floor(canvas.width / 2), Math.floor(canvas.height / 2)], [canvas.width - 1, canvas.height - 1]];
+                    const samples = [];
+                    for (const [x, y] of coordinates) {
+                        const pixel = new Uint8Array(4);
+                        gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+                        samples.push(...pixel);
+                    }
+                    const error = gl.getError();
+                    return { readbackFailure: error === gl.NO_ERROR ? null : `gl-error-${error}`, samples };
+                }""")
+                assert basis_pixel_sample["readbackFailure"] is None, basis_pixel_sample
+                assert basis_pixel_sample["samples"] and all(isinstance(value, int) and 0 <= value <= 255 for value in basis_pixel_sample["samples"]), basis_pixel_sample
                 neutral_hash = pixel_hash()
                 slider = basis_controls.locator("input[type=range]").nth(0)
                 assert slider.get_attribute("min") == "-0.25"
