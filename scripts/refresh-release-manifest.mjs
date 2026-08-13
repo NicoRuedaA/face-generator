@@ -45,6 +45,7 @@ const operationalFiles = [
   "tools/gnm/work/gnm-calibration-dataset.json",
   "tools/gnm/work/gnm-calibration-validation.json",
   "tests/morphology.test.mjs",
+  "tests/technical-visualization.test.mjs",
   "tests/browser_smoke.py",
   "src/webgl-renderer.js",
   "src/render-router.js",

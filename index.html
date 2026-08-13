@@ -93,6 +93,13 @@
           <div class="basis-grid"></div>
           <button id="reset-basis-lab" class="button small" type="button">Reset Basis Lab</button>
         </section>
+        <section id="technical-visualization-controls" class="technical-visualization-panel field wide" hidden>
+          <strong>Technical visualization · inspection aid</strong>
+          <small>Procedural debug overlays drawn over the neutral material. Not an official texture or material; does not mutate FaceDNA or SF2.</small>
+          <label class="checkbox-line"><input id="uv-checker-toggle" type="checkbox"> UV checker (exact TEXCOORD_0)</label>
+          <label class="checkbox-line"><input id="wireframe-toggle" type="checkbox"> Wireframe edges</label>
+          <small>State: <span id="technical-visualization-state">none</span></small>
+        </section>
 
         <label class="field colour-field">
           <span>Equipación principal</span>

@@ -47,12 +47,12 @@ out += moduleBlock("SportsFaceWebglRenderer", webglRenderer,
   "{ getFaceValues, hashSeed }, { renderGnmMorphFace }",
   "SportsFaceModel, SportsFaceMorphRenderer");
 out += moduleBlock("SportsFaceRenderRouter", router,
-  [...exportsOf(router), "GNM_MORPH_RENDER_STYLE", "MORPH_RENDER_STYLE", "WEBGL_MORPH_RENDER_STYLE", "WEBGL_OFFICIAL_RENDER_STYLE", "WEBGL_OFFICIAL_BASIS_LAB_STYLE", "buildGnmMorphSvg", "buildMorphSvg", "buildToonSvg", "downloadPng", "resetWebglCamera", "TOON_HEAD_ATTRIBUTION"],
-  "{ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, describeWebglMapping, describeOfficialWebglMapping, describeOfficialBasisLabMapping, resetWebglCamera, renderWebglFace }",
+  [...exportsOf(router), "GNM_MORPH_RENDER_STYLE", "MORPH_RENDER_STYLE", "WEBGL_MORPH_RENDER_STYLE", "WEBGL_OFFICIAL_RENDER_STYLE", "WEBGL_OFFICIAL_BASIS_LAB_STYLE", "TECHNICAL_VISUALIZATION_NONE", "technicalVisualizationState", "buildGnmMorphSvg", "buildMorphSvg", "buildToonSvg", "downloadPng", "resetWebglCamera", "TOON_HEAD_ATTRIBUTION"],
+  "{ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, TECHNICAL_VISUALIZATION_NONE, technicalVisualizationState, describeWebglMapping, describeOfficialWebglMapping, describeOfficialBasisLabMapping, resetWebglCamera, renderWebglFace }",
   "SportsFaceLegacyRenderer, SportsFaceToonRenderer, SportsFaceMorphRenderer, SportsFaceWebglRenderer");
 
 const modelDeps = ["FACE_VARS","ageProfile","cloneProfile","createProfile","describeProfile","formatFaceCode","getFaceValues","hashSeed","parseFaceCode","setFeature","setKit","setPresentation"];
-const routerDeps = ["DEFAULT_RENDER_STYLE","GNM_MORPH_RENDER_STYLE","MORPH_RENDER_STYLE","RENDER_STYLES","TOON_RENDER_STYLE","WEBGL_MORPH_RENDER_STYLE","WEBGL_OFFICIAL_RENDER_STYLE","WEBGL_OFFICIAL_BASIS_LAB_STYLE","describeRender","downloadPng","resetWebglCamera","renderPortrait"];
+const routerDeps = ["DEFAULT_RENDER_STYLE","GNM_MORPH_RENDER_STYLE","MORPH_RENDER_STYLE","RENDER_STYLES","TOON_RENDER_STYLE","WEBGL_MORPH_RENDER_STYLE","WEBGL_OFFICIAL_RENDER_STYLE","WEBGL_OFFICIAL_BASIS_LAB_STYLE","TECHNICAL_VISUALIZATION_NONE","technicalVisualizationState","describeRender","downloadPng","resetWebglCamera","renderPortrait"];
 out += `(() => {\nconst { ${modelDeps.join(", ")} } = SportsFaceModel;\nconst { ${routerDeps.join(", ")} } = SportsFaceRenderRouter;\n${app}\n})();\n`;
 fs.writeFileSync(path.join(root, "src", "app.bundle.js"), out);
 fs.writeFileSync(

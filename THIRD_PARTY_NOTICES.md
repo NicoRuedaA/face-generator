@@ -61,6 +61,14 @@ and official NPZ SHA-256
   runtime code. It adds no textures or external dependencies; its six component
   colors and lightweight lighting diagnostics are technical presentation choices,
   not official GNM material claims or anatomical semantics.
+- Technical deformation visualization: the opt-in `UV checker` and `Wireframe`
+  overlays are project-authored procedural debug rendering. The checker samples
+  the official per-vertex `TEXCOORD_0` in a procedural pattern and the wireframe
+  is generated deterministically from the retained triangle indices; both are
+  inspection aids labeled `technicalVisualization`, OFF by default, and are not
+  official textures or material claims. No new third-party assets, code, or
+  dependencies are introduced, and `edgeflow_bw_4k.png` remains unused by the
+  runtime.
 - Phase 6 semantic evidence: `tools/gnm/analyze_official_gnm_semantics.py` emits
   a deterministic stdlib-only quantitative report. It characterizes the basis
   payload but explicitly keeps `semanticMapping: "unestablished"`; technical

@@ -216,6 +216,24 @@ remain unchanged. Diagnostics report the model version, six component records,
 and lighting flags. Basis Lab uses the same shader without changing its payload
 or deformation contract.
 
+### Technical deformation visualization
+
+Both official styles (`sports/morph-webgl-official-v1` and the Basis Lab
+style) expose opt-in technical visualization toggles (session state only, OFF
+by default) that make basis displacement visible on the flat neutral
+materials. `UV checker` samples a deterministic procedural checker from the
+exact official per-vertex `TEXCOORD_0` in the official fragment shader, so the
+pattern deforms with the mesh. `Wireframe edges` adds a deterministic
+`gl.LINES` second pass generated from the existing triangle indices at upload
+time, sharing the position buffer (Basis Lab CPU deformation applies) while
+depth testing and two-sided culling behavior are preserved. Diagnostics expose
+`technicalVisualization` (`"none"`/`"uv-checker"`/`"wireframe"`/
+`"uv-checker+wireframe"`), `technicalVisualizationNote` (inspection aid, not an
+official texture or material), `uvCheckerDensity`, `wireframeColor`, and
+`wireframeEdgeCount` (`105,972`). No GLB, Basis Lab payload, FaceDNA, SF2, or
+semantic mapping changes; with toggles OFF the pixel hash is byte-identical to
+the previous neutral rendering.
+
 ```bash
 npm run build:gnm-official-basis-lab
 npm run validate:gnm-official-basis-lab

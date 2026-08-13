@@ -1,5 +1,23 @@
 ## Unreleased — Operativa GNM
 
+- Añade visualización técnica de deformación opt-in (session state, OFF por
+  defecto) en los estilos oficial neutral y Basis Lab, para hacer visibles las
+  diferencias de las bases GNM sobre los materiales planos sin inventar
+  texturas. `UV checker` sube las `TEXCOORD_0` oficiales exactas por vértice y
+  dibuja un checker procedural determinista muestreado en espacio UV
+  (`OFFICIAL_UV_CHECKER_DENSITY = 16`) que se deforma con la malla; `Wireframe
+  edges` añade un segundo pase `gl.LINES` con aristas generadas
+  deterministicamente desde los triángulos existentes (edge count `105,972`
+  para `35,324` triángulos), compartiendo el buffer de posiciones con la
+  deformación CPU de Basis Lab y conservando depth test y culling two-sided.
+  Los diagnósticos exponen `technicalVisualization` (`none`/`uv-checker`/
+  `wireframe`/`uv-checker+wireframe`), `technicalVisualizationNote` (ayuda de
+  inspección, no textura/material oficial), `uvCheckerDensity`,
+  `wireframeColor` y `wireframeEdgeCount`. Con los toggles OFF el hash de
+  píxeles es byte-idéntico al anterior; no cambian GLBs, payload de Basis Lab,
+  FaceDNA, SF2, material defaults ni mapping semántico. Añade tests Node del
+  contrato y cobertura Playwright en `tests/browser_smoke.py`.
+
 - Añade la Fase 7B: validador estadístico offline stdlib-only y reporte
   determinista de calibración. El resultado actual es `insufficient_data` con
   template vacío, conteos y métricas cero, sin R²/correlaciones inventadas. El

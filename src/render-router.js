@@ -20,11 +20,13 @@ import {
   describeOfficialWebglMapping,
   resetWebglCamera,
   renderWebglFace,
+  TECHNICAL_VISUALIZATION_NONE,
+  technicalVisualizationState,
 } from "./webgl-renderer.js";
 
 export const DEFAULT_RENDER_STYLE = "sports/default-v2";
 export const TOON_RENDER_STYLE = "sports/toon-prototype";
-export { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE };
+export { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, TECHNICAL_VISUALIZATION_NONE, technicalVisualizationState };
 export const RENDER_STYLES = Object.freeze([
   Object.freeze({ id: DEFAULT_RENDER_STYLE, label: "Sports Default v2", attributionRequired: false }),
   Object.freeze({ id: TOON_RENDER_STYLE, label: "Sports Toon Polish v0.3.1", attributionRequired: true }),
@@ -52,8 +54,8 @@ export function renderPortrait(canvas, profile, { style = DEFAULT_RENDER_STYLE, 
 export function describeRender(profile, style = DEFAULT_RENDER_STYLE, options = {}) {
   if (style === GNM_MORPH_RENDER_STYLE) return describeGnmMorphMapping(profile, options);
   if (style === WEBGL_MORPH_RENDER_STYLE) return describeWebglMapping(profile, options);
-  if (style === WEBGL_OFFICIAL_RENDER_STYLE) return describeOfficialWebglMapping(profile, options);
-  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return describeOfficialBasisLabMapping(options.basisCoefficients);
+  if (style === WEBGL_OFFICIAL_RENDER_STYLE) return describeOfficialWebglMapping(options);
+  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return describeOfficialBasisLabMapping(options.basisCoefficients, options);
   if (style === MORPH_RENDER_STYLE) return describeMorphMapping(profile, options);
   return style === TOON_RENDER_STYLE
     ? describeToonMapping(profile)

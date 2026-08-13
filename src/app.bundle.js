@@ -2846,6 +2846,48 @@ const OFFICIAL_LIGHTING_FEATURES = Object.freeze({
   specular: true,
   cavity: true,
 });
+/* Technical deformation visualization (inspection aid, OFF by default).
+   These overlays render in the official fragment shader over the neutral
+   procedural material. They are procedural debug patterns sampled from the
+   exact official per-vertex TEXCOORD_0 and a deterministic LINES edge pass;
+   they are explicitly NOT official textures and never mutate FaceDNA/SF2. */
+const TECHNICAL_VISUALIZATION_NONE = "none";
+const TECHNICAL_VISUALIZATION_UV_CHECKER = "uv-checker";
+const TECHNICAL_VISUALIZATION_WIREFRAME = "wireframe";
+const TECHNICAL_VISUALIZATION_COMBINED = "uv-checker+wireframe";
+const TECHNICAL_VISUALIZATION_VALUES = Object.freeze([
+  TECHNICAL_VISUALIZATION_NONE,
+  TECHNICAL_VISUALIZATION_UV_CHECKER,
+  TECHNICAL_VISUALIZATION_WIREFRAME,
+  TECHNICAL_VISUALIZATION_COMBINED,
+]);
+const TECHNICAL_VISUALIZATION_NOTE = "Inspection aid: procedural UV-checker/wireframe overlay over the neutral material; not an official texture or material";
+const OFFICIAL_UV_CHECKER_DENSITY = 16;
+const OFFICIAL_WIREFRAME_COLOR = Object.freeze([0.96, 0.16, 0.86]);
+function clampTechnicalVisualization(value) {
+  return TECHNICAL_VISUALIZATION_VALUES.includes(value) ? value : TECHNICAL_VISUALIZATION_NONE;
+}
+function technicalVisualizationState(uvChecker, wireframe) {
+  const checker = Boolean(uvChecker);
+  const edges = Boolean(wireframe);
+  if (checker && edges) return TECHNICAL_VISUALIZATION_COMBINED;
+  if (checker) return TECHNICAL_VISUALIZATION_UV_CHECKER;
+  if (edges) return TECHNICAL_VISUALIZATION_WIREFRAME;
+  return TECHNICAL_VISUALIZATION_NONE;
+}
+function describeTechnicalVisualization(technicalVisualization) {
+  return {
+    technicalVisualization: clampTechnicalVisualization(technicalVisualization),
+    technicalVisualizationNote: TECHNICAL_VISUALIZATION_NOTE,
+  };
+}
+function technicalVisualizationFlags(technicalVisualization) {
+  const state = clampTechnicalVisualization(technicalVisualization);
+  return {
+    uvChecker: state === TECHNICAL_VISUALIZATION_UV_CHECKER || state === TECHNICAL_VISUALIZATION_COMBINED,
+    wireframe: state === TECHNICAL_VISUALIZATION_WIREFRAME || state === TECHNICAL_VISUALIZATION_COMBINED,
+  };
+}
 const freezeMaterial = (material) => Object.freeze({
   ...material,
   baseColor: Object.freeze([...material.baseColor]),
@@ -2932,7 +2974,7 @@ function describeWebglMapping(profile) {
   };
 }
 
-function describeOfficialWebglMapping() {
+function describeOfficialWebglMapping(options = {}) {
   return {
     renderer: WEBGL_OFFICIAL_RENDER_STYLE,
     prototype: true,
@@ -2943,6 +2985,7 @@ function describeOfficialWebglMapping() {
     materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION,
     lighting: { ...OFFICIAL_LIGHTING_FEATURES },
     componentMaterialInfo: materialDiagnostics(),
+    ...describeTechnicalVisualization(options?.technicalVisualization),
     mapping: {
       identityOnly: true,
       applied: false,
@@ -2953,7 +2996,7 @@ function describeOfficialWebglMapping() {
   };
 }
 
-function describeOfficialBasisLabMapping(coefficients = {}) {
+function describeOfficialBasisLabMapping(coefficients = {}, options = {}) {
   const values = Object.fromEntries(BASIS_LAB_VECTOR_LABELS.map((label, index) => [label, clampBasisCoefficient(Array.isArray(coefficients) ? coefficients[index] : coefficients[label])]));
   return {
     renderer: WEBGL_OFFICIAL_BASIS_LAB_STYLE,
@@ -2969,6 +3012,7 @@ function describeOfficialBasisLabMapping(coefficients = {}) {
     expressionCount: 4,
     selectedVectors: BASIS_LAB_VECTOR_LABELS,
     coefficients: values,
+    ...describeTechnicalVisualization(options?.technicalVisualization),
     mapping: "technical coefficients only; semanticMapping disabled",
   };
 }
@@ -3293,12 +3337,17 @@ function program(gl) {
 function officialProgram(gl) {
   const vertex = shader(gl, gl.VERTEX_SHADER, `#version 300 es
     layout(location=0) in vec3 aPosition;
+    layout(location=1) in vec2 aTexCoord;
     uniform mat4 uProjection;
     uniform mat4 uCamera;
     out vec3 vViewPosition;
+    out vec2 vTexCoord;
     void main() {
       vec4 viewPosition = uCamera * vec4(aPosition, 1.0);
       vViewPosition = viewPosition.xyz;
+      // Exact official per-vertex TEXCOORD_0; only consumed by the technical
+      // UV checker so the pattern deforms with the mesh.
+      vTexCoord = aTexCoord;
       gl_Position = uProjection * viewPosition;
     }`);
   const fragment = shader(gl, gl.FRAGMENT_SHADER, `#version 300 es
@@ -3307,15 +3356,40 @@ function officialProgram(gl) {
     uniform vec4 uBaseColors[6];
     uniform float uPerceptualRoughness[6];
     uniform float uSpecularStrength[6];
+    uniform int uUvCheckerEnabled;
+    uniform int uWireframePass;
+    uniform vec3 uInspectionColor;
+    uniform float uCheckerDensity;
     in vec3 vViewPosition;
+    in vec2 vTexCoord;
     out vec4 color;
     vec3 safeNormalize(vec3 value, vec3 fallback) {
       float lengthSquared = dot(value, value);
       return lengthSquared > 0.000001 ? value * inversesqrt(lengthSquared) : fallback;
     }
     void main() {
+      if (uWireframePass == 1) {
+        // Technical wireframe overlay pass: flat unlit inspection color over
+        // the already-shaded surface. Depth testing stays enabled so only the
+        // edges on or in front of the surface draw.
+        color = vec4(uInspectionColor, 1.0);
+        return;
+      }
       int materialIndex = clamp(uMaterialIndex, 0, 5);
       vec4 material = uBaseColors[materialIndex];
+      vec3 base = material.rgb;
+      if (uUvCheckerEnabled == 1) {
+        // Technical UV inspection pattern: deterministic checker (plus thin
+        // cell lines) sampled from UV space, so the pattern deforms with the
+        // mesh and exposes basis displacement. Inspection aid only; this is
+        // never an official texture.
+        vec2 cell = floor(vTexCoord * uCheckerDensity);
+        float parity = mod(cell.x + cell.y, 2.0);
+        base = mix(vec3(0.88, 0.93, 0.99), vec3(0.82, 0.10, 0.16), parity);
+        vec2 edge = fract(vTexCoord * uCheckerDensity);
+        float line = max(step(0.96, edge.x), step(0.96, edge.y));
+        base = mix(base, vec3(0.03, 0.05, 0.10), line);
+      }
       float perceptualRoughness = clamp(uPerceptualRoughness[materialIndex], 0.0, 1.0);
       float specularStrength = clamp(uSpecularStrength[materialIndex], 0.0, 1.0);
       vec3 normal = safeNormalize(cross(dFdx(vViewPosition), dFdy(vViewPosition)), vec3(0.0, 0.0, 1.0));
@@ -3337,7 +3411,7 @@ function officialProgram(gl) {
       float specular = pow(max(dot(normal, halfVector), 0.0), shininess) * specularStrength;
       float lightAgreement = clamp(key * 0.72 + fill * 0.28, 0.0, 1.0);
       float cavity = mix(0.78, 1.0, smoothstep(0.0, 0.85, lightAgreement));
-      vec3 lit = material.rgb * (hemisphere + vec3(0.58, 0.56, 0.54) * key + vec3(0.20, 0.22, 0.25) * fill);
+      vec3 lit = base * (hemisphere + vec3(0.58, 0.56, 0.54) * key + vec3(0.20, 0.22, 0.25) * fill);
       lit = lit * cavity + vec3(0.14, 0.16, 0.19) * rim + vec3(specular);
       if (any(isnan(lit)) || any(isinf(lit))) lit = material.rgb;
       color = vec4(clamp(lit, vec3(0.0), vec3(1.0)), 1.0);
@@ -3463,11 +3537,35 @@ function uploadOfficial(gl, asset, basisLab = null) {
     const position = read(primitive.position, Float32Array);
     const positionBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer); gl.bufferData(gl.ARRAY_BUFFER, position, basisLab ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    // Upload the exact official per-vertex TEXCOORD_0 so the technical UV
+    // checker can sample UV space and deforms with the mesh. It is consumed
+    // only when the opt-in uv-checker visualization is enabled.
+    const uv = read(primitive.uv, Float32Array);
+    const uvBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer); gl.bufferData(gl.ARRAY_BUFFER, uv, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(1); gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
     const IndexType = primitive.indices.accessor.componentType === 5123 ? Uint16Array : Uint32Array;
     const indices = read(primitive.indices, IndexType);
     const indexBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     gl.bindVertexArray(null);
-    const result = { vao, positionBuffer, basePosition: position, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, materialIndex: asset.primitives.indexOf(primitive), vertexOffset: basisLab ? vertexOffset : 0 };
+    // Deterministic wireframe index buffer generated from the existing triangle
+    // indices at upload time: one LINES pair per triangle edge (shared edges
+    // repeat, which is intentional and bounded). The wireframe VAO shares the
+    // same position buffer, so Basis Lab CPU deformation applies to it too.
+    const wireIndices = new IndexType(indices.length * 2);
+    for (let index = 0, out = 0; index < indices.length; index += 3) {
+      const a = indices[index];
+      const b = indices[index + 1];
+      const c = indices[index + 2];
+      wireIndices[out++] = a; wireIndices[out++] = b;
+      wireIndices[out++] = b; wireIndices[out++] = c;
+      wireIndices[out++] = c; wireIndices[out++] = a;
+    }
+    const wireVao = gl.createVertexArray(); gl.bindVertexArray(wireVao);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    const wireBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, wireBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, wireIndices, gl.STATIC_DRAW);
+    gl.bindVertexArray(null);
+    const result = { vao, positionBuffer, basePosition: position, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, materialIndex: asset.primitives.indexOf(primitive), vertexOffset: basisLab ? vertexOffset : 0, wireVao, wireIndexCount: wireIndices.length };
     vertexOffset += position.length / 3;
     return result;
   });
@@ -3524,6 +3622,8 @@ function drawOfficial(canvas, asset, resources, coefficients = null) {
     ? (coefficients || new Array(8).fill(0)).map(clampBasisCoefficient)
     : [];
   const aspect = resizeCanvas(canvas, gl);
+  const visualization = describeTechnicalVisualization(resources.technicalVisualization);
+  const visualizationFlags = technicalVisualizationFlags(visualization.technicalVisualization);
   gl.useProgram(resources.program);
   gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.clearDepth(1); gl.disable(gl.CULL_FACE);
   gl.clearColor(0.035, 0.05, 0.075, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -3534,6 +3634,11 @@ function drawOfficial(canvas, asset, resources, coefficients = null) {
    gl.uniform4fv(resources.uniforms.baseColors, OFFICIAL_MATERIAL_PALETTE.flatMap((material) => [...material.baseColor, 1]));
    gl.uniform1fv(resources.uniforms.perceptualRoughness, OFFICIAL_MATERIAL_PALETTE.map((material) => material.perceptualRoughness));
    gl.uniform1fv(resources.uniforms.specularStrength, OFFICIAL_MATERIAL_PALETTE.map((material) => material.specularStrength));
+  // Technical visualization state: solid pass first, wireframe second pass after.
+  gl.uniform1i(resources.uniforms.uvCheckerEnabled, visualizationFlags.uvChecker ? 1 : 0);
+  gl.uniform1i(resources.uniforms.wireframePass, 0);
+  gl.uniform1f(resources.uniforms.checkerDensity, OFFICIAL_UV_CHECKER_DENSITY);
+  gl.uniform3fv(resources.uniforms.inspectionColor, OFFICIAL_WIREFRAME_COLOR);
   for (const primitive of resources.primitives) {
     if (resources.basisLab) {
       const positions = new Float32Array(primitive.basePosition);
@@ -3555,10 +3660,23 @@ function drawOfficial(canvas, asset, resources, coefficients = null) {
     gl.uniform1i(resources.uniforms.materialIndex, primitive.materialIndex);
     gl.drawElements(gl.TRIANGLES, primitive.indexCount, primitive.indexType, 0);
   }
+  if (visualizationFlags.wireframe) {
+    // Second pass: triangle edges over the shaded surface. Depth testing stays
+    // enabled (LEQUAL) so only edges at or in front of the surface draw; the
+    // two-sided solid pass above is not cleared. No culling is enabled, which
+    // preserves the existing mixed-winding behavior.
+    gl.uniform1i(resources.uniforms.uvCheckerEnabled, 0);
+    gl.uniform1i(resources.uniforms.wireframePass, 1);
+    for (const primitive of resources.primitives) {
+      gl.bindVertexArray(primitive.wireVao);
+      gl.drawElements(gl.LINES, primitive.wireIndexCount, primitive.indexType, 0);
+    }
+    gl.uniform1i(resources.uniforms.wireframePass, 0);
+  }
   gl.bindVertexArray(null);
   if (gl.getError() !== gl.NO_ERROR) fail("official WebGL resource or draw error");
   const official = asset.json.extras.sportsFaceGnmOfficial;
-  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, culling: { enabled: false, mode: "two-sided", reason: "retained mesh has mixed triangle winding" }, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: resources.basisLab !== null, identityCount: resources.basisLab ? 4 : 0, expressionCount: resources.basisLab ? 4 : 0, selectedVectors: resources.basisLab?.metadata.selection ? [...resources.basisLab.metadata.selection.identity, ...resources.basisLab.metadata.selection.expression] : [], activeCoefficients, semanticMapping: "disabled", runtimeBasisLoaded: resources.basisLab !== null, assetSchema: official.schema, materialModel: OFFICIAL_MATERIAL_MODEL_VERSION, materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION, lighting: { ...OFFICIAL_LIGHTING_FEATURES }, componentMaterialInfo: materialDiagnostics(), mapping: resources.basisLab ? "technical basis coefficients only; semantic mapping disabled" : "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
+  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, culling: { enabled: false, mode: "two-sided", reason: "retained mesh has mixed triangle winding" }, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: resources.basisLab !== null, identityCount: resources.basisLab ? 4 : 0, expressionCount: resources.basisLab ? 4 : 0, selectedVectors: resources.basisLab?.metadata.selection ? [...resources.basisLab.metadata.selection.identity, ...resources.basisLab.metadata.selection.expression] : [], activeCoefficients, semanticMapping: "disabled", runtimeBasisLoaded: resources.basisLab !== null, assetSchema: official.schema, materialModel: OFFICIAL_MATERIAL_MODEL_VERSION, materialModelVersion: OFFICIAL_MATERIAL_MODEL_VERSION, lighting: { ...OFFICIAL_LIGHTING_FEATURES }, componentMaterialInfo: materialDiagnostics(), ...visualization, uvCheckerDensity: OFFICIAL_UV_CHECKER_DENSITY, wireframeColor: [...OFFICIAL_WIREFRAME_COLOR], wireframeEdgeCount: resources.primitives.reduce((total, primitive) => total + primitive.wireIndexCount / 2, 0), mapping: resources.basisLab ? "technical basis coefficients only; semantic mapping disabled" : "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
 }
 
 function redraw(canvas, state) {
@@ -3631,7 +3749,7 @@ function renderWebglFace(canvas, profile, options = {}) {
     if (!state || state.asset !== asset || state.gl !== gl || state.basisLab !== basis) {
       const webglProgram = asset.official ? officialProgram(gl) : program(gl);
       const resources = asset.official ? uploadOfficial(gl, asset, basis) : upload(gl, asset);
-      state = { asset, gl, basisLab: basis, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, basisCoefficients: basis ? new Array(8).fill(0) : null, weights: mapWebglWeights(profile), uniforms: {
+      state = { asset, gl, basisLab: basis, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, basisCoefficients: basis ? new Array(8).fill(0) : null, weights: mapWebglWeights(profile), technicalVisualization: TECHNICAL_VISUALIZATION_NONE, uniforms: {
         texture: gl.getUniformLocation(webglProgram, "uMorphDeltas"),
         weights: gl.getUniformLocation(webglProgram, "uWeights"),
         textureSize: gl.getUniformLocation(webglProgram, "uTextureSize"),
@@ -3641,12 +3759,20 @@ function renderWebglFace(canvas, profile, options = {}) {
          baseColors: gl.getUniformLocation(webglProgram, "uBaseColors"),
          perceptualRoughness: gl.getUniformLocation(webglProgram, "uPerceptualRoughness"),
          specularStrength: gl.getUniformLocation(webglProgram, "uSpecularStrength"),
+         uvCheckerEnabled: gl.getUniformLocation(webglProgram, "uUvCheckerEnabled"),
+         wireframePass: gl.getUniformLocation(webglProgram, "uWireframePass"),
+         inspectionColor: gl.getUniformLocation(webglProgram, "uInspectionColor"),
+         checkerDensity: gl.getUniformLocation(webglProgram, "uCheckerDensity"),
       } };
       canvasState.set(canvas, state);
     }
     attachCameraControls(canvas, state);
     state.weights = mapWebglWeights(profile);
     if (basis && options.basisCoefficients) state.basisCoefficients = options.basisCoefficients.map(clampBasisCoefficient);
+    // Technical visualization toggles are session state only: they never touch
+    // FaceDNA/SF2 and default OFF. The value survives camera redraws because it
+    // lives on the per-canvas state object.
+    if (options.technicalVisualization !== undefined) state.technicalVisualization = clampTechnicalVisualization(options.technicalVisualization);
     const diagnostics = asset.official ? drawOfficial(canvas, asset, state, state.basisCoefficients) : draw(canvas, asset, state, state.weights);
     canvas.__sportsFaceWebglDiagnostics = diagnostics;
     return { canvas, fallback: false, renderer: basisLab ? WEBGL_OFFICIAL_BASIS_LAB_STYLE : asset.official ? WEBGL_OFFICIAL_RENDER_STYLE : WEBGL_MORPH_RENDER_STYLE, diagnostics };
@@ -3666,6 +3792,18 @@ return {
   OFFICIAL_MATERIAL_MODEL_VERSION,
   OFFICIAL_COMPONENT_NAMES,
   OFFICIAL_LIGHTING_FEATURES,
+  TECHNICAL_VISUALIZATION_NONE,
+  TECHNICAL_VISUALIZATION_UV_CHECKER,
+  TECHNICAL_VISUALIZATION_WIREFRAME,
+  TECHNICAL_VISUALIZATION_COMBINED,
+  TECHNICAL_VISUALIZATION_VALUES,
+  TECHNICAL_VISUALIZATION_NOTE,
+  OFFICIAL_UV_CHECKER_DENSITY,
+  OFFICIAL_WIREFRAME_COLOR,
+  clampTechnicalVisualization,
+  technicalVisualizationState,
+  describeTechnicalVisualization,
+  technicalVisualizationFlags,
   OFFICIAL_MATERIAL_PALETTE,
   WEBGL_MORPH_WEIGHT_LIMIT,
   WEBGL_FRAME_MARGIN,
@@ -3688,7 +3826,7 @@ return {
 };
 })(SportsFaceModel, SportsFaceMorphRenderer);
 
-const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, describeWebglMapping, describeOfficialWebglMapping, describeOfficialBasisLabMapping, resetWebglCamera, renderWebglFace }) => {
+const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, TECHNICAL_VISUALIZATION_NONE, technicalVisualizationState, describeWebglMapping, describeOfficialWebglMapping, describeOfficialBasisLabMapping, resetWebglCamera, renderWebglFace }) => {
 /* Renderer selector. Selection is deliberately not part of FaceDNA/SF2. */
 const DEFAULT_RENDER_STYLE = "sports/default-v2";
 const TOON_RENDER_STYLE = "sports/toon-prototype";
@@ -3720,8 +3858,8 @@ function renderPortrait(canvas, profile, { style = DEFAULT_RENDER_STYLE, express
 function describeRender(profile, style = DEFAULT_RENDER_STYLE, options = {}) {
   if (style === GNM_MORPH_RENDER_STYLE) return describeGnmMorphMapping(profile, options);
   if (style === WEBGL_MORPH_RENDER_STYLE) return describeWebglMapping(profile, options);
-  if (style === WEBGL_OFFICIAL_RENDER_STYLE) return describeOfficialWebglMapping(profile, options);
-  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return describeOfficialBasisLabMapping(options.basisCoefficients);
+  if (style === WEBGL_OFFICIAL_RENDER_STYLE) return describeOfficialWebglMapping(options);
+  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return describeOfficialBasisLabMapping(options.basisCoefficients, options);
   if (style === MORPH_RENDER_STYLE) return describeMorphMapping(profile, options);
   return style === TOON_RENDER_STYLE
     ? describeToonMapping(profile)
@@ -3741,6 +3879,8 @@ return {
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_OFFICIAL_RENDER_STYLE,
   WEBGL_OFFICIAL_BASIS_LAB_STYLE,
+  TECHNICAL_VISUALIZATION_NONE,
+  technicalVisualizationState,
   buildGnmMorphSvg,
   buildMorphSvg,
   buildToonSvg,
@@ -3752,7 +3892,7 @@ return {
 
 (() => {
 const { FACE_VARS, ageProfile, cloneProfile, createProfile, describeProfile, formatFaceCode, getFaceValues, hashSeed, parseFaceCode, setFeature, setKit, setPresentation } = SportsFaceModel;
-const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, describeRender, downloadPng, resetWebglCamera, renderPortrait } = SportsFaceRenderRouter;
+const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, TECHNICAL_VISUALIZATION_NONE, technicalVisualizationState, describeRender, downloadPng, resetWebglCamera, renderPortrait } = SportsFaceRenderRouter;
 /* Sports Face MVP UI - SPDX-License-Identifier: GPL-2.0-only */
 
 const canvas = document.querySelector("#portrait");
@@ -3776,10 +3916,18 @@ const toonAttribution = document.querySelector("#toon-attribution");
 const landmarksInput = document.querySelector("#show-landmarks");
 const landmarkField = document.querySelector("#landmark-field");
 const basisLabPanel = document.querySelector("#basis-lab-controls");
+const technicalVisualizationPanel = document.querySelector("#technical-visualization-controls");
+const uvCheckerToggle = document.querySelector("#uv-checker-toggle");
+const wireframeToggle = document.querySelector("#wireframe-toggle");
+const technicalVisualizationStateLabel = document.querySelector("#technical-visualization-state");
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
 const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
 const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+// Technical visualization toggles are session state only (OFF by default) and
+// are never stored in FaceDNA, SF2, or localStorage.
+const OFFICIAL_WEBGL_STYLES = [WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+let technicalVisualization = TECHNICAL_VISUALIZATION_NONE;
 const BASIS_LAB_LABELS = [
   "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
   "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
@@ -3881,7 +4029,7 @@ function syncControls() {
     ...describeProfile(profile),
     selectedRenderer: renderStyle,
     selectedExpressionMode: expressionMode,
-    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector() }),
+    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector(), technicalVisualization }),
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
@@ -3889,7 +4037,11 @@ function syncControls() {
     landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
     expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
     basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
+    technicalVisualizationPanel.hidden = !OFFICIAL_WEBGL_STYLES.includes(renderStyle);
   landmarksInput.checked = showLandmarks;
+  uvCheckerToggle.checked = technicalVisualization === "uv-checker" || technicalVisualization === "uv-checker+wireframe";
+  wireframeToggle.checked = technicalVisualization === "wireframe" || technicalVisualization === "uv-checker+wireframe";
+  technicalVisualizationStateLabel.textContent = technicalVisualization;
   for (const [label, input] of basisLabControls) input.value = String(basisLabCoefficients[label]);
 }
 
@@ -3934,6 +4086,7 @@ function refresh({ rebuildGallery = true } = {}) {
     showLandmarks,
     fallbackCanvas: canvas,
     basisCoefficients: basisLabCoefficientVector(),
+    technicalVisualization,
   }).then((result) => {
     if (revision !== renderRevision) return result;
     if (WEBGL_STYLES.includes(renderStyle)) {
@@ -4045,6 +4198,21 @@ landmarksInput.addEventListener("change", () => {
   refresh({ rebuildGallery: false });
   showToast(showLandmarks ? "Landmarks visibles" : "Landmarks ocultos");
 });
+
+function updateTechnicalVisualization() {
+  technicalVisualization = technicalVisualizationState(uvCheckerToggle.checked, wireframeToggle.checked);
+  technicalVisualizationStateLabel.textContent = technicalVisualization;
+  refresh({ rebuildGallery: false });
+}
+
+for (const toggle of [uvCheckerToggle, wireframeToggle]) {
+  toggle.addEventListener("change", () => {
+    updateTechnicalVisualization();
+    showToast(technicalVisualization === "none"
+      ? "Visualización técnica desactivada"
+      : `Visualización técnica: ${technicalVisualization}`);
+  });
+}
 
 for (const input of [kitPrimary, kitSecondary]) {
   input.addEventListener("input", () => {

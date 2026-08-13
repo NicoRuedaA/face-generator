@@ -110,6 +110,40 @@ expose all six feature flags (`hemisphere`, `key`, `fill`, `rim`, `specular`,
 `cavity`). Basis Lab reuses the same visual model while preserving its separate
 payload request and CPU deformation semantics.
 
+## Technical deformation visualization acceptance
+
+The official neutral style and Basis Lab expose two opt-in technical
+visualization toggles (session state only, OFF by default, never stored in
+FaceDNA/SF2/localStorage) to make GNM basis displacement visible on the flat
+neutral materials, without inventing official textures:
+
+- **UV checker**: the exact official per-vertex `TEXCOORD_0` (already parsed
+  as `primitive.uv`) is uploaded as vertex attribute 1, and the official
+  fragment shader renders a deterministic procedural checker (`16` cells per
+  UV unit, `OFFICIAL_UV_CHECKER_DENSITY`) sampled from UV space so the pattern
+  deforms with the mesh. It is explicitly labeled an inspection aid, not an
+  official texture.
+- **Wireframe**: a second `gl.LINES` pass draws triangle edges over the shaded
+  surface. A deterministic line index buffer (one `LINES` pair per triangle
+  edge) is generated from the existing triangle indices at upload time; the
+  overlay shares the position buffer, so Basis Lab CPU deformation applies to
+  it. Depth testing stays enabled (LEQUAL) and culling stays disabled, so the
+  mixed-winding two-sided behavior is preserved. The line color is the
+  technical magenta `OFFICIAL_WIREFRAME_COLOR`.
+
+Diagnostics report `technicalVisualization` (`"none"`, `"uv-checker"`,
+`"wireframe"`, `"uv-checker+wireframe"`), `technicalVisualizationNote`
+(inspection aid; not an official texture or material), `uvCheckerDensity`,
+`wireframeColor`, and `wireframeEdgeCount` (`105,972` for the `35,324`
+triangles of the render GLB).
+
+Acceptance evidence: with toggles OFF the pixel hash is byte-identical to the
+pre-toggle neutral rendering; enabling either toggle changes the pixel hash;
+disabling both restores the exact neutral hash; camera drag/wheel/reset keep
+working with the overlays active; `wireframeEdgeCount` stays `105,972`; and no
+GLB, Basis Lab payload, FaceDNA, SF2, semantic mapping, or material defaults
+change. No official texture assets or external dependencies are introduced.
+
 ## Conservative basis diagnostic result
 
 The committed report is `tools/gnm/work/gnm-official-basis-diagnostic.json`. It

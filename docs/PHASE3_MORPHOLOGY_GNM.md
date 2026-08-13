@@ -39,6 +39,37 @@ Los diagnósticos oficiales exponen `materialModel`, `materialModelVersion`, sei
 registros `componentMaterialInfo` y flags `lighting`. Basis Lab reutiliza
 exactamente este modelo sin cambiar su payload ni su deformación CPU.
 
+#### Visualización técnica de deformación (inspection aid, OFF por defecto)
+
+Para hacer visibles las diferencias de las bases GNM sobre los materiales planos
+sin texturas, el renderer oficial añade dos overlays procedurales opt-in
+(session state, desactivados por defecto): `UV checker` y `Wireframe edges`.
+Ambos viven en `src/webgl-renderer.js`, están disponibles en el estilo oficial
+neutral y en Basis Lab, y nunca se guardan en FaceDNA, SF2 ni localStorage.
+
+- **UV checker**: sube las `TEXCOORD_0` oficiales exactas por vértice (ya
+  parseadas en `primitive.uv`) como atributo de vértice y, cuando está activo,
+  el fragment shader oficial sustituye el color base por un checker determinista
+  de `16` celdas por unidad de UV (`OFFICIAL_UV_CHECKER_DENSITY`) muestreado en
+  espacio UV, con líneas de celda finas. Como el patrón se muestrea en UV, se
+  deforma con la malla y hace visibles los desplazamientos de las bases.
+- **Wireframe edges**: segundo draw pass con `gl.LINES` sobre la superficie
+  sombreada. En el upload se genera un índice de aristas determinista a partir
+  de los triángulos existentes (una pareja LINES por arista), compartiendo el
+  mismo buffer de posiciones, por lo que la deformación CPU de Basis Lab también
+  se aplica al overlay. El depth test permanece activo (LEQUAL) y el culling
+  sigue desactivado; el color de inspección es magenta técnico
+  (`OFFICIAL_WIREFRAME_COLOR`).
+- Los diagnósticos exponen `technicalVisualization` (`"none"`,
+  `"uv-checker"`, `"wireframe"`, `"uv-checker+wireframe"`),
+  `technicalVisualizationNote` (ayuda de inspección, no textura/material
+  oficial), `uvCheckerDensity`, `wireframeColor` y `wireframeEdgeCount`
+  (`105,972` aristas para los `35,324` triángulos del render).
+
+La semántica sigue intacta: ninguna textura oficial se añade o inventa, los GLB,
+el payload de Basis Lab, FaceDNA, SF2 y el mapping semántico no cambian, y con
+los toggles OFF el hash de píxeles neutral es byte-idéntico al anterior.
+
 `sports/morph-v1` continúa siendo el estilo analítico predeterminado. El estilo
 `sports/morph-gnm-v1` consume únicamente el paquete portable generado offline;
 no sustituye el renderer analítico ni modifica FaceDNA.

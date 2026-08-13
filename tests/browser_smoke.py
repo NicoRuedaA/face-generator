@@ -76,6 +76,17 @@ def main() -> int:
                         return { readbackFailure: error === gl.NO_ERROR ? null : `gl-error-${error}`, samples };
                     }""")
 
+                def pixel_hash() -> str:
+                    return page.evaluate("""() => {
+                        const canvas = document.querySelector('#portrait-webgl');
+                        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+                        const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+                        gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+                        let hash = 2166136261;
+                        for (const value of pixels) hash = Math.imul(hash ^ value, 16777619);
+                        return (hash >>> 0).toString(16).padStart(8, '0');
+                    }""")
+
                 official_pixel_sample = pixel_sample()
                 assert official_pixel_sample["readbackFailure"] is None, official_pixel_sample
                 assert official_pixel_sample["samples"] and all(isinstance(value, int) and 0 <= value <= 255 for value in official_pixel_sample["samples"]), official_pixel_sample
@@ -99,6 +110,61 @@ def main() -> int:
                 page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
                 reset = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera")
                 assert reset == {"yaw": 0, "pitch": 0, "distance": 1}, reset
+
+                # --- Technical deformation visualization toggles (official neutral) ---
+                tech_panel = page.locator("#technical-visualization-controls")
+                assert tech_panel.is_visible(), f"{entry}: technical visualization panel should be visible in official style"
+                uv_checker = page.locator("#uv-checker-toggle")
+                wireframe_toggle = page.locator("#wireframe-toggle")
+                assert not uv_checker.is_checked() and not wireframe_toggle.is_checked(), f"{entry}: toggles must default OFF"
+                assert page.locator("#technical-visualization-state").inner_text() == "none"
+                neutral_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert neutral_diagnostics["technicalVisualization"] == "none", neutral_diagnostics
+                assert "not an official texture" in neutral_diagnostics["technicalVisualizationNote"], neutral_diagnostics
+                assert neutral_diagnostics["uvCheckerDensity"] == 16, neutral_diagnostics
+                assert neutral_diagnostics["wireframeColor"] == [0.96, 0.16, 0.86], neutral_diagnostics
+                neutral_hash = pixel_hash()
+
+                uv_checker.check()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker'")
+                assert page.locator("#technical-visualization-state").inner_text() == "uv-checker"
+                uv_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert uv_diagnostics["technicalVisualization"] == "uv-checker", uv_diagnostics
+                uv_hash = pixel_hash()
+                assert uv_hash != neutral_hash, {"neutral": neutral_hash, "uv": uv_hash}
+                # Camera controls keep working while the checker is enabled.
+                before_uv = uv_diagnostics["camera"]
+                page.mouse.move(center_x, center_y)
+                page.mouse.down()
+                page.mouse.move(center_x + 64, center_y - 32, steps=3)
+                page.mouse.up()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera.yaw !== 0 || document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera.pitch !== 0")
+                after_uv_drag = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert after_uv_drag["camera"]["yaw"] != before_uv["yaw"] or after_uv_drag["camera"]["pitch"] != before_uv["pitch"], after_uv_drag["camera"]
+                assert after_uv_drag["technicalVisualization"] == "uv-checker", after_uv_drag
+                page.locator("#reset-webgl-camera").click()
+                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
+
+                wireframe_toggle.check()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker+wireframe'")
+                combined_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert combined_diagnostics["technicalVisualization"] == "uv-checker+wireframe", combined_diagnostics
+                assert combined_diagnostics["wireframeEdgeCount"] == 105972, combined_diagnostics
+                combined_hash = pixel_hash()
+                assert combined_hash != uv_hash and combined_hash != neutral_hash, {"neutral": neutral_hash, "uv": uv_hash, "combined": combined_hash}
+
+                uv_checker.uncheck()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'wireframe'")
+                wireframe_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert wireframe_diagnostics["technicalVisualization"] == "wireframe", wireframe_diagnostics
+                wire_hash = pixel_hash()
+                assert wire_hash != neutral_hash, {"neutral": neutral_hash, "wire": wire_hash}
+
+                wireframe_toggle.uncheck()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'none'")
+                restored_hash = pixel_hash()
+                assert restored_hash == neutral_hash, {"neutral": neutral_hash, "restored": restored_hash}
+                print(f"{entry} official technical visualization: neutral={neutral_hash} uv={uv_hash} combined={combined_hash} wire={wire_hash} restored={restored_hash}")
                 result = "PASS WebGL2: opt-in canvas visible"
             else:
                 assert "WebGL2" in diagnostic or "fallback" in diagnostic.lower(), diagnostic
@@ -124,20 +190,6 @@ def main() -> int:
                 assert [material["materialIndex"] for material in basis_diagnostics["componentMaterialInfo"]] == list(range(6)), basis_diagnostics
                 basis_requests = asset_requests[neutral_asset_request_count:]
                 assert basis_requests and all(url.endswith("gnm-official-basis-lab.bin") or url.endswith("gnm-official-basis-lab.json") for url in basis_requests), basis_requests
-                def pixel_hash() -> str:
-                    return page.evaluate("""() => {
-                        const data = document.querySelector('#portrait-webgl').getContext('webgl2', { preserveDrawingBuffer: true })
-                            .readPixels ? (() => {
-                            const canvas = document.querySelector('#portrait-webgl');
-                            const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
-                            const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-                            gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-                            return pixels;
-                        })() : [];
-                        let hash = 2166136261;
-                        for (const value of data) hash = Math.imul(hash ^ value, 16777619);
-                        return (hash >>> 0).toString(16).padStart(8, '0');
-                    }""")
                 basis_pixel_sample = page.evaluate("""() => {
                     const canvas = document.querySelector('#portrait-webgl');
                     const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
@@ -174,6 +226,56 @@ def main() -> int:
                 assert reset_diagnostics["activeCoefficients"] == [0] * 8, reset_diagnostics
                 assert reset_hash == neutral_hash, {"neutral": neutral_hash, "reset": reset_hash}
                 print(f"{entry} Basis Lab coefficients/pixels: neutral={neutral_hash} changed={changed_hash} reset={reset_hash}")
+
+                # --- Technical deformation visualization toggles (Basis Lab) ---
+                tech_panel = page.locator("#technical-visualization-controls")
+                assert tech_panel.is_visible(), f"{entry}: technical visualization panel should be visible in Basis Lab style"
+                basis_uv_checker = page.locator("#uv-checker-toggle")
+                basis_wireframe = page.locator("#wireframe-toggle")
+                assert not basis_uv_checker.is_checked() and not basis_wireframe.is_checked(), f"{entry}: toggles must default OFF"
+                basis_neutral_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert basis_neutral_diagnostics["technicalVisualization"] == "none", basis_neutral_diagnostics
+                assert "not an official texture" in basis_neutral_diagnostics["technicalVisualizationNote"], basis_neutral_diagnostics
+                # Re-apply a coefficient and prove the checker changes the deformed pixels.
+                slider.fill("0.25")
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.activeCoefficients[0] === 0.25")
+                coefficient_hash = pixel_hash()
+                assert coefficient_hash != neutral_hash, {"neutral": neutral_hash, "coefficient": coefficient_hash}
+                basis_uv_checker.check()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker'")
+                assert page.locator("#technical-visualization-state").inner_text() == "uv-checker"
+                basis_uv_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert basis_uv_diagnostics["technicalVisualization"] == "uv-checker", basis_uv_diagnostics
+                assert basis_uv_diagnostics["basisIncluded"] is True and basis_uv_diagnostics["activeCoefficients"] == [0.25] + [0] * 7, basis_uv_diagnostics
+                checker_hash = pixel_hash()
+                assert checker_hash != coefficient_hash, {"coefficient": coefficient_hash, "checker": checker_hash}
+                # Camera controls keep working with checker + coefficient active.
+                before_basis = basis_uv_diagnostics["camera"]
+                page.mouse.move(center_x, center_y)
+                page.mouse.down()
+                page.mouse.move(center_x - 80, center_y + 40, steps=3)
+                page.mouse.up()
+                page.wait_for_function("() => { const d = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics; return d.camera.yaw !== 0 || d.camera.pitch !== 0; }")
+                after_basis_drag = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert after_basis_drag["camera"]["yaw"] != before_basis["yaw"] or after_basis_drag["camera"]["pitch"] != before_basis["pitch"], after_basis_drag["camera"]
+                assert after_basis_drag["technicalVisualization"] == "uv-checker", after_basis_drag
+                page.locator("#reset-webgl-camera").click()
+                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
+                basis_wireframe.check()
+                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker+wireframe'")
+                basis_combined_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
+                assert basis_combined_diagnostics["technicalVisualization"] == "uv-checker+wireframe", basis_combined_diagnostics
+                assert basis_combined_diagnostics["wireframeEdgeCount"] == 105972, basis_combined_diagnostics
+                combined_with_coefficient_hash = pixel_hash()
+                assert combined_with_coefficient_hash != checker_hash, {"checker": checker_hash, "combined": combined_with_coefficient_hash}
+                # Toggles off + coefficient reset restores the original neutral basis hash.
+                basis_uv_checker.uncheck()
+                basis_wireframe.uncheck()
+                page.locator("#reset-basis-lab").click()
+                page.wait_for_function("() => { const d = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics; return d.activeCoefficients.every((value) => value === 0) && d.technicalVisualization === 'none'; }")
+                basis_restored_hash = pixel_hash()
+                assert basis_restored_hash == neutral_hash, {"neutral": neutral_hash, "basis_restored": basis_restored_hash}
+                print(f"{entry} Basis Lab technical visualization: coefficient={coefficient_hash} checker={checker_hash} combined={combined_with_coefficient_hash} restored={basis_restored_hash}")
             else:
                 assert page.locator("#portrait").is_visible(), f"{entry}: Basis Lab fallback must show the 2D canvas"
             print(f"PASS {entry} default renderer: Canvas 2D visible")

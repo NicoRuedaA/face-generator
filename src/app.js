@@ -23,6 +23,8 @@ import {
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_OFFICIAL_RENDER_STYLE,
   WEBGL_OFFICIAL_BASIS_LAB_STYLE,
+  TECHNICAL_VISUALIZATION_NONE,
+  technicalVisualizationState,
   describeRender,
   downloadPng,
   resetWebglCamera,
@@ -50,10 +52,18 @@ const toonAttribution = document.querySelector("#toon-attribution");
 const landmarksInput = document.querySelector("#show-landmarks");
 const landmarkField = document.querySelector("#landmark-field");
 const basisLabPanel = document.querySelector("#basis-lab-controls");
+const technicalVisualizationPanel = document.querySelector("#technical-visualization-controls");
+const uvCheckerToggle = document.querySelector("#uv-checker-toggle");
+const wireframeToggle = document.querySelector("#wireframe-toggle");
+const technicalVisualizationStateLabel = document.querySelector("#technical-visualization-state");
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
 const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
 const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+// Technical visualization toggles are session state only (OFF by default) and
+// are never stored in FaceDNA, SF2, or localStorage.
+const OFFICIAL_WEBGL_STYLES = [WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+let technicalVisualization = TECHNICAL_VISUALIZATION_NONE;
 const BASIS_LAB_LABELS = [
   "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
   "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
@@ -155,7 +165,7 @@ function syncControls() {
     ...describeProfile(profile),
     selectedRenderer: renderStyle,
     selectedExpressionMode: expressionMode,
-    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector() }),
+    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector(), technicalVisualization }),
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
@@ -163,7 +173,11 @@ function syncControls() {
     landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
     expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
     basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
+    technicalVisualizationPanel.hidden = !OFFICIAL_WEBGL_STYLES.includes(renderStyle);
   landmarksInput.checked = showLandmarks;
+  uvCheckerToggle.checked = technicalVisualization === "uv-checker" || technicalVisualization === "uv-checker+wireframe";
+  wireframeToggle.checked = technicalVisualization === "wireframe" || technicalVisualization === "uv-checker+wireframe";
+  technicalVisualizationStateLabel.textContent = technicalVisualization;
   for (const [label, input] of basisLabControls) input.value = String(basisLabCoefficients[label]);
 }
 
@@ -208,6 +222,7 @@ function refresh({ rebuildGallery = true } = {}) {
     showLandmarks,
     fallbackCanvas: canvas,
     basisCoefficients: basisLabCoefficientVector(),
+    technicalVisualization,
   }).then((result) => {
     if (revision !== renderRevision) return result;
     if (WEBGL_STYLES.includes(renderStyle)) {
@@ -319,6 +334,21 @@ landmarksInput.addEventListener("change", () => {
   refresh({ rebuildGallery: false });
   showToast(showLandmarks ? "Landmarks visibles" : "Landmarks ocultos");
 });
+
+function updateTechnicalVisualization() {
+  technicalVisualization = technicalVisualizationState(uvCheckerToggle.checked, wireframeToggle.checked);
+  technicalVisualizationStateLabel.textContent = technicalVisualization;
+  refresh({ rebuildGallery: false });
+}
+
+for (const toggle of [uvCheckerToggle, wireframeToggle]) {
+  toggle.addEventListener("change", () => {
+    updateTechnicalVisualization();
+    showToast(technicalVisualization === "none"
+      ? "Visualización técnica desactivada"
+      : `Visualización técnica: ${technicalVisualization}`);
+  });
+}
 
 for (const input of [kitPrimary, kitSecondary]) {
   input.addEventListener("input", () => {

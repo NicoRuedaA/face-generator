@@ -39,8 +39,8 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
 | Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
-| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. La Fase 5 añade `neutral-procedural-components-v2`: color técnico por componente, roughness perceptual, especular, ambiente hemisférico, key/fill/rim y cavidad; no usa texturas ni afirma semántica anatómica. |
-| GNM Official Basis Lab | `sports/morph-webgl-official-basis-lab-v1` | Laboratorio técnico opt-in con payload separado de `1,843,736` bytes, 4 bases de identidad y 4 de expresión sobre `18,437` vértices. Los controles `GNM identity basis 000..003` y `GNM expression basis 000..003` están acotados a `[-0.25, 0.25]`; no son nombres anatómicos ni mapeos FaceDNA. |
+| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. La Fase 5 añade `neutral-procedural-components-v2`: color técnico por componente, roughness perceptual, especular, ambiente hemisférico, key/fill/rim y cavidad; no usa texturas ni afirma semántica anatómica. La visualización técnica opt-in (UV checker + wireframe) ayuda a ver la deformación sin añadir texturas. |
+| GNM Official Basis Lab | `sports/morph-webgl-official-basis-lab-v1` | Laboratorio técnico opt-in con payload separado de `1,843,736` bytes, 4 bases de identidad y 4 de expresión sobre `18,437` vértices. Los controles `GNM identity basis 000..003` y `GNM expression basis 000..003` están acotados a `[-0.25, 0.25]`; no son nombres anatómicos ni mapeos FaceDNA. Incluye los mismos toggles de visualización técnica que el estilo oficial. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 
@@ -114,6 +114,27 @@ arrastrar para orbitar, usar la rueda para acercar o alejar y pulsar
 siempre la vista frontal por defecto. Son controles de inspección únicamente:
 no cambian FaceDNA, SF2, pesos morph ni assets, y no añaden texturas ni assets
 oficiales.
+
+##### Visualización técnica de deformación (official / Basis Lab)
+
+Los estilos `sports/morph-webgl-official-v1` y
+`sports/morph-webgl-official-basis-lab-v1` muestran un panel
+`Technical visualization` con dos toggles opt-in, OFF por defecto y solo de
+sesión (nunca en FaceDNA/SF2):
+
+- `UV checker (exact TEXCOORD_0)`: patrón checker procedural determinista
+  muestreado en el espacio UV oficial (`16` celdas por unidad), de modo que el
+  patrón se deforma con la malla y expone el desplazamiento de las bases.
+- `Wireframe edges`: segundo pase `gl.LINES` con aristas generadas
+  deterministicamente desde los triángulos existentes, sobre la superficie
+  sombreada y respetando depth test y culling (two-sided).
+
+Es ayuda de inspección, no una textura ni material oficial. Los diagnósticos
+exponen `technicalVisualization` (`"none"`, `"uv-checker"`, `"wireframe"`,
+`"uv-checker+wireframe"`), `technicalVisualizationNote`, `uvCheckerDensity`,
+`wireframeColor` y `wireframeEdgeCount`. Con los toggles OFF, el render y su
+hash de píxeles permanecen idénticos a los anteriores; los GLB, el payload de
+Basis Lab y el mapping semántico no cambian.
 
 ### Intake de bundle oficial GNM
 
