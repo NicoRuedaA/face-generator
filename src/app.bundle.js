@@ -2833,6 +2833,7 @@ const WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL = "./tools/gnm/work/gnm-official-basi
 const WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL = "./tools/gnm/work/gnm-official-basis-lab.json";
 const BASIS_LAB_MAX_BYTES = 3 * 1024 * 1024;
 const BASIS_LAB_COEFFICIENT_LIMIT = 0.25;
+const BASIS_LAB_UNAVAILABLE_MESSAGE = "Basis Lab no disponible: hash/schema inválido o presupuesto excedido";
 const OFFICIAL_MATERIAL_MODEL_VERSION = "neutral-procedural-components-v2";
 const OFFICIAL_COMPONENT_NAMES = Object.freeze([
   "skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue",
@@ -3063,11 +3064,82 @@ function parseAsset(data) {
   return { json, binary, vertexCount, position, indices, targets, bounds, morphDisplacementBound };
 }
 
+/* SHA-256 helpers for the Basis Lab integrity check. The Web Crypto API is the
+   primary path in secure contexts; the pure-JS implementation below is a
+   deterministic fallback so verification still runs when the page is opened as
+   file:// or in a non-secure context where crypto.subtle is unavailable. */
+function sha256Hex(digest) {
+  return [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+}
+
+function rotr32(value, bits) { return (value >>> bits) | (value << (32 - bits)); }
+
+function sha256BytesFallback(bytes) {
+  const data = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  const length = data.byteLength;
+  const paddedLength = Math.ceil((length + 9) / 64) * 64;
+  const padded = new Uint8Array(paddedLength);
+  padded.set(data);
+  padded[length] = 0x80;
+  const lengthBits = length * 8;
+  const tail = new DataView(padded.buffer, paddedLength - 8, 8);
+  tail.setUint32(0, Math.floor(lengthBits / 0x100000000), false);
+  tail.setUint32(4, lengthBits >>> 0, false);
+  const K = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+  ];
+  const H = new Uint32Array([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
+  const words = new Uint32Array(64);
+  const view = new DataView(padded.buffer);
+  for (let offset = 0; offset < paddedLength; offset += 64) {
+    for (let index = 0; index < 16; index += 1) words[index] = view.getUint32(offset + index * 4, false);
+    for (let index = 16; index < 64; index += 1) {
+      const sigma0 = rotr32(words[index - 15], 7) ^ rotr32(words[index - 15], 18) ^ (words[index - 15] >>> 3);
+      const sigma1 = rotr32(words[index - 2], 17) ^ rotr32(words[index - 2], 19) ^ (words[index - 2] >>> 10);
+      words[index] = (words[index - 16] + sigma0 + words[index - 7] + sigma1) >>> 0;
+    }
+    let a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (let index = 0; index < 64; index += 1) {
+      const bigSigma1 = rotr32(e, 6) ^ rotr32(e, 11) ^ rotr32(e, 25);
+      const choose = (e & f) ^ (~e & g);
+      const temp1 = (h + bigSigma1 + choose + K[index] + words[index]) >>> 0;
+      const bigSigma0 = rotr32(a, 2) ^ rotr32(a, 13) ^ rotr32(a, 22);
+      const majority = (a & b) ^ (a & c) ^ (b & c);
+      const temp2 = (bigSigma0 + majority) >>> 0;
+      h = g; g = f; f = e; e = (d + temp1) >>> 0; d = c; c = b; b = a; a = (temp1 + temp2) >>> 0;
+    }
+    H[0] = (H[0] + a) >>> 0;
+    H[1] = (H[1] + b) >>> 0;
+    H[2] = (H[2] + c) >>> 0;
+    H[3] = (H[3] + d) >>> 0;
+    H[4] = (H[4] + e) >>> 0;
+    H[5] = (H[5] + f) >>> 0;
+    H[6] = (H[6] + g) >>> 0;
+    H[7] = (H[7] + h) >>> 0;
+  }
+  let hex = "";
+  for (let index = 0; index < 8; index += 1) hex += H[index].toString(16).padStart(8, "0");
+  return hex;
+}
+
+async function sha256Bytes(bytes) {
+  if (globalThis.crypto?.subtle?.digest) return sha256Hex(await globalThis.crypto.subtle.digest("SHA-256", bytes));
+  return sha256BytesFallback(bytes);
+}
+
 async function fetchBasisLab() {
   const cacheKey = `${WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL}|${WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL}`;
   if (!basisLabCache.has(cacheKey)) {
-    basisLabCache.set(cacheKey, Promise.all([fetch(WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL), fetch(WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL)])
-      .then(async ([metadataResponse, payloadResponse]) => {
+    basisLabCache.set(cacheKey, (async () => {
+      try {
+        const [metadataResponse, payloadResponse] = await Promise.all([fetch(WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL), fetch(WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL)]);
         if (!metadataResponse.ok || !payloadResponse.ok) fail("Basis Lab payload fetch failed");
         const metadataText = await metadataResponse.text();
         const metadataBytes = new TextEncoder().encode(metadataText);
@@ -3075,8 +3147,7 @@ async function fetchBasisLab() {
         const metadata = JSON.parse(metadataText);
         const payload = await payloadResponse.arrayBuffer();
         if (payload.byteLength > BASIS_LAB_MAX_BYTES || payload.byteLength !== metadata.payload?.sizeBytes || metadata.budget?.maxBytes !== BASIS_LAB_MAX_BYTES) fail("Basis Lab payload exceeds the byte budget");
-        const digest = await crypto.subtle.digest("SHA-256", payload);
-        const hash = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+        const hash = await sha256Bytes(payload);
         if (hash !== metadata.payload?.sha256 || metadata.schema !== "sports-face-gnm-official-basis-lab/v1" || metadata.source?.canonicalGlb?.sha256 !== BASIS_LAB_CANONICAL_SHA256 || metadata.source?.renderGlb?.sha256 !== BASIS_LAB_RENDER_SHA256) fail("Basis Lab metadata or hash is invalid");
         if (metadata.semanticMapping !== "disabled" || metadata.runtimeBasisLoaded !== true) fail("Basis Lab safety metadata is invalid");
         const view = new DataView(payload);
@@ -3090,7 +3161,14 @@ async function fetchBasisLab() {
         const vectorBytes = view.getUint32(32, true);
         if (version !== 1 || headerBytes !== 36 || vertexCount !== metadata.dimensions?.renderVertexCount || vectorCount !== 8 || sourceOffset !== 36 || vectorOffset !== sourceOffset + vertexCount * 4 || vectorOffset + vectorBytes !== payload.byteLength || vectorBytes !== vertexCount * vectorCount * 12) fail("Basis Lab binary dimensions are invalid");
         return { metadata, payload: new Uint8Array(payload), vertexCount, vectorCount, vectorOffset };
-      }));
+      } catch {
+        // The payload, metadata, hash, budget, and schema checks above never
+        // skip verification. Any failure surfaces as one bounded message so
+        // the safe 2D GNM SVG fallback shows a clear toast instead of an
+        // uncaught page error.
+        throw new Error(BASIS_LAB_UNAVAILABLE_MESSAGE);
+      }
+    })());
   }
   return basisLabCache.get(cacheKey);
 }
