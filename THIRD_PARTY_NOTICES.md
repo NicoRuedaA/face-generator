@@ -53,3 +53,7 @@ and official NPZ SHA-256
   reconstruction math, and all six sourceVertexId mappings. It does not load
   bases at runtime or establish semantic mappings; `semanticMapping` remains
   disabled and `runtimeBasisLoaded` remains false.
+- Technical Basis Lab: the separately delivered `gnm-official-basis-lab.bin` is
+  `1,843,736` bytes and selects only the first four identity and first four
+  expression vectors. It uses technical labels, exact float32 values and
+  sourceVertexId projection; it establishes no anatomical or FaceDNA mapping.

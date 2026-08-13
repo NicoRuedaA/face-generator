@@ -1,5 +1,10 @@
 ## Unreleased — Operativa GNM
 
+- Añade el estilo opt-in `sports/morph-webgl-official-basis-lab-v1` con payload
+  binario separado de `1,843,736` bytes, cuatro primeras bases por familia,
+  sliders técnicos bounded, verificación estricta de hash/schema/budget y
+  fallback seguro. No modifica FaceDNA, SF2 ni los GLB canónico/render.
+
 - Añade un diagnóstico/scrubber offline determinista para las bases oficiales
   GNM: schema v2, dimensiones `253 x 17.821 x 3` y `383 x 17.821 x 3`, nombres
   ordenados, payloads float32 finitos con longitudes exactas, reconstrucción

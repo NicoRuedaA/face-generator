@@ -22,6 +22,7 @@ import {
   TOON_RENDER_STYLE,
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_OFFICIAL_RENDER_STYLE,
+  WEBGL_OFFICIAL_BASIS_LAB_STYLE,
   describeRender,
   downloadPng,
   resetWebglCamera,
@@ -48,9 +49,24 @@ const expressionModeInput = document.querySelector("#expression-mode");
 const toonAttribution = document.querySelector("#toon-attribution");
 const landmarksInput = document.querySelector("#show-landmarks");
 const landmarkField = document.querySelector("#landmark-field");
+const basisLabPanel = document.querySelector("#basis-lab-controls");
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
-const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE];
+const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+const BASIS_LAB_LABELS = [
+  "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
+  "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
+];
+const basisLabCoefficients = Object.fromEntries(BASIS_LAB_LABELS.map((label) => [label, 0]));
+const basisLabControls = new Map();
+
+function basisLabCoefficientVector() {
+  return BASIS_LAB_LABELS.map((label) => {
+    const numeric = Number(basisLabCoefficients[label]);
+    return Number.isFinite(numeric) ? Math.max(-0.25, Math.min(0.25, numeric)) : 0;
+  });
+}
 
 let profile = createProfile({ seed: Date.now(), age: 22, presentation: "neutral" });
 function loadRenderStyle() {
@@ -139,14 +155,16 @@ function syncControls() {
     ...describeProfile(profile),
     selectedRenderer: renderStyle,
     selectedExpressionMode: expressionMode,
-    renderMapping: describeRender(profile, renderStyle, { expressionMode }),
+    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector() }),
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
-    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE].includes(renderStyle);
-   landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-   expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE].includes(renderStyle);
+    landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
   landmarksInput.checked = showLandmarks;
+  for (const [label, input] of basisLabControls) input.value = String(basisLabCoefficients[label]);
 }
 
 function renderGallery() {
@@ -189,6 +207,7 @@ function refresh({ rebuildGallery = true } = {}) {
     expressionMode,
     showLandmarks,
     fallbackCanvas: canvas,
+    basisCoefficients: basisLabCoefficientVector(),
   }).then((result) => {
     if (revision !== renderRevision) return result;
     if (WEBGL_STYLES.includes(renderStyle)) {
@@ -310,4 +329,27 @@ for (const input of [kitPrimary, kitSecondary]) {
 
 populateRenderStyles();
 populateFeatureControls();
+for (const label of BASIS_LAB_LABELS) {
+  const field = document.createElement("label");
+  field.className = "field compact";
+  const caption = document.createElement("span");
+  caption.textContent = label;
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = "-0.25";
+  input.max = "0.25";
+  input.step = "0.01";
+  input.value = "0";
+  input.addEventListener("input", () => {
+    basisLabCoefficients[label] = Math.max(-0.25, Math.min(0.25, Number(input.value) || 0));
+    refresh({ rebuildGallery: false });
+  });
+  basisLabControls.set(label, input);
+  basisLabPanel.querySelector(".basis-grid").append(field);
+  field.append(caption, input);
+}
+document.querySelector("#reset-basis-lab").addEventListener("click", () => {
+  for (const label of BASIS_LAB_LABELS) basisLabCoefficients[label] = 0;
+  refresh({ rebuildGallery: false });
+});
 refresh();

@@ -1,5 +1,7 @@
 # Sports Face MVP
 
+> Phase 4 Basis Lab is an opt-in technical experiment. It is not semantic FaceDNA mapping and does not change the default renderer or SF2 persistence.
+
 ![Vista previa del generador](preview.png)
 
 Sports Face MVP es un prototipo web para generar retratos reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y seis opciones de renderizado.
@@ -37,7 +39,8 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
 | Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
-| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. El render mide `665,904` bytes frente a `138,998,408` bytes del GLB canónico (99.52% menos). No asigna semántica FaceDNA/expresión no demostrada y cae al SVG GNM. |
+| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. |
+| GNM Official Basis Lab | `sports/morph-webgl-official-basis-lab-v1` | Laboratorio técnico opt-in con payload separado de `1,843,736` bytes, 4 bases de identidad y 4 de expresión sobre `18,437` vértices. Los controles `GNM identity basis 000..003` y `GNM expression basis 000..003` están acotados a `[-0.25, 0.25]`; no son nombres anatómicos ni mapeos FaceDNA. |
 
 Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
 

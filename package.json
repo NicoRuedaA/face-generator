@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset && npm run test:gnm-official-render && npm run test:gnm-official-basis",
+    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset && npm run test:gnm-official-render && npm run test:gnm-official-basis && npm run test:gnm-official-basis-lab",
     "test:model": "node ./tests/model.test.mjs",
     "test:baseline": "node ./baseline/verify-baseline.mjs",
     "generate:baseline": "node ./baseline/generate-baseline.mjs",
@@ -39,7 +39,10 @@
     "test:gnm-official-render": "python3 tools/gnm/test_official_gnm_render.py",
     "diagnose:gnm-official-basis": "python3 tools/gnm/diagnose_official_gnm_basis.py",
     "test:gnm-official-basis": "python3 tools/gnm/test_official_gnm_basis.py",
-    "test:browser-smoke": "python3 /home/nico/.agents/skills/webapp-testing/scripts/with_server.py --server \"python3 -m http.server 8080\" --port 8080 -- python3 tests/browser_smoke.py",
+    "build:gnm-official-basis-lab": "python3 tools/gnm/build_official_basis_lab.py",
+    "validate:gnm-official-basis-lab": "python3 tools/gnm/validate_official_basis_lab.py tools/gnm/work/gnm-official-basis-lab.bin tools/gnm/work/gnm-official-basis-lab.json --canonical tools/gnm/work/gnm-official-head.glb --render tools/gnm/work/gnm-official-head-render.glb",
+    "test:gnm-official-basis-lab": "python3 tools/gnm/test_official_basis_lab.py",
+    "test:browser-smoke": "uv run --with playwright python3 /home/nico/.agents/skills/webapp-testing/scripts/with_server.py --server \"python3 -m http.server 8080\" --port 8080 -- python3 tests/browser_smoke.py",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"
   },
   "license": "GPL-2.0-only",

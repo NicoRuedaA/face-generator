@@ -84,6 +84,23 @@ This phase is evidence only. It does not load basis arrays in the browser or
 runtime, project them to FaceDNA/morphology, or alter the canonical GLB, the
 render-only GLB (`basisIncluded: false`), or its runtime URL.
 
+### Phase 4: opt-in technical Basis Lab
+
+The separate `sports/morph-webgl-official-basis-lab-v1` style loads
+`gnm-official-basis-lab.bin` and its JSON metadata. The stdlib-only builder
+selects the first four identity directions (`head_000` through `head_003`) and
+the first four expression directions (`left_eye_region_000` through
+`left_eye_region_003`), then gathers exact float32 values by optimized render
+`sourceVertexId`. The payload is exactly `1,843,736` bytes under the strict
+global 3 MiB budget. Coefficients are technical only and bounded to
+`[-0.25, 0.25]`; no FaceDNA/SF2 mutation or GLB modification occurs.
+
+```bash
+npm run build:gnm-official-basis-lab
+npm run validate:gnm-official-basis-lab
+npm run test:gnm-official-basis-lab
+```
+
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
 binary glTF 2.0 file for offline inspection. The later WebGL2 slice is opt-in;
 SVG remains the default and GNM itself is never loaded by runtime.

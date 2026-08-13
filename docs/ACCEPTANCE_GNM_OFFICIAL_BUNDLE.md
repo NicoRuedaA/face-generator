@@ -79,6 +79,21 @@ The public redistribution is explicitly authorized for this noncommercial MVP
 by `project-owner` on `2026-08-12`, reference
 `sports-face-mvp-noncommercial-mvp-authorization`.
 
+## Phase 4 technical Basis Lab acceptance
+
+The opt-in Basis Lab payload is separately delivered from the render GLB and is
+not embedded in either GLB. It selects canonical indices `0..3` in each family:
+`head_000..003` and `left_eye_region_000..003`. The projected binary is exactly
+`1,843,736` bytes for `18,437` render vertices and eight float32 vectors, with
+uint32 `sourceVertexId` correspondence and a strict 3 MiB global budget.
+
+The browser accepts it only after checking metadata schema, canonical/render
+hashes, payload size, binary dimensions, and SHA-256. Technical coefficients
+are clamped to `[-0.25, 0.25]`; labels never claim anatomy. Lab diagnostics use
+`basisIncluded: true`, `semanticMapping: disabled`, and
+`runtimeBasisLoaded: true`. Any failure falls back without an uncaught page
+error. The existing official neutral style remains unchanged.
+
 ## Conservative basis diagnostic result
 
 The committed report is `tools/gnm/work/gnm-official-basis-diagnostic.json`. It

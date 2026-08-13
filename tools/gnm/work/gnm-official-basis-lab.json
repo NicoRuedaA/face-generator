@@ -1,0 +1,141 @@
+{
+  "budget": {
+    "maxBytes": 3145728,
+    "withinLimit": true
+  },
+  "canonicalHash": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d",
+  "components": [
+    {
+      "name": "skin",
+      "renderVertexOffset": 0,
+      "sourceVertexOffset": 0,
+      "vertexCount": 12608
+    },
+    {
+      "name": "left_eye",
+      "renderVertexOffset": 12608,
+      "sourceVertexOffset": 12608,
+      "vertexCount": 795
+    },
+    {
+      "name": "right_eye",
+      "renderVertexOffset": 13403,
+      "sourceVertexOffset": 13403,
+      "vertexCount": 795
+    },
+    {
+      "name": "upper_teeth_and_gums",
+      "renderVertexOffset": 14198,
+      "sourceVertexOffset": 14198,
+      "vertexCount": 1636
+    },
+    {
+      "name": "lower_teeth_and_gums",
+      "renderVertexOffset": 15834,
+      "sourceVertexOffset": 15834,
+      "vertexCount": 1636
+    },
+    {
+      "name": "tongue",
+      "renderVertexOffset": 17470,
+      "sourceVertexOffset": 17470,
+      "vertexCount": 967
+    }
+  ],
+  "dimensions": {
+    "canonicalVertexCount": 17821,
+    "expressionBasisCount": 4,
+    "identityBasisCount": 4,
+    "renderVertexCount": 18437,
+    "shape": [
+      8,
+      18437,
+      3
+    ],
+    "vectorCount": 8
+  },
+  "format": {
+    "basisValueType": "float32",
+    "endianness": "little",
+    "headerBytes": 36,
+    "magic": "SFBASIS1",
+    "sourceVertexIdType": "uint32",
+    "version": 1
+  },
+  "payload": {
+    "basisValuesBytes": 1769952,
+    "path": "gnm-official-basis-lab.bin",
+    "sha256": "d36b42a9454ff8bfcd60eb94689ab558ab66f2d2e905e659783a0352a6ee4d4b",
+    "sizeBytes": 1843736,
+    "sourceVertexIdsBytes": 73748
+  },
+  "renderHash": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f",
+  "runtimeBasisLoaded": true,
+  "schema": "sports-face-gnm-official-basis-lab/v1",
+  "selection": {
+    "expression": [
+      {
+        "family": "expression",
+        "index": 0,
+        "name": "left_eye_region_000"
+      },
+      {
+        "family": "expression",
+        "index": 1,
+        "name": "left_eye_region_001"
+      },
+      {
+        "family": "expression",
+        "index": 2,
+        "name": "left_eye_region_002"
+      },
+      {
+        "family": "expression",
+        "index": 3,
+        "name": "left_eye_region_003"
+      }
+    ],
+    "identity": [
+      {
+        "family": "identity",
+        "index": 0,
+        "name": "head_000"
+      },
+      {
+        "family": "identity",
+        "index": 1,
+        "name": "head_001"
+      },
+      {
+        "family": "identity",
+        "index": 2,
+        "name": "head_002"
+      },
+      {
+        "family": "identity",
+        "index": 3,
+        "name": "head_003"
+      }
+    ],
+    "method": "first four canonical basis vectors in each family"
+  },
+  "semanticMapping": "disabled",
+  "source": {
+    "canonicalGlb": {
+      "path": "gnm-official-head.glb",
+      "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d",
+      "sizeBytes": 138998408
+    },
+    "canonicalMetadata": {
+      "path": "gnm-official-head.json",
+      "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37",
+      "sizeBytes": 20966
+    },
+    "renderGlb": {
+      "path": "gnm-official-head-render.glb",
+      "sha256": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f",
+      "sizeBytes": 665904
+    }
+  },
+  "version": 1
+}

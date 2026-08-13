@@ -13,6 +13,7 @@ sports/morph-v1
 sports/morph-gnm-v1
 sports/morph-webgl-v1
 sports/morph-webgl-official-v1
+sports/morph-webgl-official-basis-lab-v1
 ```
 
 `sports/morph-v1` continúa siendo el estilo analítico predeterminado. El estilo
@@ -260,6 +261,22 @@ python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
 El procedimiento, los ocho inputs fijos, los criterios de aceptación y la
 variante con overlay están en
 [`docs/ACCEPTANCE_GNM_GALLERY.md`](ACCEPTANCE_GNM_GALLERY.md).
+
+### Fase 4: Basis Lab técnico opt-in
+
+La Fase 4 añade un estilo separado, `sports/morph-webgl-official-basis-lab-v1`.
+El builder stdlib-only selecciona los índices `0..3` de identidad y expresión,
+con nombres técnicos `GNM identity basis 000..003` y `GNM expression basis
+000..003`, y proyecta sus valores float32 exactos por `sourceVertexId` sobre los
+`18,437` vértices del render optimizado. El payload binario separado mide
+`1,843,736` bytes y el presupuesto global estricto es `BASIS_LAB_MAX_BYTES = 3
+MiB`. Metadata y payload se verifican por schema, dimensiones, tamaño y SHA-256;
+si algo falla, el renderer cae cerrado al camino neutral oficial/2D.
+
+Los sliders bounded no mutan FaceDNA, SF2, identidad, mappings semánticos ni
+GLBs. Los diagnósticos del lab registran `basisIncluded: true`, ocho vectores,
+`semanticMapping: disabled` y `runtimeBasisLoaded: true`. El estilo oficial
+neutral anterior conserva exactamente su camino sin carga de bases.
 
 ### Slice oficial 3D: paquete GNM v3.0
 

@@ -2828,6 +2828,13 @@ const WEBGL_MORPH_RENDER_STYLE = "sports/morph-webgl-v1";
 const WEBGL_MORPH_ASSET_URL = "./tools/gnm/work/head-morph.glb";
 const WEBGL_OFFICIAL_RENDER_STYLE = "sports/morph-webgl-official-v1";
 const WEBGL_OFFICIAL_ASSET_URL = "./tools/gnm/work/gnm-official-head-render.glb";
+const WEBGL_OFFICIAL_BASIS_LAB_STYLE = "sports/morph-webgl-official-basis-lab-v1";
+const WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL = "./tools/gnm/work/gnm-official-basis-lab.bin";
+const WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL = "./tools/gnm/work/gnm-official-basis-lab.json";
+const BASIS_LAB_MAX_BYTES = 3 * 1024 * 1024;
+const BASIS_LAB_COEFFICIENT_LIMIT = 0.25;
+const BASIS_LAB_CANONICAL_SHA256 = "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d";
+const BASIS_LAB_RENDER_SHA256 = "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f";
 const WEBGL_MORPH_WEIGHT_LIMIT = 0.75;
 const WEBGL_FRAME_MARGIN = 0.12;
 const DEFAULT_WEBGL_CAMERA = Object.freeze({ yaw: 0, pitch: 0, distance: 1 });
@@ -2839,6 +2846,7 @@ const WEBGL_CAMERA_LIMITS = Object.freeze({
 const TARGET_COUNT = 16;
 const DEFAULT_FALLBACK_MESSAGE = "WebGL2 no disponible; se ha usado el renderer GNM SVG.";
 const assetCache = new Map();
+const basisLabCache = new Map();
 const canvasState = new WeakMap();
 
 function fail(message) { throw new Error(message); }
@@ -2855,6 +2863,11 @@ function clampWebglCamera(camera = DEFAULT_WEBGL_CAMERA) {
 
 function clampWebglWeight(value) {
   return Math.max(-WEBGL_MORPH_WEIGHT_LIMIT, Math.min(WEBGL_MORPH_WEIGHT_LIMIT, value));
+}
+
+function clampBasisCoefficient(value) {
+  const numeric = Number(value);
+  return finite(numeric) ? Math.max(-BASIS_LAB_COEFFICIENT_LIMIT, Math.min(BASIS_LAB_COEFFICIENT_LIMIT, numeric)) : 0;
 }
 
 function mapWebglWeights(profile) {
@@ -2910,6 +2923,27 @@ function describeOfficialWebglMapping() {
     },
   };
 }
+
+function describeOfficialBasisLabMapping(coefficients = {}) {
+  const values = Object.fromEntries(BASIS_LAB_VECTOR_LABELS.map((label, index) => [label, clampBasisCoefficient(Array.isArray(coefficients) ? coefficients[index] : coefficients[label])]));
+  return {
+    renderer: WEBGL_OFFICIAL_BASIS_LAB_STYLE,
+    prototype: true,
+    source: "separately delivered projected official GNM basis subset",
+    targetSemantics: "technical basis directions; no anatomical controls",
+    basisIncluded: true,
+    identityCount: 4,
+    expressionCount: 4,
+    selectedVectors: BASIS_LAB_VECTOR_LABELS,
+    coefficients: values,
+    mapping: "technical coefficients only; semanticMapping disabled",
+  };
+}
+
+const BASIS_LAB_VECTOR_LABELS = Object.freeze([
+  "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
+  "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
+]);
 
 function parseGlb(data) {
   if (!(data instanceof ArrayBuffer) || data.byteLength < 20) fail("GLB is shorter than its header");
@@ -2986,6 +3020,38 @@ function parseAsset(data) {
     }
   });
   return { json, binary, vertexCount, position, indices, targets, bounds, morphDisplacementBound };
+}
+
+async function fetchBasisLab() {
+  const cacheKey = `${WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL}|${WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL}`;
+  if (!basisLabCache.has(cacheKey)) {
+    basisLabCache.set(cacheKey, Promise.all([fetch(WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL), fetch(WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL)])
+      .then(async ([metadataResponse, payloadResponse]) => {
+        if (!metadataResponse.ok || !payloadResponse.ok) fail("Basis Lab payload fetch failed");
+        const metadataText = await metadataResponse.text();
+        const metadataBytes = new TextEncoder().encode(metadataText);
+        if (metadataBytes.byteLength > BASIS_LAB_MAX_BYTES) fail("Basis Lab metadata exceeds the byte budget");
+        const metadata = JSON.parse(metadataText);
+        const payload = await payloadResponse.arrayBuffer();
+        if (payload.byteLength > BASIS_LAB_MAX_BYTES || payload.byteLength !== metadata.payload?.sizeBytes || metadata.budget?.maxBytes !== BASIS_LAB_MAX_BYTES) fail("Basis Lab payload exceeds the byte budget");
+        const digest = await crypto.subtle.digest("SHA-256", payload);
+        const hash = [...new Uint8Array(digest)].map((value) => value.toString(16).padStart(2, "0")).join("");
+        if (hash !== metadata.payload?.sha256 || metadata.schema !== "sports-face-gnm-official-basis-lab/v1" || metadata.source?.canonicalGlb?.sha256 !== BASIS_LAB_CANONICAL_SHA256 || metadata.source?.renderGlb?.sha256 !== BASIS_LAB_RENDER_SHA256) fail("Basis Lab metadata or hash is invalid");
+        if (metadata.semanticMapping !== "disabled" || metadata.runtimeBasisLoaded !== true) fail("Basis Lab safety metadata is invalid");
+        const view = new DataView(payload);
+        if (payload.byteLength < 36 || new TextDecoder().decode(new Uint8Array(payload, 0, 8)) !== "SFBASIS1") fail("Basis Lab binary header is invalid");
+        const version = view.getUint32(8, true);
+        const headerBytes = view.getUint32(12, true);
+        const vertexCount = view.getUint32(16, true);
+        const vectorCount = view.getUint32(20, true);
+        const sourceOffset = view.getUint32(24, true);
+        const vectorOffset = view.getUint32(28, true);
+        const vectorBytes = view.getUint32(32, true);
+        if (version !== 1 || headerBytes !== 36 || vertexCount !== metadata.dimensions?.renderVertexCount || vectorCount !== 8 || sourceOffset !== 36 || vectorOffset !== sourceOffset + vertexCount * 4 || vectorOffset + vectorBytes !== payload.byteLength || vectorBytes !== vertexCount * vectorCount * 12) fail("Basis Lab binary dimensions are invalid");
+        return { metadata, payload: new Uint8Array(payload), vertexCount, vectorCount, vectorOffset };
+      }));
+  }
+  return basisLabCache.get(cacheKey);
 }
 
 function accessorView(json, binary, accessorIndex, componentType, type) {
@@ -3239,18 +3305,21 @@ function upload(gl, asset) {
   return { vao, texture, indexCount: indices.length, textureSize: [width, height] };
 }
 
-function uploadOfficial(gl, asset) {
+function uploadOfficial(gl, asset, basisLab = null) {
   const read = (entry, Type) => new Type(asset.binary.buffer.slice(asset.binary.byteOffset + entry.offset, asset.binary.byteOffset + entry.offset + entry.view.byteLength));
+  let vertexOffset = 0;
   const primitives = asset.primitives.map((primitive) => {
     const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
     const position = read(primitive.position, Float32Array);
-    const positionBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer); gl.bufferData(gl.ARRAY_BUFFER, position, gl.STATIC_DRAW);
+    const positionBuffer = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer); gl.bufferData(gl.ARRAY_BUFFER, position, basisLab ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
     const IndexType = primitive.indices.accessor.componentType === 5123 ? Uint16Array : Uint32Array;
     const indices = read(primitive.indices, IndexType);
     const indexBuffer = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
     gl.bindVertexArray(null);
-    return { vao, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, color: primitive.color };
+    const result = { vao, positionBuffer, basePosition: position, indexCount: indices.length, indexType: primitive.indices.accessor.componentType === 5123 ? gl.UNSIGNED_SHORT : gl.UNSIGNED_INT, color: primitive.color, vertexOffset: basisLab ? vertexOffset : 0 };
+    vertexOffset += position.length / 3;
+    return result;
   });
   return { primitives };
 }
@@ -3299,8 +3368,11 @@ function draw(canvas, asset, resources, weights) {
   };
 }
 
-function drawOfficial(canvas, asset, resources) {
+function drawOfficial(canvas, asset, resources, coefficients = null) {
   const gl = resources.gl;
+  const activeCoefficients = resources.basisLab
+    ? (coefficients || new Array(8).fill(0)).map(clampBasisCoefficient)
+    : [];
   const aspect = resizeCanvas(canvas, gl);
   gl.useProgram(resources.program);
   gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.clearDepth(1); gl.disable(gl.CULL_FACE);
@@ -3310,6 +3382,22 @@ function drawOfficial(canvas, asset, resources) {
   gl.uniformMatrix4fv(resources.uniforms.projection, false, projection);
   gl.uniformMatrix4fv(resources.uniforms.camera, false, camera);
   for (const primitive of resources.primitives) {
+    if (resources.basisLab) {
+      const positions = new Float32Array(primitive.basePosition);
+      for (let vertex = 0; vertex < positions.length / 3; vertex += 1) {
+        const globalVertex = primitive.vertexOffset + vertex;
+        for (let vector = 0; vector < 8; vector += 1) {
+          const coefficient = activeCoefficients[vector];
+          if (!coefficient) continue;
+          const basisOffset = resources.basisLab.vectorOffset + (vector * resources.basisLab.vertexCount + globalVertex) * 12;
+          positions[vertex * 3] += new DataView(resources.basisLab.payload.buffer, resources.basisLab.payload.byteOffset + basisOffset, 12).getFloat32(0, true) * coefficient;
+          positions[vertex * 3 + 1] += new DataView(resources.basisLab.payload.buffer, resources.basisLab.payload.byteOffset + basisOffset, 12).getFloat32(4, true) * coefficient;
+          positions[vertex * 3 + 2] += new DataView(resources.basisLab.payload.buffer, resources.basisLab.payload.byteOffset + basisOffset, 12).getFloat32(8, true) * coefficient;
+        }
+      }
+      gl.bindBuffer(gl.ARRAY_BUFFER, primitive.positionBuffer);
+      gl.bufferSubData(gl.ARRAY_BUFFER, 0, positions);
+    }
     gl.bindVertexArray(primitive.vao);
     gl.uniform4fv(resources.uniforms.color, primitive.color);
     gl.drawElements(gl.TRIANGLES, primitive.indexCount, primitive.indexType, 0);
@@ -3317,12 +3405,12 @@ function drawOfficial(canvas, asset, resources) {
   gl.bindVertexArray(null);
   if (gl.getError() !== gl.NO_ERROR) fail("official WebGL resource or draw error");
   const official = asset.json.extras.sportsFaceGnmOfficial;
-  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: official.basisIncluded === true, assetSchema: official.schema, mapping: "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
+  return { viewport: [0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight], aspect, depthTest: true, components: resources.primitives.length, materials: resources.primitives.length, officialTexturesIncluded: false, renderOnly: official.renderOnly === true, basisIncluded: resources.basisLab !== null, identityCount: resources.basisLab ? 4 : 0, expressionCount: resources.basisLab ? 4 : 0, selectedVectors: resources.basisLab?.metadata.selection ? [...resources.basisLab.metadata.selection.identity, ...resources.basisLab.metadata.selection.expression] : [], activeCoefficients, semanticMapping: "disabled", runtimeBasisLoaded: resources.basisLab !== null, assetSchema: official.schema, mapping: resources.basisLab ? "technical basis coefficients only; semantic mapping disabled" : "neutral-template-only; identity/expression semantic mapping disabled", camera: { ...resources.camera }, framebufferStatus: gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE ? "complete" : "incomplete" };
 }
 
 function redraw(canvas, state) {
   canvas.__sportsFaceWebglDiagnostics = state.asset.official
-    ? drawOfficial(canvas, state.asset, state)
+    ? drawOfficial(canvas, state.asset, state, state.basisCoefficients)
     : draw(canvas, state.asset, state, state.weights);
 }
 
@@ -3375,7 +3463,8 @@ function fallback(canvas, profile, options, reason) {
 }
 
 function renderWebglFace(canvas, profile, options = {}) {
-  const official = options.official === true || options.assetUrl === WEBGL_OFFICIAL_ASSET_URL;
+  const basisLab = options.basisLab === true;
+  const official = options.official === true || basisLab || options.assetUrl === WEBGL_OFFICIAL_ASSET_URL;
   const assetUrl = options.assetUrl || (official ? WEBGL_OFFICIAL_ASSET_URL : WEBGL_MORPH_ASSET_URL);
   const fallbackOptions = { ...options };
   delete fallbackOptions.assetUrl;
@@ -3384,11 +3473,12 @@ function renderWebglFace(canvas, profile, options = {}) {
     const gl = canvas.getContext("webgl2", { alpha: false, antialias: true, preserveDrawingBuffer: true });
     if (!gl) return fallback(canvas, profile, fallbackOptions, "WebGL2 context is unavailable");
     const asset = await fetchAsset(assetUrl);
+    const basis = basisLab ? await fetchBasisLab() : null;
     let state = canvasState.get(canvas);
-    if (!state || state.asset !== asset || state.gl !== gl) {
+    if (!state || state.asset !== asset || state.gl !== gl || state.basisLab !== basis) {
       const webglProgram = asset.official ? officialProgram(gl) : program(gl);
-      const resources = asset.official ? uploadOfficial(gl, asset) : upload(gl, asset);
-      state = { asset, gl, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, weights: mapWebglWeights(profile), uniforms: {
+      const resources = asset.official ? uploadOfficial(gl, asset, basis) : upload(gl, asset);
+      state = { asset, gl, basisLab: basis, ...resources, program: webglProgram, camera: { ...DEFAULT_WEBGL_CAMERA }, basisCoefficients: basis ? new Array(8).fill(0) : null, weights: mapWebglWeights(profile), uniforms: {
         texture: gl.getUniformLocation(webglProgram, "uMorphDeltas"),
         weights: gl.getUniformLocation(webglProgram, "uWeights"),
         textureSize: gl.getUniformLocation(webglProgram, "uTextureSize"),
@@ -3400,9 +3490,10 @@ function renderWebglFace(canvas, profile, options = {}) {
     }
     attachCameraControls(canvas, state);
     state.weights = mapWebglWeights(profile);
-    const diagnostics = asset.official ? drawOfficial(canvas, asset, state) : draw(canvas, asset, state, state.weights);
+    if (basis && options.basisCoefficients) state.basisCoefficients = options.basisCoefficients.map(clampBasisCoefficient);
+    const diagnostics = asset.official ? drawOfficial(canvas, asset, state, state.basisCoefficients) : draw(canvas, asset, state, state.weights);
     canvas.__sportsFaceWebglDiagnostics = diagnostics;
-    return { canvas, fallback: false, renderer: asset.official ? WEBGL_OFFICIAL_RENDER_STYLE : WEBGL_MORPH_RENDER_STYLE, diagnostics };
+    return { canvas, fallback: false, renderer: basisLab ? WEBGL_OFFICIAL_BASIS_LAB_STYLE : asset.official ? WEBGL_OFFICIAL_RENDER_STYLE : WEBGL_MORPH_RENDER_STYLE, diagnostics };
   }).catch((error) => fallback(canvas, profile, fallbackOptions, error instanceof Error ? error.message : String(error)));
 }
 
@@ -3411,6 +3502,11 @@ return {
   WEBGL_MORPH_ASSET_URL,
   WEBGL_OFFICIAL_RENDER_STYLE,
   WEBGL_OFFICIAL_ASSET_URL,
+  WEBGL_OFFICIAL_BASIS_LAB_STYLE,
+  WEBGL_OFFICIAL_BASIS_LAB_PAYLOAD_URL,
+  WEBGL_OFFICIAL_BASIS_LAB_METADATA_URL,
+  BASIS_LAB_MAX_BYTES,
+  BASIS_LAB_COEFFICIENT_LIMIT,
   WEBGL_MORPH_WEIGHT_LIMIT,
   WEBGL_FRAME_MARGIN,
   DEFAULT_WEBGL_CAMERA,
@@ -3419,6 +3515,7 @@ return {
   mapWebglWeights,
   describeWebglMapping,
   describeOfficialWebglMapping,
+  describeOfficialBasisLabMapping,
   parseWebglGlb,
   expandWebglBounds,
   buildWebglProjection,
@@ -3426,11 +3523,12 @@ return {
   resetWebglCamera,
   renderWebglFace,
   WEBGL_MORPH_RENDER_STYLE,
-  WEBGL_OFFICIAL_RENDER_STYLE
+  WEBGL_OFFICIAL_RENDER_STYLE,
+  WEBGL_OFFICIAL_BASIS_LAB_STYLE
 };
 })(SportsFaceModel, SportsFaceMorphRenderer);
 
-const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, describeWebglMapping, describeOfficialWebglMapping, resetWebglCamera, renderWebglFace }) => {
+const SportsFaceRenderRouter = (({ downloadPng, renderFace }, { buildToonSvg, describeToonMapping, renderToonFace, TOON_HEAD_ATTRIBUTION }, { GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, buildGnmMorphSvg, buildMorphSvg, describeGnmMorphMapping, describeMorphMapping, renderGnmMorphFace, renderMorphFace }, { WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, describeWebglMapping, describeOfficialWebglMapping, describeOfficialBasisLabMapping, resetWebglCamera, renderWebglFace }) => {
 /* Renderer selector. Selection is deliberately not part of FaceDNA/SF2. */
 const DEFAULT_RENDER_STYLE = "sports/default-v2";
 const TOON_RENDER_STYLE = "sports/toon-prototype";
@@ -3442,6 +3540,7 @@ const RENDER_STYLES = Object.freeze([
   Object.freeze({ id: GNM_MORPH_RENDER_STYLE, label: "Sports Morph Lab GNM v1", attributionRequired: true }),
   Object.freeze({ id: WEBGL_MORPH_RENDER_STYLE, label: "Sports Morph Lab WebGL2 v1 (opt-in)", attributionRequired: true }),
   Object.freeze({ id: WEBGL_OFFICIAL_RENDER_STYLE, label: "Sports GNM Official 3D v1 (opt-in)", attributionRequired: true }),
+  Object.freeze({ id: WEBGL_OFFICIAL_BASIS_LAB_STYLE, label: "Sports GNM Official Basis Lab v1 (opt-in)", attributionRequired: true }),
 ]);
 
 function isRenderStyle(value) { return RENDER_STYLES.some((style) => style.id === value); }
@@ -3451,6 +3550,7 @@ function renderPortrait(canvas, profile, { style = DEFAULT_RENDER_STYLE, express
   if (style === GNM_MORPH_RENDER_STYLE) return renderGnmMorphFace(canvas, profile, renderOptions);
   if (style === WEBGL_MORPH_RENDER_STYLE) return renderWebglFace(canvas, profile, renderOptions);
   if (style === WEBGL_OFFICIAL_RENDER_STYLE) return renderWebglFace(canvas, profile, { ...renderOptions, official: true });
+  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return renderWebglFace(canvas, profile, { ...renderOptions, official: true, basisLab: true, basisCoefficients: options.basisCoefficients });
   if (style === MORPH_RENDER_STYLE) return renderMorphFace(canvas, profile, renderOptions);
   if (style === TOON_RENDER_STYLE) return renderToonFace(canvas, profile, options);
   renderFace(canvas, profile, options);
@@ -3461,6 +3561,7 @@ function describeRender(profile, style = DEFAULT_RENDER_STYLE, options = {}) {
   if (style === GNM_MORPH_RENDER_STYLE) return describeGnmMorphMapping(profile, options);
   if (style === WEBGL_MORPH_RENDER_STYLE) return describeWebglMapping(profile, options);
   if (style === WEBGL_OFFICIAL_RENDER_STYLE) return describeOfficialWebglMapping(profile, options);
+  if (style === WEBGL_OFFICIAL_BASIS_LAB_STYLE) return describeOfficialBasisLabMapping(options.basisCoefficients);
   if (style === MORPH_RENDER_STYLE) return describeMorphMapping(profile, options);
   return style === TOON_RENDER_STYLE
     ? describeToonMapping(profile)
@@ -3479,6 +3580,7 @@ return {
   MORPH_RENDER_STYLE,
   WEBGL_MORPH_RENDER_STYLE,
   WEBGL_OFFICIAL_RENDER_STYLE,
+  WEBGL_OFFICIAL_BASIS_LAB_STYLE,
   buildGnmMorphSvg,
   buildMorphSvg,
   buildToonSvg,
@@ -3490,7 +3592,7 @@ return {
 
 (() => {
 const { FACE_VARS, ageProfile, cloneProfile, createProfile, describeProfile, formatFaceCode, getFaceValues, hashSeed, parseFaceCode, setFeature, setKit, setPresentation } = SportsFaceModel;
-const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, describeRender, downloadPng, resetWebglCamera, renderPortrait } = SportsFaceRenderRouter;
+const { DEFAULT_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, MORPH_RENDER_STYLE, RENDER_STYLES, TOON_RENDER_STYLE, WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE, describeRender, downloadPng, resetWebglCamera, renderPortrait } = SportsFaceRenderRouter;
 /* Sports Face MVP UI - SPDX-License-Identifier: GPL-2.0-only */
 
 const canvas = document.querySelector("#portrait");
@@ -3513,9 +3615,24 @@ const expressionModeInput = document.querySelector("#expression-mode");
 const toonAttribution = document.querySelector("#toon-attribution");
 const landmarksInput = document.querySelector("#show-landmarks");
 const landmarkField = document.querySelector("#landmark-field");
+const basisLabPanel = document.querySelector("#basis-lab-controls");
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
-const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE];
+const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+const BASIS_LAB_LABELS = [
+  "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
+  "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
+];
+const basisLabCoefficients = Object.fromEntries(BASIS_LAB_LABELS.map((label) => [label, 0]));
+const basisLabControls = new Map();
+
+function basisLabCoefficientVector() {
+  return BASIS_LAB_LABELS.map((label) => {
+    const numeric = Number(basisLabCoefficients[label]);
+    return Number.isFinite(numeric) ? Math.max(-0.25, Math.min(0.25, numeric)) : 0;
+  });
+}
 
 let profile = createProfile({ seed: Date.now(), age: 22, presentation: "neutral" });
 function loadRenderStyle() {
@@ -3604,14 +3721,16 @@ function syncControls() {
     ...describeProfile(profile),
     selectedRenderer: renderStyle,
     selectedExpressionMode: expressionMode,
-    renderMapping: describeRender(profile, renderStyle, { expressionMode }),
+    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector() }),
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
-    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE].includes(renderStyle);
-   landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-   expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE].includes(renderStyle);
+    landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
   landmarksInput.checked = showLandmarks;
+  for (const [label, input] of basisLabControls) input.value = String(basisLabCoefficients[label]);
 }
 
 function renderGallery() {
@@ -3654,6 +3773,7 @@ function refresh({ rebuildGallery = true } = {}) {
     expressionMode,
     showLandmarks,
     fallbackCanvas: canvas,
+    basisCoefficients: basisLabCoefficientVector(),
   }).then((result) => {
     if (revision !== renderRevision) return result;
     if (WEBGL_STYLES.includes(renderStyle)) {
@@ -3775,6 +3895,29 @@ for (const input of [kitPrimary, kitSecondary]) {
 
 populateRenderStyles();
 populateFeatureControls();
+for (const label of BASIS_LAB_LABELS) {
+  const field = document.createElement("label");
+  field.className = "field compact";
+  const caption = document.createElement("span");
+  caption.textContent = label;
+  const input = document.createElement("input");
+  input.type = "range";
+  input.min = "-0.25";
+  input.max = "0.25";
+  input.step = "0.01";
+  input.value = "0";
+  input.addEventListener("input", () => {
+    basisLabCoefficients[label] = Math.max(-0.25, Math.min(0.25, Number(input.value) || 0));
+    refresh({ rebuildGallery: false });
+  });
+  basisLabControls.set(label, input);
+  basisLabPanel.querySelector(".basis-grid").append(field);
+  field.append(caption, input);
+}
+document.querySelector("#reset-basis-lab").addEventListener("click", () => {
+  for (const label of BASIS_LAB_LABELS) basisLabCoefficients[label] = 0;
+  refresh({ rebuildGallery: false });
+});
 refresh();
 
 })();
