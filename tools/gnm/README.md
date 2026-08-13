@@ -84,6 +84,43 @@ This phase is evidence only. It does not load basis arrays in the browser or
 runtime, project them to FaceDNA/morphology, or alter the canonical GLB, the
 render-only GLB (`basisIncluded: false`), or its runtime URL.
 
+### Phase 6: quantitative semantic evidence
+
+Phase 6 adds a deterministic, standard-library-only report that measures the
+official payload without assigning meaning to it:
+
+```bash
+npm run analyze:gnm-official-semantics
+npm run test:gnm-official-semantics
+```
+
+The committed report is
+`tools/gnm/work/gnm-official-semantic-evidence.json`. Its
+`source.evidenceBaseRevision` (`da9982f`) identifies the project revision whose
+source snapshot was analyzed; it is not the future commit containing the
+report. The report records exact source hashes, all `253` identity and `383`
+expression basis records over `17,821` vertices, technical prefix groups, per-component energy, and a
+provisional radius-based landmark-region summary. The radius is `0.01` canonical
+mesh units; energy is the raw sum of squared displacement and shares divide by
+the family total. The landmark map is explicitly provisional, not area-normalized,
+and makes no anatomical claim. Technical groups (`head`, `eyes`, `teeth`,
+`left_eye_region`, `right_eye_region`, `lower_face_region`, `tongue`, `pupils`)
+are descriptive prefixes only.
+
+The report deliberately states `semanticMapping: "unestablished"` and
+`runtimeBasisLoaded: false`: no paired FaceDNA value-to-GNM-coefficient or
+target-geometry dataset exists. It inventories FaceDNA variables and values plus
+the existing morphology features/rules, but does not alter FaceDNA, morphology,
+the render-router, runtime source, canonical/render GLBs, or Basis Lab payload.
+Basis Lab remains a numeric/technical inspection tool.
+
+The report's precision policy is explicit: JSON retains full float precision from
+deterministic IEEE float32-derived Python calculations; raw basis arrays are not
+included. The serialized report has a hard size budget of `600,000` bytes. The
+landmark summary validates every declared source ID against the coordinate-selected
+radius, reports overlap (`regionsAreNonExclusive: true`), and warns that regional
+energies must not be summed.
+
 ### Phase 4: opt-in technical Basis Lab
 
 The separate `sports/morph-webgl-official-basis-lab-v1` style loads

@@ -1,5 +1,13 @@
 ## Unreleased — Operativa GNM
 
+- Añade la Fase 6 de evidencia cuantitativa offline: reporte stdlib-only con
+  hashes/revisión, dimensiones `253`/`383`/`17.821`, energía por base, familia,
+  componente y prefijo técnico, inventario FaceDNA/morphology y análisis
+  provisional de regiones. Declara `semanticMapping: unestablished` y
+  `runtimeBasisLoaded: false` porque no existe un dataset emparejado FaceDNA →
+  coeficiente/objetivo GNM. No cambia runtime, FaceDNA, morphology, GLBs ni el
+  Basis Lab técnico.
+
 - Mejora la calidad visual del renderer oficial con el modelo inmutable
   `neutral-procedural-components-v2`: seis materiales procedurales neutros por
   componente, roughness perceptual, respuesta especular, ambiente hemisférico,

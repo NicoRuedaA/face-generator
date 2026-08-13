@@ -382,6 +382,31 @@ La frontera es deliberadamente conservadora: `semanticMapping: disabled` y
 morphology ni render-router. El asset canónico sigue siendo archival y el
 render-only conserva `basisIncluded: false` y su URL runtime sin cambios.
 
+### Fase 6: reporte cuantitativo de evidencia semántica
+
+La Fase 6 convierte el diagnóstico en evidencia cuantitativa reproducible, sin
+convertir energía regional ni nombres técnicos en semántica. El analizador
+stdlib-only `tools/gnm/analyze_official_gnm_semantics.py` emite
+`tools/gnm/work/gnm-official-semantic-evidence.json` con hashes exactos,
+revisión, dimensiones, inventario FaceDNA, features/reglas de morphology,
+energía por base y grupos técnicos (`head`, `eyes`, `teeth`, `left_eye_region`,
+`right_eye_region`, `lower_face_region`, `tongue`, `pupils`). Esos grupos son
+descriptivos por prefijo y no son etiquetas anatómicas.
+
+El análisis de landmarks, cuando el mapa está disponible, usa radio `0.01` en
+unidades de la malla y suma de desplazamientos al cuadrado sin normalización por
+área. El mapa está marcado `ai-assisted-full-landmark-map-provisional`, por lo
+que el resultado es provisional, descriptivo y `anatomicalCorrectness:
+not_proven`.
+
+La salida mantiene `semanticMapping: "unestablished"` y
+`runtimeBasisLoaded: false` porque no existe un dataset emparejado de valores
+FaceDNA con coeficientes u objetivos geométricos GNM. Los criterios futuros
+requieren datos emparejados aprobados, R² en datos held-out, validación cruzada,
+consistencia bilateral, pruebas causales one-hot, controles negativos, aprobación
+humana y metadata de mapping versionada. No se cambia runtime, FaceDNA,
+morphology, GLBs ni el Basis Lab técnico.
+
 ### Selección semántica de familias
 
 La familia GNM no se elige con la semilla del perfil. Se aplica la versión de

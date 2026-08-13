@@ -61,3 +61,9 @@ and official NPZ SHA-256
   runtime code. It adds no textures or external dependencies; its six component
   colors and lightweight lighting diagnostics are technical presentation choices,
   not official GNM material claims or anatomical semantics.
+- Phase 6 semantic evidence: `tools/gnm/analyze_official_gnm_semantics.py` emits
+  a deterministic stdlib-only quantitative report. It characterizes the basis
+  payload but explicitly keeps `semanticMapping: "unestablished"`; technical
+  groups and provisional landmark-region energy are not anatomical claims. No
+  FaceDNA-to-GNM paired dataset exists, and no runtime or Basis Lab mapping is
+  enabled.

@@ -171,6 +171,31 @@ npm run test:gnm-official-basis
 npm run capture:gnm-official-smoke
 ```
 
+#### Fase 6: evidencia cuantitativa de semántica
+
+La Fase 6 es una herramienta offline, no una integración runtime. Lee el GLB
+canónico, metadata, diagnóstico, mapa provisional, definiciones FaceDNA y
+morfología, y genera el reporte versionado
+[`tools/gnm/work/gnm-official-semantic-evidence.json`](tools/gnm/work/gnm-official-semantic-evidence.json):
+
+```bash
+npm run analyze:gnm-official-semantics
+npm run test:gnm-official-semantics
+```
+
+El reporte mide las `253` bases de identidad y `383` de expresión sobre `17.821`
+vértices, energías por base/familia/componente, grupos técnicos por prefijo y
+regiones provisionales con radio `0.01` en unidades de la malla. La energía es
+la suma de desplazamientos al cuadrado; no hay normalización por área ni
+afirmaciones anatómicas. Los grupos son descriptivos, no semánticos. El campo
+`source.evidenceBaseRevision` identifica la revisión del proyecto cuyo snapshot
+de código fue analizado, no el commit futuro que contiene el reporte.
+
+La conclusión conservadora es `semanticMapping: "unestablished"` y
+`runtimeBasisLoaded: false`: no existe un dataset emparejado FaceDNA →
+coeficiente/objetivo GNM. Esta fase no cambia FaceDNA, morphology, runtime,
+GLBs ni Basis Lab; Basis Lab permanece numérico/técnico.
+
 ## Estado de GNM
 
 GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.
