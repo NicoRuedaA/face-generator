@@ -322,6 +322,26 @@ npm run validate:gnm-official-render
 npm run test:gnm-official-render
 ```
 
+#### Siguiente fase conservadora: diagnóstico offline de bases oficiales
+
+Se añade `tools/gnm/diagnose_official_gnm_basis.py`, una herramienta determinista
+stdlib-only que lee el GLB canónico y su metadata sin modificarlos. El reporte
+`tools/gnm/work/gnm-official-basis-diagnostic.json` confirma el schema oficial,
+las dimensiones `253 x 17.821 x 3` y `383 x 17.821 x 3`, nombres en orden exacto,
+payloads float32 finitos con longitud exacta, reconstrucciones cero/one-hot y la
+correspondencia byte-a-byte de POSITION con `sourceVertexId` en las seis
+componentes. También conserva bounds L2/máximo por familia y rangos de origen.
+
+```bash
+npm run diagnose:gnm-official-basis
+npm run test:gnm-official-basis
+```
+
+La frontera es deliberadamente conservadora: `semanticMapping: disabled` y
+`runtimeBasisLoaded: false`; las bases no se cargan en navegador, FaceDNA,
+morphology ni render-router. El asset canónico sigue siendo archival y el
+render-only conserva `basisIncluded: false` y su URL runtime sin cambios.
+
 ### Selección semántica de familias
 
 La familia GNM no se elige con la semilla del perfil. Se aplica la versión de

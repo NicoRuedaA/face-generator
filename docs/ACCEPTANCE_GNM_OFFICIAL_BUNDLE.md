@@ -16,11 +16,14 @@ copied wholesale.
 1. Run the NumPy-only offline importer against the reviewed external NPZ.
 2. Validate the accepted manifest, GLB structure, components, UVs, and basis metadata.
 3. Run the official browser smoke with the explicit style.
+4. Run the deterministic basis diagnostic; it reads the canonical GLB and metadata only.
 
 ```bash
 python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
 python3 tools/gnm/validate_official_gnm_asset.py tools/gnm/work/official-bundle.json
 npm run capture:gnm-official-smoke
+npm run diagnose:gnm-official-basis
+npm run test:gnm-official-basis
 ```
 
 The canonical placeholder and its tests are intentionally fast and stdlib-only:
@@ -75,6 +78,24 @@ asset and remain offline/optional; semantic mapping remains disabled.
 The public redistribution is explicitly authorized for this noncommercial MVP
 by `project-owner` on `2026-08-12`, reference
 `sports-face-mvp-noncommercial-mvp-authorization`.
+
+## Conservative basis diagnostic result
+
+The committed report is `tools/gnm/work/gnm-official-basis-diagnostic.json`. It
+is generated with Python standard library only and contains no absolute paths.
+The diagnostic passed for asset v2 and schema
+`sports-face-gnm-official-head/v1`, identity `253 x 17,821 x 3`, expression
+`383 x 17,821 x 3`, and template `17,821 x 3`. Every payload is little-endian
+float32 with the exact expected byte length and finite values. Zero and sampled
+first/middle/last one-hot reconstructions passed with float32 arithmetic and
+exact byte comparison. The report records aggregate displacement bounds and all
+six sourceVertexId mappings.
+
+The source ranges are disjoint and exhaustive over vertices `0..17,820`; local
+POSITION bytes match the assembled canonical template byte-for-byte. The
+optimized render mapping was also compared successfully. This is diagnostic
+evidence only: `semanticMapping: disabled`, `runtimeBasisLoaded: false`, no
+browser basis loading, and no canonical or render GLB modification.
 
 ## Review checklist
 

@@ -1,5 +1,14 @@
 ## Unreleased — Operativa GNM
 
+- Añade un diagnóstico/scrubber offline determinista para las bases oficiales
+  GNM: schema v2, dimensiones `253 x 17.821 x 3` y `383 x 17.821 x 3`, nombres
+  ordenados, payloads float32 finitos con longitudes exactas, reconstrucción
+  zero/one-hot, bounds de desplazamiento y mappings `sourceVertexId` byte-a-byte
+  para las seis componentes. El reporte no contiene rutas absolutas e indica
+  `semanticMapping: disabled` y `runtimeBasisLoaded: false`. Es evidencia
+  únicamente; no modifica GLB, FaceDNA, morphology, render-router ni la carga de
+  bases en navegador.
+
 - Añade el GLB render-only oficial GNM optimizado de forma lossless: `665,904`
   bytes frente a `138,998,408` bytes canónicos (`99.52%` menos), `18,437`
   vértices únicos, seis componentes, UVs/posiciones float32 exactas e índices

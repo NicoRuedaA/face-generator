@@ -148,12 +148,23 @@ canónico de `138,998,408` bytes permanece archivado y sin cambios. Su payload d
 bases (`253` identidad, `383` expresión) se omite del asset render y queda
 offline/opcional hasta diseñar una integración segura.
 
+El siguiente paso conservador es un diagnóstico offline, no una integración de
+bases. `npm run diagnose:gnm-official-basis` genera un reporte determinista que
+valida los payloads float32, nombres, reconstrucciones zero/one-hot y mappings
+`sourceVertexId` de las seis componentes. El resultado actual confirma `253`
+identidades, `383` expresiones y `17.821` vértices, con valores finitos y
+correspondencia byte-a-byte. Mantiene explícitamente `semanticMapping: disabled`
+y `runtimeBasisLoaded: false`; no cambia FaceDNA, morphology, render-router,
+browser basis loading ni ninguno de los dos GLB.
+
 ```bash
 npm run build:gnm-official
 npm run validate:gnm-official
 npm run build:gnm-official-render
 npm run validate:gnm-official-render
 npm run test:gnm-official-render
+npm run diagnose:gnm-official-basis
+npm run test:gnm-official-basis
 npm run capture:gnm-official-smoke
 ```
 

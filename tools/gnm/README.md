@@ -60,6 +60,30 @@ contract and camera/render contract remain unchanged. The render asset is
 offline/optional and semantic mapping remains disabled. The canonical GLB and
 full canonical validator still remain the archival package.
 
+### Conservative official basis diagnostic
+
+The canonical basis payload has a standard-library-only diagnostic/scrubber. It
+reads `gnm-official-head.glb` and `gnm-official-head.json`, never writes either
+asset, and emits the deterministic report
+`tools/gnm/work/gnm-official-basis-diagnostic.json`:
+
+```bash
+npm run diagnose:gnm-official-basis
+npm run test:gnm-official-basis
+```
+
+It validates the official v2 schema, exact identity/expression dimensions and
+ordered names, finite little-endian float32 payloads, zero/one-hot float32
+reconstruction, aggregate displacement bounds, and byte-exact POSITION to
+`sourceVertexId` correspondence across all six primitives. The six source sets
+are disjoint and exhaustive. It also compares the optimized render mapping when
+the render asset is present. The report has no absolute paths and records
+`semanticMapping: disabled` and `runtimeBasisLoaded: false`.
+
+This phase is evidence only. It does not load basis arrays in the browser or
+runtime, project them to FaceDNA/morphology, or alter the canonical GLB, the
+render-only GLB (`basisIncluded: false`), or its runtime URL.
+
 Phase 2 also exports the retained neutral template mesh to a standards-compliant
 binary glTF 2.0 file for offline inspection. The later WebGL2 slice is opt-in;
 SVG remains the default and GNM itself is never loaded by runtime.
