@@ -73,3 +73,9 @@ and official NPZ SHA-256
   mapping. Geometry, basis arrays, secrets, PII, and absolute paths are not
   stored. `semanticMapping` remains `unestablished`, `runtimeBasisLoaded`
   remains `false`, and human approval is opt-in.
+- Phase 7B statistical validation: `tools/gnm/validate_gnm_calibration.py` and
+  its empty report are offline, standard-library-only evidence. The current
+  result is `insufficient_data` with no fabricated predictive metrics. It never
+  activates a mapping or modifies runtime, FaceDNA, GLBs, Basis Lab assets, or
+  the Phase 7A template samples; real reviewed samples must be added by a human
+  through Phase 7A first.

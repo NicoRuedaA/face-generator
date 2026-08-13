@@ -196,6 +196,19 @@ python3 tools/gnm/calibration_dataset.py split \
 The example human-add command is documented in the README and is not executed
 as part of acceptance. Projections do not modify the source dataset.
 
+## Phase 7B statistical validation result
+
+The checked-in Phase 7B report is `tools/gnm/work/gnm-calibration-validation.json`.
+Its current status is `insufficient_data` with zero samples, zero train and
+validation counts, zero approval/diversity counts, and no coefficient metrics.
+It does not fabricate predictive metrics. The next human action is to add real
+reviewed samples through Phase 7A. Future mapping requires at least 40 train,
+10 validation, 20 human-approved reviewed samples, 5 distinct seeds and 5
+distinct face codes, plus held-out R² >= 0.80 when outcomes exist,
+cross-validation, bilateral consistency, causal one-hot tests, negative
+controls, human approval, and versioned mapping metadata. Mapping remains
+unestablished and is never activated by this validator.
+
 ## Review checklist
 
 - [ ] The repository URL has no embedded credentials.

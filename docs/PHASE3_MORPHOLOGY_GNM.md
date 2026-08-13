@@ -440,6 +440,27 @@ El comando `add` es ilustrativo y no se ejecuta en esta fase. El split
 `sample-id-sha256-v1` usa `phase-7a-calibration`; ocho cubetas son `train` y
 dos `validation`. Las proyecciones no modifican el dataset fuente.
 
+### Fase 7B: validación estadística offline
+
+La herramienta `tools/gnm/validate_gnm_calibration.py` valida primero el
+contrato 7A y después produce un reporte stdlib-only determinista. El reporte
+actual es `insufficient_data` porque el template está vacío: total, train,
+validation, aprobadas, diversidad y métricas son cero; no se fabrica R² ni
+correlación. El siguiente paso humano es añadir muestras reales revisadas con
+Fase 7A.
+
+El gate conservador futuro requiere `>=40` train, `>=10` validation, `>=20`
+human-approved reviewed, `>=5` seeds y `>=5` face codes distintos; además exige
+R² held-out `>=0.80` cuando haya outcomes, validación cruzada, consistencia
+bilateral, pruebas causales one-hot, controles negativos, aprobación humana y
+metadata de mapping versionada. `semanticMapping` sigue `unestablished`,
+`runtimeBasisLoaded` es `false` y no se activa ningún mapping.
+
+```bash
+npm run calibration:gnm-validate-stats
+npm run calibration:gnm-test-stats
+```
+
 ### Selección semántica de familias
 
 La familia GNM no se elige con la semilla del perfil. Se aplica la versión de

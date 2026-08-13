@@ -1,0 +1,159 @@
+{
+  "checks": {
+    "coefficientBounds": {
+      "passed": true,
+      "reason": "all coefficients are within [-0.25, 0.25]",
+      "status": "passed"
+    },
+    "datasetApproval": {
+      "observed": false,
+      "passed": false,
+      "reason": "dataset humanApproved must remain false; mapping approval is never inferred",
+      "required": true,
+      "status": "pending"
+    },
+    "minimumSampleCounts": {
+      "observed": {
+        "approvedReviewed": 0,
+        "distinctFaceCodes": 0,
+        "distinctSeeds": 0,
+        "train": 0,
+        "validation": 0
+      },
+      "passed": false,
+      "reason": "conservative minimum sample and diversity thresholds",
+      "required": {
+        "approvedReviewed": 20,
+        "distinctFaceCodes": 5,
+        "distinctSeeds": 5,
+        "train": 40,
+        "validation": 10
+      },
+      "status": "insufficient_data"
+    },
+    "sampleApproval": {
+      "observed": 0,
+      "passed": false,
+      "reason": "human-approved reviewed samples are required before statistical readiness",
+      "required": 20,
+      "status": "insufficient_data"
+    },
+    "splitIntegrity": {
+      "passed": true,
+      "reason": "validated Phase 7A split policy",
+      "status": "passed"
+    }
+  },
+  "counts": {
+    "approved": 0,
+    "approvedReviewed": 0,
+    "distinctFaceCodes": 0,
+    "distinctLabels": 0,
+    "distinctSeeds": 0,
+    "rejected": 0,
+    "reviewed": 0,
+    "total": 0,
+    "train": 0,
+    "uncertain": 0,
+    "unreviewed": 0,
+    "validation": 0
+  },
+  "futureMappingCriteria": {
+    "bilateralConsistency": {
+      "status": "missing"
+    },
+    "causalOneHotTests": {
+      "status": "missing"
+    },
+    "crossValidation": {
+      "status": "missing"
+    },
+    "heldOutR2": {
+      "condition": "only when target outcomes exist",
+      "status": "not_available",
+      "threshold": 0.8
+    },
+    "humanApproval": {
+      "mappingActivation": false,
+      "status": "pending"
+    },
+    "minimumSampleCounts": {
+      "distinctFaceCodes": 5,
+      "distinctSeeds": 5,
+      "humanApprovedReviewed": 20,
+      "train": 40,
+      "validation": 10
+    },
+    "negativeControls": {
+      "status": "missing"
+    },
+    "versionedMappingMetadata": {
+      "status": "missing"
+    }
+  },
+  "mappingSafety": {
+    "mappingActivation": false,
+    "runtimeBasisLoaded": false,
+    "semanticMapping": "unestablished"
+  },
+  "metrics": {
+    "coefficientStats": {},
+    "predictiveMetrics": {
+      "available": false,
+      "reason": "Phase 7A contains no target outcomes; no R\u00b2 or correlation is fabricated."
+    }
+  },
+  "missingEvidence": [
+    "real human-reviewed calibration samples",
+    "at least 40 train samples",
+    "at least 10 validation samples",
+    "at least 20 human-approved reviewed samples",
+    "at least 5 distinct seeds",
+    "at least 5 distinct face codes",
+    "paired target outcomes, if R\u00b2/correlation analysis is intended",
+    "held-out R\u00b2 >= 0.80 when target outcomes exist",
+    "cross-validation evidence",
+    "bilateral consistency evidence",
+    "causal one-hot test evidence",
+    "negative-control evidence",
+    "explicit human approval for any future mapping",
+    "versioned mapping metadata and provenance",
+    "dataset-level human approval remains false by the Phase 7A safety contract"
+  ],
+  "reportHashSha256": "f6d661994f94b6f1f4a5f5e9d9f48ce70563b6db23c393fcd756698b9abaf308",
+  "schema": "sports-face-gnm-calibration-validation/v1",
+  "source": {
+    "basisSelectionHash": "9c839e30b3e591f4a2057f7b379d0337d15090e998299724454c92e5feea97fc",
+    "datasetHashSha256": "795e1f985484c9c579fb23efc3b1048b7c585321dc6622893c4ea7e19ac432ed",
+    "evidenceBaseRevision": "465f5cb",
+    "sourceAssets": [
+      {
+        "name": "canonicalGlb",
+        "path": "tools/gnm/work/gnm-official-head.glb",
+        "sha256": "eb1179cb2724b3034e768c13b807f890fac250a5fb9e236a94d4ac345a9d342d"
+      },
+      {
+        "name": "canonicalMetadata",
+        "path": "tools/gnm/work/gnm-official-head.json",
+        "sha256": "f16f6520a7e21491cddf9e7407e22e428d84bb97cca8e964a31c1e7dae5c8b37"
+      },
+      {
+        "name": "renderGlb",
+        "path": "tools/gnm/work/gnm-official-head-render.glb",
+        "sha256": "081ddb9b1f6b26a76255fb1710b763bcb105941139cba1490a501b99c568e23f"
+      },
+      {
+        "name": "basisLabPayload",
+        "path": "tools/gnm/work/gnm-official-basis-lab.bin",
+        "sha256": "d36b42a9454ff8bfcd60eb94689ab558ab66f2d2e905e659783a0352a6ee4d4b"
+      },
+      {
+        "name": "basisLabMetadata",
+        "path": "tools/gnm/work/gnm-official-basis-lab.json",
+        "sha256": "1b0be450da17b4616ce7abaeeef11c3786b81a7f7ea47d6771f858e92b1f0b68"
+      }
+    ]
+  },
+  "status": "insufficient_data",
+  "version": 1
+}

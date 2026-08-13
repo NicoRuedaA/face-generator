@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 8080",
-    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset && npm run test:gnm-official-render && npm run test:gnm-official-basis && npm run test:gnm-official-basis-lab && npm run test:gnm-official-semantics && npm run calibration:gnm-test",
+    "test": "npm run test:model && npm run test:baseline && npm run test:toon && npm run test:morph && npm run test:gnm-tools && npm run test:gnm-quality && npm run test:gnm-quality-scales && npm run test:gnm-landmark-audit && npm run test:gnm-landmarks && npm run test:gnm-official-asset && npm run test:gnm-official-render && npm run test:gnm-official-basis && npm run test:gnm-official-basis-lab && npm run test:gnm-official-semantics && npm run calibration:gnm-test && npm run calibration:gnm-test-stats",
     "test:model": "node ./tests/model.test.mjs",
     "test:baseline": "node ./baseline/verify-baseline.mjs",
     "generate:baseline": "node ./baseline/generate-baseline.mjs",
@@ -47,6 +47,8 @@
     "calibration:gnm-init": "python3 tools/gnm/calibration_dataset.py init",
     "calibration:gnm-validate": "python3 tools/gnm/calibration_dataset.py validate",
     "calibration:gnm-test": "python3 tools/gnm/test_calibration_dataset.py",
+    "calibration:gnm-validate-stats": "python3 tools/gnm/validate_gnm_calibration.py validate",
+    "calibration:gnm-test-stats": "python3 tools/gnm/test_gnm_calibration.py",
     "test:browser-smoke": "uv run --with playwright python3 /home/nico/.agents/skills/webapp-testing/scripts/with_server.py --server \"python3 -m http.server 8080\" --port 8080 -- python3 tests/browser_smoke.py",
     "refresh:release": "node ./scripts/refresh-release-manifest.mjs"
   },

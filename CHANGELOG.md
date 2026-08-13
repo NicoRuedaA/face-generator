@@ -1,5 +1,12 @@
 ## Unreleased — Operativa GNM
 
+- Añade la Fase 7B: validador estadístico offline stdlib-only y reporte
+  determinista de calibración. El resultado actual es `insufficient_data` con
+  template vacío, conteos y métricas cero, sin R²/correlaciones inventadas. El
+  siguiente paso humano es añadir muestras reales revisadas mediante Fase 7A;
+  ningún mapping se activa y `semanticMapping`/`runtimeBasisLoaded` permanecen
+  `unestablished`/`false`.
+
 - Añade la Fase 7A: contrato offline determinista para anotaciones humanas de
   calibración. El template queda vacío —sin muestras no existe mapeo— y las
   etiquetas son libres para revisión técnica, no verdad anatómica. Conserva

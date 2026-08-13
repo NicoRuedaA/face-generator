@@ -161,6 +161,30 @@ python3 tools/gnm/calibration_dataset.py split \
 Approval is opt-in (`--human-approved`); metadata keeps
 `semanticMapping: unestablished` and `runtimeBasisLoaded: false`.
 
+### Phase 7B: offline statistical validation
+
+Phase 7B validates the Phase 7A contract before calculating deterministic
+descriptive statistics. The checked-in empty dataset produces
+`tools/gnm/work/gnm-calibration-validation.json` with status
+`insufficient_data`, zero sample/metric counts, no fabricated R² or correlation,
+and an explicit missing-evidence list. The conservative future-mapping gate is
+at least 40 train samples, 10 validation samples, 20 human-approved reviewed
+samples, 5 distinct seeds and 5 distinct face codes. It also requires held-out
+R² >= 0.80 when target outcomes exist, cross-validation, bilateral consistency,
+causal one-hot tests, negative controls, human approval, and versioned mapping
+metadata.
+
+```bash
+npm run calibration:gnm-validate-stats
+npm run calibration:gnm-test-stats
+```
+
+The report always says `semanticMapping: unestablished`,
+`runtimeBasisLoaded: false`, and `mappingActivation: false`. The next human
+action is to add real reviewed samples through the Phase 7A tool; this phase
+never modifies runtime, FaceDNA, GLBs, Basis Lab assets, or the calibration
+template samples.
+
 Free-form `label`, `notes`, and `annotatorRole` values are deliberately useful
 but restricted: email-like and phone-like text, credentials/tokens, absolute
 paths, traversal components, NULs, and PII field names (including nested

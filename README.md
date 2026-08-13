@@ -210,7 +210,22 @@ PII ni rutas absolutas. `semanticMapping` permanece `unestablished`,
 npm run calibration:gnm-init
 npm run calibration:gnm-validate
 npm run calibration:gnm-test
+npm run calibration:gnm-validate-stats
+npm run calibration:gnm-test-stats
 ```
+
+#### Fase 7B: validación estadística offline
+
+El reporte canónico `tools/gnm/work/gnm-calibration-validation.json` confirma el
+estado actual `insufficient_data`: el template no tiene muestras y todos los
+conteos/estadísticas son cero. No inventa R² ni correlaciones y mantiene
+`semanticMapping: unestablished`, `runtimeBasisLoaded: false` y
+`mappingActivation: false`. La siguiente acción humana es añadir muestras reales
+revisadas mediante Fase 7A. El gate futuro exige 40 train, 10 validation, 20
+muestras revisadas aprobadas, 5 seeds y 5 códigos distintos, además de R² held-out
+>= 0.80 cuando existan outcomes, validación cruzada, consistencia bilateral,
+pruebas one-hot causales, controles negativos, aprobación humana y metadata de
+mapeo versionada.
 
 Ejemplo de anotación humana (no ejecutado durante esta fase):
 

@@ -50,3 +50,22 @@ humana antes de cualquier promocion.
 Si el entorno externo GNM/NumPy no esta disponible, el runner escribe
 `status: unavailable` con la razon exacta y no inventa metricas ni datos de
 400/800 muestras.
+
+## Phase 7B calibration validation
+
+The separate Phase 7B gate is offline and stdlib-only:
+
+```bash
+npm run calibration:gnm-validate-stats
+npm run calibration:gnm-test-stats
+```
+
+The checked-in report is currently `insufficient_data`: the Phase 7A template
+has zero samples, so all sample/diversity and coefficient-stat counts are zero.
+No R² or correlation is fabricated. Future mapping review requires at least 40
+train, 10 validation, 20 human-approved reviewed samples, 5 distinct seeds and
+5 distinct face codes, plus held-out R² >= 0.80 when target outcomes exist,
+cross-validation, bilateral consistency, causal one-hot tests, negative
+controls, human approval, and versioned mapping metadata. It always keeps
+`semanticMapping: unestablished`, `runtimeBasisLoaded: false`, and
+`mappingActivation: false`.
