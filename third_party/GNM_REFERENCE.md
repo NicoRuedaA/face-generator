@@ -22,3 +22,11 @@ bases oficiales de identidad (253) y expresión (383). No incluye el bundle
 completo de texturas materiales; el runtime usa materiales procedurales neutros.
 El mapeo semántico a FaceDNA/expresiones queda desactivado porque los nombres
 oficiales no prueban esa correspondencia.
+
+Fase 8 (`sports/gnm-3d-player-v1`) deriva además un payload portable de
+identidad/expresión a partir del NPZ oficial, de la definición oficial de 68
+landmarks (`0ae8cc7aa2ef3c08dbc7fd35d6772869380e7f96`, que corrige el orden de
+los anclajes 2–6 del contorno mandibular) y del decoder de expresiones del
+semantic sampler oficial (`8ea2906a31aab7f8b550e33968f3c0a86051a92d`). Solo se
+redistribuyen datos numéricos derivados; el decoder no se copia y GNM sigue sin
+ejecutarse en el navegador. Ver `docs/ACCEPTANCE_GNM_3D_PLAYER.md`.

@@ -17,6 +17,7 @@ import {
 import {
   DEFAULT_RENDER_STYLE,
   GNM_MORPH_RENDER_STYLE,
+  GNM_PLAYER_RENDER_STYLE,
   MORPH_RENDER_STYLE,
   RENDER_STYLES,
   TOON_RENDER_STYLE,
@@ -27,12 +28,15 @@ import {
   technicalVisualizationState,
   describeRender,
   downloadPng,
+  resetGnmPlayerCamera,
   resetWebglCamera,
   renderPortrait,
+  renderPortraitThumbnail,
 } from "./render-router.js";
 
 const canvas = document.querySelector("#portrait");
 const webglCanvas = document.querySelector("#portrait-webgl");
+const gnm3dCanvas = document.querySelector("#portrait-gnm3d");
 const webglCameraControls = document.querySelector("#webgl-camera-controls");
 const gallery = document.querySelector("#gallery");
 const seedInput = document.querySelector("#seed");
@@ -59,6 +63,10 @@ const technicalVisualizationStateLabel = document.querySelector("#technical-visu
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
 const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
+// The GNM 3D player owns a separate canvas so its camera listeners never
+// redraw another WebGL style (and vice versa).
+const PLAYER_3D_STYLES = [GNM_PLAYER_RENDER_STYLE];
+const MICRO_EXPRESSION_STYLES = [MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, GNM_PLAYER_RENDER_STYLE];
 const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
 // Technical visualization toggles are session state only (OFF by default) and
 // are never stored in FaceDNA, SF2, or localStorage.
@@ -169,9 +177,9 @@ function syncControls() {
   }, null, 2);
   renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
-    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE].includes(renderStyle);
+    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, GNM_PLAYER_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE].includes(renderStyle);
     landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-    expressionModeField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
+    expressionModeField.hidden = !MICRO_EXPRESSION_STYLES.includes(renderStyle);
     basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
     technicalVisualizationPanel.hidden = !OFFICIAL_WEBGL_STYLES.includes(renderStyle);
   landmarksInput.checked = showLandmarks;
@@ -197,7 +205,7 @@ function renderGallery() {
     miniCanvas.width = 192;
     miniCanvas.height = 192;
     const galleryStyle = WEBGL_STYLES.includes(renderStyle) ? GNM_MORPH_RENDER_STYLE : renderStyle;
-     renderPortrait(miniCanvas, itemProfile, { style: galleryStyle, expressionMode, showAge: false, showLandmarks: false }).catch((error) => showToast(error.message, "error"));
+    renderPortraitThumbnail(miniCanvas, itemProfile, { style: galleryStyle, expressionMode, showAge: false, showLandmarks: false }).catch((error) => showToast(error.message, "error"));
     button.append(miniCanvas);
     button.addEventListener("click", () => {
       profile = cloneProfile(itemProfile);
@@ -208,14 +216,21 @@ function renderGallery() {
   }
 }
 
+function activeWebglCanvas() {
+  if (PLAYER_3D_STYLES.includes(renderStyle)) return gnm3dCanvas;
+  return WEBGL_STYLES.includes(renderStyle) ? webglCanvas : null;
+}
+
 function refresh({ rebuildGallery = true } = {}) {
   const revision = ++renderRevision;
-  if (!WEBGL_STYLES.includes(renderStyle)) {
+  const glCanvas = activeWebglCanvas();
+  if (!glCanvas) {
     webglCanvas.hidden = true;
+    gnm3dCanvas.hidden = true;
     canvas.hidden = false;
     webglCameraControls.hidden = true;
   }
-  const targetCanvas = WEBGL_STYLES.includes(renderStyle) ? webglCanvas : canvas;
+  const targetCanvas = glCanvas || canvas;
   mainRenderPromise = renderPortrait(targetCanvas, profile, {
     style: renderStyle,
     expressionMode,
@@ -225,9 +240,14 @@ function refresh({ rebuildGallery = true } = {}) {
     technicalVisualization,
   }).then((result) => {
     if (revision !== renderRevision) return result;
-    if (WEBGL_STYLES.includes(renderStyle)) {
+    if (glCanvas) {
+      // Swap canvases only once the new render is ready, so switching between
+      // WebGL styles never leaves an empty portrait while assets load.
       const usedFallback = result?.fallback === true;
-      webglCanvas.hidden = usedFallback;
+      for (const candidate of [webglCanvas, gnm3dCanvas]) {
+        if (candidate !== glCanvas) candidate.hidden = true;
+      }
+      glCanvas.hidden = usedFallback;
       canvas.hidden = !usedFallback;
       webglCameraControls.hidden = usedFallback;
       if (usedFallback) showToast(`WebGL2 fallback: ${result.reason}`, "error");
@@ -239,7 +259,8 @@ function refresh({ rebuildGallery = true } = {}) {
 }
 
 document.querySelector("#reset-webgl-camera").addEventListener("click", () => {
-  resetWebglCamera(webglCanvas);
+  if (PLAYER_3D_STYLES.includes(renderStyle)) resetGnmPlayerCamera(gnm3dCanvas);
+  else resetWebglCamera(webglCanvas);
   showToast("Cámara restablecida");
 });
 
@@ -292,7 +313,8 @@ document.querySelector("#load-code").addEventListener("click", () => {
 
 document.querySelector("#download-png").addEventListener("click", async () => {
   await mainRenderPromise;
-  downloadPng(WEBGL_STYLES.includes(renderStyle) && !webglCanvas.hidden ? webglCanvas : canvas, `sports-face-${renderStyle.split("/").pop()}-${profile.seed}.png`);
+  const glCanvas = activeWebglCanvas();
+  downloadPng(glCanvas && !glCanvas.hidden ? glCanvas : canvas, `sports-face-${renderStyle.split("/").pop()}-${profile.seed}.png`);
   showToast("PNG preparado");
 });
 
@@ -314,6 +336,8 @@ renderStyleInput.addEventListener("change", () => {
   refresh();
   showToast([MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle)
     ? "Morph Lab activado; landmarks y FaceDNA permanecen separados"
+    : PLAYER_3D_STYLES.includes(renderStyle)
+      ? "GNM 3D Player activado: cabeza GNM oficial generada desde FaceDNA"
     : WEBGL_STYLES.includes(renderStyle)
       ? "WebGL2 opt-in activado; fallará de forma segura a GNM SVG"
     : renderStyle === TOON_RENDER_STYLE

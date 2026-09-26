@@ -1,5 +1,40 @@
 ## Unreleased — Operativa GNM
 
+- Añade la Fase 8, **GNM 3D Player** (`sports/gnm-3d-player-v1`, opt-in): un
+  generador 3D de jugadores sobre la cabeza GNM Head v3.0 oficial. Cada perfil
+  FaceDNA obtiene su propio vector oficial de identidad GNM: un prior gaussiano
+  composicional sobre `head_000..head_031` (un bloque por rasgo geométrico, de
+  modo que editar un rasgo conserva la cara) condicionado exactamente por 19
+  rasgos antropométricos medidos sobre los 68 landmarks oficiales, con objetivos
+  que salen de las etiquetas del catálogo FaceDNA. Pigmentación, apariencia,
+  edad, presentación, equipación, semilla y expresión no alteran la geometría.
+  El builder offline `tools/gnm/build_player_generator.py` (NumPy + h5py) fija
+  por hash el NPZ, los landmarks (corrección upstream `0ae8cc7` del orden del
+  contorno mandibular) y el decoder de expresiones del semantic sampler oficial
+  (evaluado en NumPy), y genera `gnm-player-generator.bin` (`6,130,704` bytes) y
+  su metadata; `validate_player_generator.py` lo valida sin dependencias y
+  `test_player_generator.py` añade 16 mutaciones fail-closed y un rebuild byte a
+  byte cuando hay entradas upstream. El renderer WebGL2 reconstruye en CPU,
+  calcula normales suaves y pinta de forma procedural piel, iris, labios, cejas,
+  barbas, pelo volumétrico, pecas y cicatriz; añade gafas ajustadas a los
+  landmarks, moño, camiseta con los colores de la equipación, presets oficiales
+  SURPRISE/HAPPY/SQUINT para las microexpresiones, vista 3/4 orbitable y
+  miniaturas 3D en la galería. Sin WebGL2 o sin `fetch` cae al renderer GNM SVG.
+  No usa texturas oficiales. Evidencia en `docs/gnm-3d-player/` y contrato en
+  `docs/ACCEPTANCE_GNM_3D_PLAYER.md`. El workflow de Pages publica el payload;
+  `tests/browser_smoke.py` cubre el estilo y acepta `CHROMIUM_PATH`.
+
+- Corrige el workflow de GitHub Pages, que fallaba en todas las ejecuciones
+  desde que el GLB canónico pasó a Git LFS: `actions/checkout` no descarga
+  objetos LFS y cuatro pruebas abortaban al leer el puntero como GLB. El nuevo
+  helper `tools/gnm/canonical_asset.py` distingue GLB materializado, puntero
+  LFS verificado (`oid`/tamaño exactos) y cualquier otro caso (falla cerrado).
+  Con puntero, las pruebas `render`, `basis`, `basis-lab` y `semantics` validan
+  los artefactos comprometidos y omiten solo la regeneración canónica con un
+  `SKIP` explícito; con el GLB materializado ejecutan todo igual que antes.
+  Añade `npm run refresh:checksums` para regenerar `SHA256SUMS.txt` de forma
+  reproducible (incluye los tres archivos del diagnóstico de bases que faltaban).
+
 - Añade visualización técnica de deformación opt-in (session state, OFF por
   defecto) en los estilos oficial neutral y Basis Lab, para hacer visibles las
   diferencias de las bases GNM sobre los materiales planos sin inventar

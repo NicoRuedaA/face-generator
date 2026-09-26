@@ -74,15 +74,15 @@ h2 { font-size: 1.45rem; letter-spacing: -0.025em; }
 }
 
 .portrait-panel { padding: 18px; align-self: start; position: sticky; top: 18px; }
-#portrait, #portrait-webgl {
+#portrait, #portrait-webgl, #portrait-gnm3d {
   display: block;
   width: 100%;
   height: auto;
   border-radius: 16px;
   background: #10151c;
 }
-#portrait-webgl { touch-action: none; cursor: grab; }
-#portrait-webgl:active { cursor: grabbing; }
+#portrait-webgl, #portrait-gnm3d { touch-action: none; cursor: grab; }
+#portrait-webgl:active, #portrait-gnm3d:active { cursor: grabbing; }
 .primary-actions, .row-actions { display: flex; flex-wrap: wrap; gap: 9px; }
 .primary-actions { margin-top: 14px; }
 .button {

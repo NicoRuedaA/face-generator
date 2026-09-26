@@ -351,7 +351,7 @@ function sha256BytesFallback(bytes) {
   return hex;
 }
 
-async function sha256Bytes(bytes) {
+export async function sha256Bytes(bytes) {
   if (globalThis.crypto?.subtle?.digest) return sha256Hex(await globalThis.crypto.subtle.digest("SHA-256", bytes));
   return sha256BytesFallback(bytes);
 }

@@ -81,6 +81,19 @@ and official NPZ SHA-256
   mapping. Geometry, basis arrays, secrets, PII, and absolute paths are not
   stored. `semanticMapping` remains `unestablished`, `runtimeBasisLoaded`
   remains `false`, and human approval is opt-in.
+- Phase 8 GNM 3D Player: `tools/gnm/work/gnm-player-generator.bin` and its
+  metadata are derived offline from the same official NPZ (32 head identity
+  directions, 19 normalized feature-gradient tails and three expression
+  presets), the official `head_sparse_68.txt` landmark definition (upstream
+  revision `0ae8cc7aa2ef3c08dbc7fd35d6772869380e7f96`, SHA-256
+  `d8b6066a87ca37c48bcf4d0834542db841709b65cb983e873fa1e441a22219d0`) and the
+  official semantic-sampler `expression_decoder_model.h5` (revision
+  `8ea2906a31aab7f8b550e33968f3c0a86051a92d`, SHA-256
+  `5eba165f8a414f73b24be96963d0a17e708c0856739ed85a19031f318dfb51e6`), all
+  Apache-2.0, under the same noncommercial authorization. Only derived numeric
+  data is redistributed (no decoder weights, no textures). Painting fields,
+  hair shells, glasses and the jersey bust are project-authored procedural
+  rendering, not official materials.
 - Phase 7B statistical validation: `tools/gnm/validate_gnm_calibration.py` and
   its empty report are offline, standard-library-only evidence. The current
   result is `insufficient_data` with no fabricated predictive metrics. It never

@@ -1,14 +1,106 @@
 #!/usr/bin/env python3
-"""Browser smoke test for default, official GNM WebGL, and Basis Lab paths."""
+"""Browser smoke test for default, official GNM WebGL, Basis Lab and GNM 3D Player paths."""
 
 from __future__ import annotations
 
+import os
+
 from playwright.sync_api import sync_playwright
+
+PLAYER_CANVAS = "#portrait-gnm3d"
+PLAYER_DIAGNOSTICS = f"document.querySelector('{PLAYER_CANVAS}').__sportsFaceWebglDiagnostics"
+
+
+def player_pixel_hash(page) -> str:
+    return page.evaluate("""() => {
+        const canvas = document.querySelector('#portrait-gnm3d');
+        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+        const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
+        gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        let hash = 2166136261;
+        for (const value of pixels) hash = Math.imul(hash ^ value, 16777619);
+        return (hash >>> 0).toString(16).padStart(8, '0');
+    }""")
+
+
+def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
+    """GNM 3D Player: diagnostics contract, camera, identity invariance, expressions, gallery."""
+    selected = page.locator("#render-style")
+    before_requests = len(asset_requests)
+    selected.select_option("sports/gnm-3d-player-v1")
+    page.wait_for_function(f"() => {{ const c = document.querySelector('{PLAYER_CANVAS}'); return (c.__sportsFaceWebglDiagnostics && !c.hidden) || !document.querySelector('#portrait').hidden; }}", timeout=60000)
+    if not page.locator(PLAYER_CANVAS).is_visible():
+        assert page.locator("#portrait").is_visible(), f"{entry}: GNM 3D Player fallback must show the 2D canvas"
+        return f"BOUNDED FALLBACK: GNM 3D Player -> 2D GNM SVG ({page.locator('#toast').text_content()!r})"
+    assert not page.locator("#portrait-webgl").is_visible(), f"{entry}: the shared WebGL canvas must stay hidden for the 3D player"
+    assert page.locator("#webgl-camera-controls").is_visible(), f"{entry}: camera controls should be visible"
+    assert page.locator("#expression-mode-field").is_visible(), f"{entry}: micro-expression selector should be visible"
+    diagnostics = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert diagnostics["renderer"] == "sports/gnm-3d-player-v1", diagnostics
+    assert diagnostics["semanticMapping"] == "measured-landmark-features-v1", diagnostics
+    assert diagnostics["officialTexturesIncluded"] is False and diagnostics["runtimeBasisLoaded"] is True, diagnostics
+    assert diagnostics["identityPriorCount"] == 32 and diagnostics["featureCount"] == 19 and diagnostics["identityCoefficientCount"] == 170, diagnostics
+    assert diagnostics["maxAbsIdentityCoefficient"] < 4.6, diagnostics
+    assert diagnostics["framebufferStatus"] == "complete", diagnostics
+    assert diagnostics["camera"] == {"yaw": 0.38, "pitch": -0.06, "distance": 1}, diagnostics
+    new_requests = asset_requests[before_requests:]
+    assert any(url.endswith("gnm-player-generator.bin") for url in new_requests) and any(url.endswith("gnm-player-generator.json") for url in new_requests), new_requests
+    # The first frame is drawn while the canvas is still hidden; take the
+    # baseline from a redraw at the visible size.
+    page.locator("#reset-webgl-camera").click()
+    page.wait_for_timeout(300)
+    neutral_hash = player_pixel_hash(page)
+
+    canvas = page.locator(PLAYER_CANVAS)
+    box = canvas.bounding_box()
+    center_x = box["x"] + box["width"] / 2
+    center_y = box["y"] + box["height"] / 2
+    page.mouse.move(center_x, center_y)
+    page.mouse.down()
+    page.mouse.move(center_x + 90, center_y - 40, steps=4)
+    page.mouse.up()
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.camera.yaw !== 0.38")
+    page.mouse.wheel(0, 240)
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.camera.distance !== 1")
+    page.locator("#reset-webgl-camera").click()
+    page.wait_for_function(f"() => {{ const camera = {PLAYER_DIAGNOSTICS}.camera; return camera.yaw === 0.38 && camera.pitch === -0.06 && camera.distance === 1; }}")
+    assert player_pixel_hash(page) == neutral_hash, "camera reset must restore the default portrait"
+
+    identity = diagnostics["identityCoefficientsHead"]
+    page.locator("#age").fill("48")
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.camera && document.querySelector('#age-value').textContent === '48'")
+    page.wait_for_timeout(400)
+    aged = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert aged["identityCoefficientsHead"] == identity, "age must not change the GNM identity"
+    nose = page.locator("select[data-feature=nose]")
+    # Index 1 is nose/wide and 2 is nose/narrow; pick whichever differs from
+    # the random starting player so the edit is never a no-op.
+    target_index = 2 if nose.input_value() == "1" else 1
+    nose.select_option(index=target_index)
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.featureTargets.noseWidth !== undefined")
+    widened = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert widened["identityCoefficientsHead"] != identity, "editing a geometric trait must change the GNM identity"
+    nose_z = widened["identityFeatureZ"]["noseWidth"]
+    assert (nose_z > 0.5) if target_index == 1 else (nose_z < -0.5), widened["identityFeatureZ"]
+    page.locator("#expression-mode").select_option("focused")
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.expression.mode === 'focused'")
+    focused = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert focused["expression"]["weights"] == {"squint": 0.42}, focused["expression"]
+    assert focused["identityCoefficientsHead"] == widened["identityCoefficientsHead"], "expressions must not change identity"
+    page.locator("#expression-mode").select_option("auto")
+    page.wait_for_function("() => [...document.querySelectorAll('.gallery-item canvas')].length === 12")
+    page.wait_for_timeout(2500)
+    painted = page.evaluate("""() => [...document.querySelectorAll('.gallery-item canvas')].filter((canvas) => {
+        const data = canvas.getContext('2d').getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data;
+        return data[3] > 0;
+    }).length""")
+    assert painted == 12, f"{entry}: 3D gallery thumbnails missing ({painted}/12)"
+    return f"PASS GNM 3D Player: identity={identity[:3]} hash={neutral_hash} gallery=12"
 
 
 def main() -> int:
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path="/usr/bin/chromium")
+        browser = playwright.chromium.launch(headless=True, executable_path=os.environ.get("CHROMIUM_PATH", "/usr/bin/chromium"))
         messages: list[str] = []
         page_errors: list[str] = []
         for entry in ("index.html", "index.module.html"):
@@ -16,7 +108,7 @@ def main() -> int:
             page = context.new_page()
             asset_requests: list[str] = []
             page.route("**/favicon.ico", lambda route: route.fulfill(status=204, body=""))
-            page.on("request", lambda request: asset_requests.append(request.url) if any(request.url.endswith(asset) for asset in ("gnm-official-head-render.glb", "gnm-official-basis-lab.bin", "gnm-official-basis-lab.json")) else None)
+            page.on("request", lambda request: asset_requests.append(request.url) if any(request.url.endswith(asset) for asset in ("gnm-official-head-render.glb", "gnm-official-basis-lab.bin", "gnm-official-basis-lab.json", "gnm-player-generator.bin", "gnm-player-generator.json")) else None)
             page.on("console", lambda message: messages.append(f"{message.type}: {message.text}"))
             page.on("pageerror", lambda error: page_errors.append(f"{entry}: {error}"))
             page.goto(f"http://127.0.0.1:8080/{entry}")
@@ -278,6 +370,7 @@ def main() -> int:
                 print(f"{entry} Basis Lab technical visualization: coefficient={coefficient_hash} checker={checker_hash} combined={combined_with_coefficient_hash} restored={basis_restored_hash}")
             else:
                 assert page.locator("#portrait").is_visible(), f"{entry}: Basis Lab fallback must show the 2D canvas"
+            print(f"{entry} {check_gnm_player(page, entry, asset_requests)}")
             print(f"PASS {entry} default renderer: Canvas 2D visible")
             print(f"{entry} {result}")
             context.close()
