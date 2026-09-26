@@ -1,0 +1,925 @@
+{
+  "camera": {
+    "distance": 1,
+    "pitch": -0.06,
+    "yaw": 0.38
+  },
+  "gallery": [
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/arched",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~3r8lf4~sp~338dey~i~m~166534~f8fafc~0du3wnb",
+      "expression": {
+        "mode": "focused",
+        "requestedMode": "auto",
+        "weights": {
+          "squint": 0.42
+        }
+      },
+      "featureTargets": {
+        "canthalTilt": -1.4,
+        "faceHeight": 0.7,
+        "jawWidth": 0.8,
+        "lipThickness": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1117,
+        "browHeight": 0.5459,
+        "canthalTilt": -0.5558,
+        "chinWidth": 0.6329,
+        "earHeight": 0.8331,
+        "earProjection": -0.2033,
+        "eyeDepth": -0.351,
+        "eyeOpening": -0.5662,
+        "eyeWidth": 0.1991,
+        "faceHeight": 0.7481,
+        "faceWidth": 0.6122,
+        "foreheadHeight": 0.4157,
+        "jawWidth": 0.9265,
+        "lipThickness": -1.1899,
+        "mouthCornerLift": 0.4732,
+        "mouthWidth": -0.1928,
+        "noseLength": 1.3336,
+        "noseProjection": 0.6547,
+        "noseWidth": 0.0447
+      },
+      "maxAbsIdentityCoefficient": 1.372059,
+      "seed": "gnm3d-001"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": "procedural-frames",
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~3vbj30~2rr~2t8rpz~n~f~0f766e~facc15~0x97mrr",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "auto",
+        "weights": {}
+      },
+      "featureTargets": {
+        "chinWidth": 0.4,
+        "earProjection": 1.6,
+        "eyeOpening": 1.4,
+        "eyeWidth": -0.3,
+        "faceHeight": -0.20000000000000007,
+        "faceWidth": 0.9,
+        "jawWidth": 0.8,
+        "mouthCornerLift": 1.4,
+        "noseWidth": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 0.3329,
+        "browHeight": 0.1828,
+        "canthalTilt": 0.9646,
+        "chinWidth": 0.2242,
+        "earHeight": -0.7312,
+        "earProjection": 1.6173,
+        "eyeDepth": -0.9555,
+        "eyeOpening": 1.1884,
+        "eyeWidth": -0.0635,
+        "faceHeight": -0.3299,
+        "faceWidth": 0.8998,
+        "foreheadHeight": -0.5166,
+        "jawWidth": 0.9047,
+        "lipThickness": -0.3584,
+        "mouthCornerLift": 1.2962,
+        "mouthWidth": -0.7719,
+        "noseLength": 0.4897,
+        "noseProjection": 0.6186,
+        "noseWidth": -1.011
+      },
+      "maxAbsIdentityCoefficient": 2.647838,
+      "seed": "gnm3d-002"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/arched",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~1u7nkr~w5~2j9610~s~n~0f766e~facc15~1g00ch2",
+      "expression": {
+        "mode": "alert",
+        "requestedMode": "auto",
+        "weights": {
+          "surprise": 0.35
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": -1.4,
+        "canthalTilt": 1.4,
+        "chinWidth": 1.9,
+        "earHeight": -1.4,
+        "faceHeight": -0.7,
+        "jawWidth": 1.7000000000000002,
+        "mouthWidth": 1.4,
+        "noseProjection": -0.6
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.6391,
+        "browHeight": -0.1978,
+        "canthalTilt": 1.6587,
+        "chinWidth": 1.2878,
+        "earHeight": -1.6864,
+        "earProjection": -0.387,
+        "eyeDepth": -1.0028,
+        "eyeOpening": -0.812,
+        "eyeWidth": 0.2755,
+        "faceHeight": 0.1587,
+        "faceWidth": 1.3892,
+        "foreheadHeight": 1.1653,
+        "jawWidth": 1.63,
+        "lipThickness": 1.2626,
+        "mouthCornerLift": 0.1798,
+        "mouthWidth": 1.0785,
+        "noseLength": -0.392,
+        "noseProjection": -0.7256,
+        "noseWidth": 1.5281
+      },
+      "maxAbsIdentityCoefficient": 3.209959,
+      "seed": "gnm3d-003"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/low",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~14l3gi~16p~299kc1~x~m~be123c~0f172a~0amoods",
+      "expression": {
+        "mode": "alert",
+        "requestedMode": "auto",
+        "weights": {
+          "surprise": 0.35
+        }
+      },
+      "featureTargets": {
+        "browHeight": -1.3,
+        "eyeOpening": -1.4,
+        "faceHeight": 0.6000000000000001,
+        "faceWidth": -0.5,
+        "jawWidth": -1.6,
+        "noseWidth": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 1.601,
+        "browHeight": -1.4492,
+        "canthalTilt": -0.3127,
+        "chinWidth": -0.9712,
+        "earHeight": 0.4011,
+        "earProjection": 0.8632,
+        "eyeDepth": 1.739,
+        "eyeOpening": -1.1418,
+        "eyeWidth": -1.9455,
+        "faceHeight": 0.5954,
+        "faceWidth": -0.6143,
+        "foreheadHeight": -0.6874,
+        "jawWidth": -1.4703,
+        "lipThickness": -2.1212,
+        "mouthCornerLift": 0.6218,
+        "mouthWidth": -0.8707,
+        "noseLength": 0.6103,
+        "noseProjection": 1.6979,
+        "noseWidth": -1.3416
+      },
+      "maxAbsIdentityCoefficient": 2.192142,
+      "seed": "gnm3d-004"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/thick",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~16uz2d~16w~1z9yn2~j~f~7e22ce~f8fafc~033n85l",
+      "expression": {
+        "mode": "alert",
+        "requestedMode": "auto",
+        "weights": {
+          "surprise": 0.35
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": -1.4,
+        "canthalTilt": 1.4,
+        "chinWidth": -1.1,
+        "earHeight": 1.4,
+        "faceHeight": -0.7,
+        "faceWidth": 0.4,
+        "jawWidth": -2,
+        "lipThickness": -1.4,
+        "noseProjection": -0.6
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.6887,
+        "browHeight": -0.0697,
+        "canthalTilt": 1.6518,
+        "chinWidth": -1.2458,
+        "earHeight": 1.4058,
+        "earProjection": -0.7375,
+        "eyeDepth": -0.7604,
+        "eyeOpening": -0.6129,
+        "eyeWidth": -1.9129,
+        "faceHeight": -0.0719,
+        "faceWidth": 0.334,
+        "foreheadHeight": 0.3336,
+        "jawWidth": -1.5309,
+        "lipThickness": -1.254,
+        "mouthCornerLift": -0.3452,
+        "mouthWidth": -2.1881,
+        "noseLength": 0.8462,
+        "noseProjection": -0.5067,
+        "noseWidth": -0.7126
+      },
+      "maxAbsIdentityCoefficient": 2.64873,
+      "seed": "gnm3d-005"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/stubble",
+        "browStyle": "brows/flat",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~3y4f02~1eg~1pacy3~o~n~be123c~0f172a~05wzlou",
+      "expression": {
+        "mode": "soft",
+        "requestedMode": "auto",
+        "weights": {
+          "happy": 0.24
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": -1.4,
+        "earHeight": -1.4,
+        "eyeOpening": -1.4,
+        "faceHeight": 2,
+        "faceWidth": -0.5,
+        "jawWidth": 1.6,
+        "lipThickness": -1.4,
+        "noseProjection": -0.6
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.4679,
+        "browHeight": 0.8548,
+        "canthalTilt": 0.5933,
+        "chinWidth": 1.304,
+        "earHeight": -1.617,
+        "earProjection": 0.5965,
+        "eyeDepth": -0.2784,
+        "eyeOpening": -1.1953,
+        "eyeWidth": -1.1099,
+        "faceHeight": 1.5493,
+        "faceWidth": -0.2574,
+        "foreheadHeight": 1.6729,
+        "jawWidth": 1.4759,
+        "lipThickness": -1.0009,
+        "mouthCornerLift": -0.8497,
+        "mouthWidth": 0.023,
+        "noseLength": 0.1837,
+        "noseProjection": -0.4796,
+        "noseWidth": 0.8363
+      },
+      "maxAbsIdentityCoefficient": 2.229288,
+      "seed": "gnm3d-006"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/thick",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~2o7bj8~so~1far94~t~m~b91c1c~f8fafc~1gotlnt",
+      "expression": {
+        "mode": "soft",
+        "requestedMode": "auto",
+        "weights": {
+          "happy": 0.24
+        }
+      },
+      "featureTargets": {
+        "chinWidth": 0.4,
+        "earHeight": -1.4,
+        "eyeOpening": -0.4,
+        "eyeWidth": 0.8,
+        "faceHeight": -0.9,
+        "faceWidth": 0.9,
+        "jawWidth": 0.8,
+        "lipThickness": 1.4,
+        "noseWidth": 1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -0.3631,
+        "browHeight": 0.6901,
+        "canthalTilt": 0.7522,
+        "chinWidth": 0.4128,
+        "earHeight": -1.8248,
+        "earProjection": 0.412,
+        "eyeDepth": -0.0099,
+        "eyeOpening": -0.2138,
+        "eyeWidth": 0.7002,
+        "faceHeight": -1.0175,
+        "faceWidth": 0.766,
+        "foreheadHeight": 1.1527,
+        "jawWidth": 1.0319,
+        "lipThickness": 1.0164,
+        "mouthCornerLift": 1.3708,
+        "mouthWidth": 0.565,
+        "noseLength": -0.0497,
+        "noseProjection": -0.4929,
+        "noseWidth": 1.0517
+      },
+      "maxAbsIdentityCoefficient": 2.588086,
+      "seed": "gnm3d-007"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/arched",
+        "bun": false,
+        "freckles": false,
+        "glasses": "procedural-frames",
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~jof0o~2yv~15b5k5~y~f~0f766e~facc15~1slbmim",
+      "expression": {
+        "mode": "soft",
+        "requestedMode": "auto",
+        "weights": {
+          "happy": 0.24
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": 1.3,
+        "canthalTilt": 1.4,
+        "earProjection": 1.6,
+        "faceHeight": -1.4,
+        "jawWidth": 0.8,
+        "noseProjection": 0.8
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 0.8478,
+        "browHeight": -1.6407,
+        "canthalTilt": 1.4175,
+        "chinWidth": -0.2741,
+        "earHeight": 1.229,
+        "earProjection": 1.4526,
+        "eyeDepth": 1.2613,
+        "eyeOpening": 0.977,
+        "eyeWidth": 0.1819,
+        "faceHeight": -1.1548,
+        "faceWidth": 0.3961,
+        "foreheadHeight": 0.4455,
+        "jawWidth": 0.8068,
+        "lipThickness": -1.9822,
+        "mouthCornerLift": 0.9477,
+        "mouthWidth": -0.4801,
+        "noseLength": -0.1044,
+        "noseProjection": 0.8068,
+        "noseWidth": -0.2138
+      },
+      "maxAbsIdentityCoefficient": 2.336687,
+      "seed": "gnm3d-008"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/short",
+        "browStyle": "brows/high",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~s4ba2~tl~vbjv6~k~n~111827~f97316~1qcjk5r",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "auto",
+        "weights": {}
+      },
+      "featureTargets": {
+        "browHeight": 1.3,
+        "chinWidth": 0.9,
+        "earHeight": 1.4,
+        "eyeOpening": -0.4,
+        "eyeWidth": 0.8,
+        "faceHeight": -0.09999999999999987,
+        "faceWidth": -0.5,
+        "jawWidth": 0.4,
+        "mouthWidth": 1.4,
+        "noseWidth": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 0.7066,
+        "browHeight": 1.0607,
+        "canthalTilt": -0.5891,
+        "chinWidth": 0.6423,
+        "earHeight": 1.29,
+        "earProjection": 0.5053,
+        "eyeDepth": -0.3738,
+        "eyeOpening": -0.4751,
+        "eyeWidth": 0.7691,
+        "faceHeight": 0.3858,
+        "faceWidth": -0.6163,
+        "foreheadHeight": 0.0926,
+        "jawWidth": 0.3485,
+        "lipThickness": -0.1864,
+        "mouthCornerLift": 0.4302,
+        "mouthWidth": 0.9235,
+        "noseLength": -0.1245,
+        "noseProjection": 1.1258,
+        "noseWidth": -0.6194
+      },
+      "maxAbsIdentityCoefficient": 1.65831,
+      "seed": "gnm3d-009"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/thick",
+        "bun": false,
+        "freckles": true,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~3xxrp5~1ah~1p77g4~p~m~f8fafc~111827~1nzi30p",
+      "expression": {
+        "mode": "focused",
+        "requestedMode": "auto",
+        "weights": {
+          "squint": 0.42
+        }
+      },
+      "featureTargets": {
+        "canthalTilt": -1.4,
+        "earHeight": -1.4,
+        "faceHeight": 0.7,
+        "faceWidth": 1.3,
+        "jawWidth": 2,
+        "lipThickness": 1.4,
+        "noseLength": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -0.2615,
+        "browHeight": 0.1053,
+        "canthalTilt": -0.6443,
+        "chinWidth": 1.8996,
+        "earHeight": -1.8003,
+        "earProjection": -0.3189,
+        "eyeDepth": -0.3571,
+        "eyeOpening": -0.9451,
+        "eyeWidth": 0.1415,
+        "faceHeight": 0.572,
+        "faceWidth": 1.4592,
+        "foreheadHeight": 0.0065,
+        "jawWidth": 2.0566,
+        "lipThickness": 0.9185,
+        "mouthCornerLift": -1.1383,
+        "mouthWidth": 1.3386,
+        "noseLength": -1.3168,
+        "noseProjection": -0.4099,
+        "noseWidth": 0.9057
+      },
+      "maxAbsIdentityCoefficient": 3.054289,
+      "seed": "gnm3d-010"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/thick",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": true
+      },
+      "code": "SF2~sports/default-v2~4kvcq5~4co~1z6t53~u~f~be123c~0f172a~1vcnrqj",
+      "expression": {
+        "mode": "focused",
+        "requestedMode": "auto",
+        "weights": {
+          "squint": 0.42
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": -1.4,
+        "chinWidth": -1.1,
+        "eyeOpening": -0.4,
+        "eyeWidth": 0.8,
+        "faceHeight": 1.4,
+        "faceWidth": 0.4,
+        "jawWidth": -2,
+        "mouthWidth": -1.4,
+        "noseProjection": -0.6
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.8542,
+        "browHeight": 0.8584,
+        "canthalTilt": 1.0913,
+        "chinWidth": -1.1722,
+        "earHeight": 0.138,
+        "earProjection": -0.6121,
+        "eyeDepth": -1.1159,
+        "eyeOpening": -0.0799,
+        "eyeWidth": 0.4524,
+        "faceHeight": 1.2482,
+        "faceWidth": 0.3009,
+        "foreheadHeight": 1.3423,
+        "jawWidth": -1.5381,
+        "lipThickness": 0.4169,
+        "mouthCornerLift": -0.1666,
+        "mouthWidth": -1.3705,
+        "noseLength": 1.4019,
+        "noseProjection": -0.3699,
+        "noseWidth": -0.0886
+      },
+      "maxAbsIdentityCoefficient": 2.946833,
+      "seed": "gnm3d-011"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/thick",
+        "bun": false,
+        "freckles": true,
+        "glasses": false,
+        "hairStyle": "hair/short-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~6bq9n5~1dt~296eu2~z~n~f8fafc~111827~0mel3lt",
+      "expression": {
+        "mode": "soft",
+        "requestedMode": "auto",
+        "weights": {
+          "happy": 0.24
+        }
+      },
+      "featureTargets": {
+        "bridgeHeight": -1.4,
+        "chinWidth": 0.9,
+        "earHeight": 1.4,
+        "eyeOpening": 1.4,
+        "eyeWidth": -0.3,
+        "faceWidth": 1.3,
+        "foreheadHeight": 1.5,
+        "jawWidth": 1,
+        "noseProjection": -0.6
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.7486,
+        "browHeight": -0.1577,
+        "canthalTilt": 3.1252,
+        "chinWidth": 0.814,
+        "earHeight": 1.3727,
+        "earProjection": 0.6751,
+        "eyeDepth": -1.1472,
+        "eyeOpening": 1.1902,
+        "eyeWidth": -0.2283,
+        "faceHeight": 0.5226,
+        "faceWidth": 1.5949,
+        "foreheadHeight": 1.4648,
+        "jawWidth": 0.9754,
+        "lipThickness": -1.1414,
+        "mouthCornerLift": -0.0633,
+        "mouthWidth": -0.5872,
+        "noseLength": 1.0068,
+        "noseProjection": -0.4877,
+        "noseWidth": 0.9207
+      },
+      "maxAbsIdentityCoefficient": 2.637437,
+      "seed": "gnm3d-012"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/stubble",
+        "browStyle": "brows/short",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~2dlcsr~1av~2j60j1~l~m~0f766e~facc15~1e3cozf",
+      "expression": {
+        "mode": "alert",
+        "requestedMode": "auto",
+        "weights": {
+          "surprise": 0.35
+        }
+      },
+      "featureTargets": {
+        "canthalTilt": 1.4,
+        "chinWidth": 1,
+        "jawWidth": 0.5,
+        "lipThickness": 1.4,
+        "noseWidth": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.1287,
+        "browHeight": -0.196,
+        "canthalTilt": 1.5341,
+        "chinWidth": 0.5585,
+        "earHeight": 0.7943,
+        "earProjection": -0.782,
+        "eyeDepth": 0.019,
+        "eyeOpening": 0.2465,
+        "eyeWidth": -0.6355,
+        "faceHeight": 0.2187,
+        "faceWidth": 0.831,
+        "foreheadHeight": 0.0966,
+        "jawWidth": 0.521,
+        "lipThickness": 0.9039,
+        "mouthCornerLift": -0.6567,
+        "mouthWidth": -0.9483,
+        "noseLength": -0.0117,
+        "noseProjection": -1.0592,
+        "noseWidth": -0.8737
+      },
+      "maxAbsIdentityCoefficient": 2.233486,
+      "seed": "gnm3d-013"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~1754hm~1dz~l8so8~q~f~111827~f97316~1tghj66",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "auto",
+        "weights": {}
+      },
+      "featureTargets": {
+        "earHeight": 1.4,
+        "eyeOpening": -1.4,
+        "faceHeight": 0.6000000000000001,
+        "faceWidth": -0.5,
+        "jawWidth": -1.6,
+        "lipThickness": 1.4,
+        "noseLength": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": 0.3058,
+        "browHeight": 0.3875,
+        "canthalTilt": -0.0232,
+        "chinWidth": -0.5141,
+        "earHeight": 1.3067,
+        "earProjection": 0.7991,
+        "eyeDepth": -0.297,
+        "eyeOpening": -1.1955,
+        "eyeWidth": -1.0681,
+        "faceHeight": 0.3507,
+        "faceWidth": -0.7846,
+        "foreheadHeight": -0.183,
+        "jawWidth": -1.2097,
+        "lipThickness": 0.8797,
+        "mouthCornerLift": -0.2241,
+        "mouthWidth": 0.1424,
+        "noseLength": -1.0177,
+        "noseProjection": -0.0806,
+        "noseWidth": -0.5267
+      },
+      "maxAbsIdentityCoefficient": 3.242288,
+      "seed": "gnm3d-014"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/high",
+        "bun": false,
+        "freckles": true,
+        "glasses": false,
+        "hairStyle": "hair/medium-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~9lmjg~w5~v8ed7~v~n~f8fafc~111827~06n6p9n",
+      "expression": {
+        "mode": "soft",
+        "requestedMode": "auto",
+        "weights": {
+          "happy": 0.24
+        }
+      },
+      "featureTargets": {
+        "browHeight": 1.3,
+        "chinWidth": 0.4,
+        "earProjection": 1.6,
+        "eyeOpening": 1.4,
+        "eyeWidth": -0.3,
+        "faceHeight": -2,
+        "faceWidth": 0.9,
+        "jawWidth": -0.8,
+        "lipThickness": -1.4
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -1.6792,
+        "browHeight": 1.1725,
+        "canthalTilt": 1.09,
+        "chinWidth": -0.1724,
+        "earHeight": -0.5584,
+        "earProjection": 1.4524,
+        "eyeDepth": -2.0126,
+        "eyeOpening": 1.2288,
+        "eyeWidth": -0.1694,
+        "faceHeight": -1.9553,
+        "faceWidth": 0.8045,
+        "foreheadHeight": 0.2586,
+        "jawWidth": -0.2093,
+        "lipThickness": -1.1417,
+        "mouthCornerLift": -0.5883,
+        "mouthWidth": -1.959,
+        "noseLength": -0.5411,
+        "noseProjection": -1.2785,
+        "noseWidth": -0.3034
+      },
+      "maxAbsIdentityCoefficient": 2.87735,
+      "seed": "gnm3d-015"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/goatee",
+        "browStyle": "brows/low",
+        "bun": false,
+        "freckles": true,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "code": "SF2~sports/default-v2~2csxl5~y0~158026~10~m~7e22ce~f8fafc~1sh9xki",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "auto",
+        "weights": {}
+      },
+      "featureTargets": {
+        "browHeight": -1.3,
+        "canthalTilt": 1.4,
+        "earProjection": 1.6,
+        "faceWidth": 1.3,
+        "jawWidth": -1,
+        "mouthWidth": -1.4,
+        "noseProjection": 0.3,
+        "noseWidth": 0.7
+      },
+      "identityFeatureZ": {
+        "bridgeHeight": -0.1924,
+        "browHeight": -1.4784,
+        "canthalTilt": 1.6156,
+        "chinWidth": -0.5721,
+        "earHeight": 1.302,
+        "earProjection": 1.5677,
+        "eyeDepth": 0.919,
+        "eyeOpening": 0.3653,
+        "eyeWidth": -1.3255,
+        "faceHeight": 0.2046,
+        "faceWidth": 1.4138,
+        "foreheadHeight": 0.8458,
+        "jawWidth": -0.85,
+        "lipThickness": -2.0095,
+        "mouthCornerLift": 0.3314,
+        "mouthWidth": -1.2252,
+        "noseLength": 1.0091,
+        "noseProjection": 0.458,
+        "noseWidth": 0.3763
+      },
+      "maxAbsIdentityCoefficient": 2.627095,
+      "seed": "gnm3d-016"
+    }
+  ],
+  "labelPairs": [
+    {
+      "feature": "noseWidth",
+      "high": {
+        "asset": "nose/wide",
+        "code": "SF2~sports/default-v2~9end1~w8~1xvnqdp~p~n~b91c1c~f8fafc~05u7xvd",
+        "realizedZ": 0.6573
+      },
+      "label": "nose/wide vs nose/narrow",
+      "low": {
+        "asset": "nose/narrow",
+        "code": "SF2~sports/default-v2~9eqit~w8~1xvnqdp~p~n~b91c1c~f8fafc~1aq9bps",
+        "realizedZ": -1.2643
+      },
+      "trait": "nose"
+    },
+    {
+      "feature": "jawWidth",
+      "high": {
+        "asset": "jaw/very-broad",
+        "code": "SF2~sports/default-v2~66adi2~16y~1b4dx8w~p~n~166534~f8fafc~058vq9r",
+        "realizedZ": 1.4541
+      },
+      "label": "jaw/very-broad vs jaw/very-narrow",
+      "low": {
+        "asset": "jaw/very-narrow",
+        "code": "SF2~sports/default-v2~5mb6qi~16y~1b4dx8w~p~n~166534~f8fafc~0y345p1",
+        "realizedZ": -1.576
+      },
+      "trait": "jaw"
+    },
+    {
+      "feature": "faceHeight",
+      "high": {
+        "asset": "ratio/very-long",
+        "code": "SF2~sports/default-v2~515zlu~13d~1qejgmx~p~n~1d4ed8~facc15~14mwqn6",
+        "realizedZ": 1.4987
+      },
+      "label": "ratio/very-long vs ratio/compact",
+      "low": {
+        "asset": "ratio/compact",
+        "code": "SF2~sports/default-v2~lchhe~13d~1qejgmx~p~n~1d4ed8~facc15~03g40r4",
+        "realizedZ": 0.1446
+      },
+      "trait": "faceProportion"
+    },
+    {
+      "feature": "lipThickness",
+      "high": {
+        "asset": "mouth/full",
+        "code": "SF2~sports/default-v2~p1o4y~wl~o7obxt~p~n~b91c1c~f8fafc~173w28e",
+        "realizedZ": 0.9367
+      },
+      "label": "mouth/full vs mouth/thin",
+      "low": {
+        "asset": "mouth/thin",
+        "code": "SF2~sports/default-v2~p2df6~wl~o7obxt~p~n~b91c1c~f8fafc~12toown",
+        "realizedZ": -1.0942
+      },
+      "trait": "mouth"
+    },
+    {
+      "feature": "eyeOpening",
+      "high": {
+        "asset": "eyes/round",
+        "code": "SF2~sports/default-v2~4fxh82~wj~z9zvu4~p~n~111827~f97316~1dojhpb",
+        "realizedZ": 1.3228
+      },
+      "label": "eyes/round vs eyes/narrow",
+      "low": {
+        "asset": "eyes/narrow",
+        "code": "SF2~sports/default-v2~4fxhbm~wj~z9zvu4~p~n~111827~f97316~1ooamfs",
+        "realizedZ": -1.1805
+      },
+      "trait": "eyes"
+    },
+    {
+      "feature": "earHeight",
+      "high": {
+        "asset": "ears/large",
+        "code": "SF2~sports/default-v2~677qxk~1hm~1p6ehg3~p~n~1d4ed8~facc15~0hhjthz",
+        "realizedZ": 1.6508
+      },
+      "label": "ears/large vs ears/small",
+      "low": {
+        "asset": "ears/small",
+        "code": "SF2~sports/default-v2~65ysrc~1hm~1p6ehg3~p~n~1d4ed8~facc15~0pjvek3",
+        "realizedZ": -1.4479
+      },
+      "trait": "earShape"
+    }
+  ],
+  "labelPairsOrdered": true,
+  "note": "Qualitative evidence rendered with WebGL2 (SwiftShader in headless CI-like environments). Pixel output depends on the GPU/driver; the manifest values are deterministic.",
+  "renderer": "sports/gnm-3d-player-v1",
+  "schema": "sports-face-gnm-3d-player-evidence/v1",
+  "tileSize": 256
+}

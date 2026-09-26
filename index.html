@@ -9,7 +9,7 @@
 <body>
   <header class="topbar">
     <div>
-      <p class="eyebrow">PROTOTIPO DE RETRATOS 2D</p>
+      <p class="eyebrow">PROTOTIPO DE RETRATOS 2D Y 3D</p>
       <h1>Sports Face MVP</h1>
     </div>
     <div class="license-pill">Fase 3 · Morph Lab · v0.4.0</div>
@@ -19,6 +19,7 @@
     <section class="portrait-panel card">
       <canvas id="portrait" width="768" height="768" aria-label="Retrato generado en Canvas 2D"></canvas>
       <canvas id="portrait-webgl" width="768" height="768" aria-label="Retrato generado con WebGL2" hidden></canvas>
+      <canvas id="portrait-gnm3d" width="768" height="768" aria-label="Retrato 3D generado con la identidad GNM oficial" hidden></canvas>
       <div id="webgl-camera-controls" class="webgl-camera-controls" hidden>
         <button id="reset-webgl-camera" class="button small" type="button">Restablecer cámara</button>
         <small>Inspección: arrastra para orbitar y usa la rueda para acercar o alejar.</small>
@@ -32,7 +33,7 @@
        <aside id="toon-attribution" class="attribution" hidden>
         <strong>Arte ToonHead</strong> de <a href="https://www.johanmelin.com" target="_blank" rel="noreferrer">Johan Melin</a>,
         <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.
-         Subconjunto modificado y neutralizado para este prototipo deportivo. Morph Lab añade landmarks y deformación local; GNM Official 3D usa materiales procedurales neutros y no incluye texturas oficiales.
+         Subconjunto modificado y neutralizado para este prototipo deportivo. Morph Lab añade landmarks y deformación local; GNM Official 3D usa materiales procedurales neutros y no incluye texturas oficiales. GNM 3D Player genera cada cabeza con la identidad GNM oficial (Apache-2.0) y pintura procedural, sin texturas oficiales.
       </aside>
     </section>
 
@@ -80,7 +81,7 @@
             <option value="soft">Relajada</option>
             <option value="focused">Concentrada</option>
           </select>
-          <small>Solo se aplica en Morph Lab; no modifica FaceDNA ni el código SF2.</small>
+          <small>Se aplica en Morph Lab y en GNM 3D Player (presets oficiales de expresión); no modifica FaceDNA ni el código SF2.</small>
         </label>
         <label id="landmark-field" class="field wide landmark-toggle" hidden>
           <span>Diagnóstico morfológico</span>

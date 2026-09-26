@@ -5,6 +5,34 @@ morphology pack may be embedded in the offline bundle and selected explicitly
 as `sports/morph-gnm-v1`; the analytic `sports/morph-v1` remains the default.
 Only the portable JSON pack crosses the browser boundary.
 
+## GNM 3D player generator (Phase 8)
+
+`sports/gnm-3d-player-v1` turns the official head into a per-player generator.
+The offline builder reads the hash-pinned official NPZ, the official sparse 68
+landmarks (upstream `0ae8cc7`, which fixes the reversed jaw anchors 2-6; the
+pinned-revision file is accepted and reordered exactly) and the official
+semantic-sampler expression decoder (a small ReLU MLP evaluated in NumPy, no
+TensorFlow):
+
+```bash
+GNM_ROOT=/path/to/GNM python3 tools/gnm/build_player_generator.py   # needs numpy + h5py
+python3 tools/gnm/validate_player_generator.py tools/gnm/work/gnm-player-generator.bin \
+  tools/gnm/work/gnm-player-generator.json \
+  --render tools/gnm/work/gnm-official-head-render.glb --license tools/gnm/work/LICENSE-GNM.txt
+python3 tools/gnm/test_player_generator.py   # validator + 16 mutations; byte-exact rebuild when inputs exist
+python3 tools/gnm/capture_player_gallery.py --url http://127.0.0.1:8080/index.module.html
+```
+
+`GNM_NPZ`, `GNM_LANDMARKS` and `GNM_EXPRESSION_DECODER` override the individual
+inputs. The payload stores the first 32 head identity directions, the
+beyond-prior "tail" of 19 normalized landmark-feature gradients (so runtime
+Gaussian conditioning is exact over all 170 head components), three official
+expression presets decoded at the latent mean (SURPRISE, HAPPY, SQUINT) and 20
+continuous uint8 appearance fields derived from official vertex groups and
+landmarks. Vectors are int16 with one float32 scale each (max error `1.5e-7` m).
+The contract is documented in
+[`docs/ACCEPTANCE_GNM_3D_PLAYER.md`](../../docs/ACCEPTANCE_GNM_3D_PLAYER.md).
+
 ## Official GNM 3D asset package
 
 The first official package is accepted for the project-owner-authorized public,

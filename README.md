@@ -4,7 +4,7 @@
 
 ![Vista previa del generador](preview.png)
 
-Sports Face MVP es un prototipo web para generar retratos reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y seis opciones de renderizado.
+Sports Face MVP es un prototipo web para generar retratos reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y ocho opciones de renderizado, entre ellas el generador 3D de jugadores `GNM 3D Player` (opt-in).
 
 **Estado:** prototipo técnico funcional, no producto de producción. La distribución abre el retrato con un bundle offline. El primer paquete 3D oficial GNM v3.0 está aceptado solo para el MVP público no comercial autorizado por `project-owner`; usa materiales procedurales neutros y no incluye el bundle completo de texturas.
 
@@ -42,9 +42,46 @@ El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2.
 | Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
 | Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
 | GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. La Fase 5 añade `neutral-procedural-components-v2`: color técnico por componente, roughness perceptual, especular, ambiente hemisférico, key/fill/rim y cavidad; no usa texturas ni afirma semántica anatómica. La visualización técnica opt-in (UV checker + wireframe) ayuda a ver la deformación sin añadir texturas. |
+| GNM 3D Player | `sports/gnm-3d-player-v1` | Generador 3D opt-in (Fase 8): cada perfil FaceDNA produce su propia cabeza GNM Head v3.0 (un vector oficial de identidad) muestreada del prior oficial y condicionada por 19 rasgos medidos sobre los 68 landmarks oficiales según las etiquetas FaceDNA (`nose/wide`, `jaw/broad`, `ratio/long`…). Añade piel, iris, labios, cejas, barba, pelo volumétrico, pecas, cicatriz, gafas, moño y camiseta procedurales, microexpresiones con presets oficiales del semantic sampler, vista 3/4 orbitable y galería 3D. Cae al renderer GNM SVG si falta WebGL2 o el payload. |
 | GNM Official Basis Lab | `sports/morph-webgl-official-basis-lab-v1` | Laboratorio técnico opt-in con payload separado de `1,843,736` bytes, 4 bases de identidad y 4 de expresión sobre `18,437` vértices. Los controles `GNM identity basis 000..003` y `GNM expression basis 000..003` están acotados a `[-0.25, 0.25]`; no son nombres anatómicos ni mapeos FaceDNA. Incluye los mismos toggles de visualización técnica que el estilo oficial. |
 
-Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA.
+Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA. GNM 3D Player usa el mismo selector con presets oficiales de expresión.
+
+### GNM 3D Player (Fase 8)
+
+`sports/gnm-3d-player-v1` convierte la cabeza GNM oficial en un generador de
+jugadores. Un builder offline (`tools/gnm/build_player_generator.py`, NumPy +
+h5py) lee el NPZ oficial fijado por hash, los 68 landmarks oficiales y el decoder
+de expresiones del semantic sampler oficial, y genera
+`tools/gnm/work/gnm-player-generator.bin` (`6,130,704` bytes) con su metadata.
+El navegador nunca ejecuta GNM:
+
+- **Identidad**: prior gaussiano composicional sobre `head_000..head_031`, con un
+  bloque por rasgo geométrico de FaceDNA (editar la nariz solo re-sortea su
+  cuota), condicionado exactamente (regla de Matheron) por objetivos en z-score
+  que salen de las etiquetas del catálogo FaceDNA. Cada jugador es un vector
+  oficial de identidad GNM reproducible offline. Pigmentación, apariencia, edad,
+  presentación, equipación, semilla y expresión no cambian la geometría.
+- **Apariencia**: 20 campos por vértice derivados de grupos oficiales y
+  landmarks guían la pintura procedural (iris/pupila, labios, cejas, barbas,
+  línea de pelo, pecas, cicatriz, cuello de la camiseta); el pelo añade una capa
+  volumétrica y las gafas se ajustan a los landmarks de cada jugador. No usa
+  texturas oficiales.
+- **Expresión**: SURPRISE, HAPPY y SQUINT decodificados del CVAE oficial en la
+  media latente; el selector de microexpresión los aplica con pesos sutiles.
+
+```bash
+npm run test:gnm-player              # modelo JS: invarianza, orden de etiquetas, reconstrucción exacta
+npm run test:gnm-player-generator    # validador stdlib + 16 mutaciones (+ rebuild con GNM_ROOT)
+npm run validate:gnm-player-generator
+GNM_ROOT=/path/to/GNM npm run build:gnm-player-generator
+```
+
+El contrato completo, la tabla de etiquetas, los criterios y los límites están en
+[`docs/ACCEPTANCE_GNM_3D_PLAYER.md`](docs/ACCEPTANCE_GNM_3D_PLAYER.md); la
+evidencia visual en [`docs/gnm-3d-player/`](docs/gnm-3d-player/).
+
+![Galería GNM 3D Player](docs/gnm-3d-player/gallery.png)
 
 La Fase 2 exporta offline la malla template retenida a
 `tools/gnm/work/head.glb`. Es un GLB geometry-only para inspección: no implementa
@@ -352,6 +389,7 @@ La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo 
 - Composición por capas con gráficos vectoriales provisionales propios y exportación PNG.
 - Envejecimiento y galería de identidades para revisar variedad.
 - Renderizado Canvas 2D, SVG intermedio para Morph Lab, WebGL2 opt-in y bundle offline reproducible.
+- Generador 3D de jugadores GNM (opt-in): identidad GNM oficial por jugador condicionada por FaceDNA, apariencia procedural, expresiones oficiales y galería 3D.
 
 ## Arquitectura y mapa de archivos
 
@@ -365,13 +403,18 @@ La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo 
 | `src/toon-head-assets.js` | Datos vectoriales del subconjunto ToonHead y assets deportivos. |
 | `src/morphology.js` | Features, familias, landmarks, selección semántica GNM y microexpresiones. |
 | `src/morph-renderer.js` | Deformación local, composición SVG y renderizado de ambos estilos Morph Lab. |
-| `src/render-router.js` | Catálogo y selección de los cinco renderizadores. |
+| `src/render-router.js` | Catálogo y selección de los ocho renderizadores. |
 | `src/webgl-renderer.js` | Renderer WebGL2 opt-in, parser GLB, textura de targets y fallback GNM SVG. |
+| `src/gnm-player-model.js` | Lógica pura del GNM 3D Player: prior composicional, condicionamiento por rasgos medidos, apariencia, expresiones, reconstrucción y medición. |
+| `src/gnm-player-renderer.js` | Renderer WebGL2 del GNM 3D Player: normales suaves, pintura procedural, pelo, gafas, camiseta, cámara, miniaturas y fallback. |
 | `src/app.js` | Interfaz, controles, galería, persistencia de preferencias y exportación. |
 | `src/app.bundle.js` | Bundle generado para abrir `index.html` directamente. |
 | `tools/gnm/` | Pipeline completamente offline, validadores, esquemas y documentación GNM. |
 | `tools/gnm/work/` | Pack canónico, candidato, mapa de vértices y artefactos generados. |
 | `tools/gnm/capture_webgl_ab.py` | Captura Playwright bounded de la comparación SVG/WebGL2. |
+| `tools/gnm/build_player_generator.py` | Builder offline del payload del GNM 3D Player (NumPy + h5py). |
+| `tools/gnm/validate_player_generator.py` | Validador stdlib del payload del GNM 3D Player. |
+| `tools/gnm/capture_player_gallery.py` | Captura Playwright de la galería y los pares de etiquetas del GNM 3D Player. |
 | `tools/gnm/validate_webgl_ab.py` | Validador stdlib-only del manifest de evidencia. |
 | `scripts/build-offline-bundle.mjs` | Inyecta el JSON portable en el bundle clásico y la entrada modular. |
 | `scripts/refresh-release-manifest.mjs` | Actualiza hashes en `docs/release-manifest-v040.json`. |
@@ -457,6 +500,8 @@ El código de este repositorio se distribuye bajo **GNU General Public License v
 Si el producto final debe ser propietario, no incorpores directamente este prototipo GPL ni sus assets licenciados de forma distinta. [`CLEAN_ROOM_SPEC.md`](CLEAN_ROOM_SPEC.md) define el comportamiento observable para una reimplementación independiente y neutral. Una separación clean-room sólida requiere que el equipo que implemente la versión final trabaje solo con esa especificación, ejemplos y requisitos visuales, sin estudiar el código fuente de este prototipo ni el código GPL de referencia. Este documento no sustituye asesoramiento jurídico.
 
 ## Próximos pasos
+
+- GNM 3D Player: validar la tabla etiqueta → rasgo con revisión humana (pipeline de calibración de la Fase 7), sustituir las aproximaciones de pelo largo/trenzas por geometría propia (hair cards) y decidir si el estilo 3D pasa a ser el predeterminado.
 
 1. Revisar visualmente los 31 landmarks provisionales contra la malla frontal y corregir el mapa de vértices.
 2. Regenerar y validar el pack GNM después de cada cambio del mapa, manteniendo la promoción explícita.
