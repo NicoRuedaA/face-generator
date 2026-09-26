@@ -1,5 +1,16 @@
 ## Unreleased — Operativa GNM
 
+- Corrige el workflow de GitHub Pages, que fallaba en todas las ejecuciones
+  desde que el GLB canónico pasó a Git LFS: `actions/checkout` no descarga
+  objetos LFS y cuatro pruebas abortaban al leer el puntero como GLB. El nuevo
+  helper `tools/gnm/canonical_asset.py` distingue GLB materializado, puntero
+  LFS verificado (`oid`/tamaño exactos) y cualquier otro caso (falla cerrado).
+  Con puntero, las pruebas `render`, `basis`, `basis-lab` y `semantics` validan
+  los artefactos comprometidos y omiten solo la regeneración canónica con un
+  `SKIP` explícito; con el GLB materializado ejecutan todo igual que antes.
+  Añade `npm run refresh:checksums` para regenerar `SHA256SUMS.txt` de forma
+  reproducible (incluye los tres archivos del diagnóstico de bases que faltaban).
+
 - Añade visualización técnica de deformación opt-in (session state, OFF por
   defecto) en los estilos oficial neutral y Basis Lab, para hacer visibles las
   diferencias de las bases GNM sobre los materiales planos sin inventar

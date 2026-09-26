@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 
+from canonical_asset import LFS_POINTER, canonical_glb_status, skip_message
 
 ROOT = Path(__file__).resolve().parents[2]
 DIAGNOSTIC = ROOT / "tools/gnm/diagnose_official_gnm_basis.py"
@@ -35,17 +36,23 @@ def assert_no_absolute_paths(value: object) -> None:
 
 
 def main() -> int:
-    with tempfile.TemporaryDirectory(prefix="gnm-basis-diagnostic-") as temporary:
-        first = Path(temporary) / "first.json"
-        second = Path(temporary) / "second.json"
-        for output in (first, second):
-            result = run(sys.executable, str(DIAGNOSTIC), "--output", str(output))
-            if result.returncode:
-                raise AssertionError(f"diagnostic failed:\n{result.stdout}\n{result.stderr}")
-        assert first.read_bytes() == second.read_bytes(), "diagnostic output is not deterministic"
-        generated = json.loads(first.read_text(encoding="utf-8"))
     committed = json.loads(REPORT.read_text(encoding="utf-8"))
-    assert generated == committed, "committed diagnostic report is stale"
+    regenerate = canonical_glb_status() != LFS_POINTER
+    if regenerate:
+        with tempfile.TemporaryDirectory(prefix="gnm-basis-diagnostic-") as temporary:
+            first = Path(temporary) / "first.json"
+            second = Path(temporary) / "second.json"
+            for output in (first, second):
+                result = run(sys.executable, str(DIAGNOSTIC), "--output", str(output))
+                if result.returncode:
+                    raise AssertionError(f"diagnostic failed:\n{result.stdout}\n{result.stderr}")
+            assert first.read_bytes() == second.read_bytes(), "diagnostic output is not deterministic"
+            generated = json.loads(first.read_text(encoding="utf-8"))
+        assert generated == committed, "committed diagnostic report is stale"
+    else:
+        # Without the LFS object the committed report is still checked against
+        # every invariant below; only regeneration/determinism is skipped.
+        generated = committed
     assert generated["schema"] == "sports-face-gnm-official-basis-diagnostic/v1"
     assert generated["dimensions"] == {"vertexCount": 17821, "identityCount": 253, "expressionCount": 383}
     assert len(generated["names"]["identity"]) == 253
@@ -74,6 +81,9 @@ def main() -> int:
     assert render_metadata["basisIncluded"] is False
     runtime_source = (ROOT / "src/webgl-renderer.js").read_text(encoding="utf-8")
     assert f'WEBGL_OFFICIAL_ASSET_URL = "{RUNTIME_URL}"' in runtime_source
+    if not regenerate:
+        print(skip_message("official GNM basis tests", "committed report dimensions/names, reconstruction flags, source mappings, canonical hash, render-only boundary, runtime URL"))
+        return 0
     print("PASS official GNM basis tests: deterministic report, dimensions/names, finite float32 payloads, reconstruction, source mappings, canonical hash, render-only boundary, runtime URL")
     return 0
 

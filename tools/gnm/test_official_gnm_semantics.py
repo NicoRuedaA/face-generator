@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 
+from canonical_asset import LFS_POINTER, canonical_glb_status, skip_message
 
 ROOT = Path(__file__).resolve().parents[2]
 ANALYZER = ROOT / "tools/gnm/analyze_official_gnm_semantics.py"
@@ -66,28 +67,36 @@ def mutate_accessor_byte_length(directory: Path) -> Path:
 
 def main() -> int:
     before = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in FORBIDDEN_FILES}
-    with tempfile.TemporaryDirectory(prefix="gnm-semantic-evidence-", dir=ROOT) as temporary:
-        first = Path(temporary) / "first.json"
-        second = Path(temporary) / "second.json"
-        simulated_git = Path(temporary) / "git"
-        simulated_git.write_text("#!/bin/sh\nprintf '%s\\n' ffffffffffffffffffffffffffffffffffffffff\n", encoding="utf-8")
-        simulated_git.chmod(0o755)
-        simulated_head_env = {**os.environ, "PATH": f"{temporary}{os.pathsep}{os.environ['PATH']}"}
-        for output in (first, second):
-            result = run(output)
-            assert result.returncode == 0, f"analysis failed:\n{result.stdout}\n{result.stderr}"
-        assert first.read_bytes() == second.read_bytes(), "semantic evidence is not deterministic"
-        simulated = Path(temporary) / "simulated-post-commit.json"
-        result = run(simulated, simulated_head_env)
-        assert result.returncode == 0, f"simulated post-commit analysis failed:\n{result.stdout}\n{result.stderr}"
-        assert simulated.read_bytes() == first.read_bytes(), "report changed when simulated live HEAD changed"
-        generated = json.loads(first.read_text(encoding="utf-8"))
-        malformed_glb = mutate_accessor_byte_length(Path(temporary))
-        malformed_report = Path(temporary) / "malformed.json"
-        result = run_with_args(malformed_report, "--canonical", str(malformed_glb))
-        assert result.returncode != 0, "malformed accessor metadata unexpectedly passed"
     committed = json.loads(REPORT.read_text(encoding="utf-8"))
-    assert generated == committed, "committed semantic evidence report is stale"
+    regenerate = canonical_glb_status() != LFS_POINTER
+    if regenerate:
+        with tempfile.TemporaryDirectory(prefix="gnm-semantic-evidence-", dir=ROOT) as temporary:
+            first = Path(temporary) / "first.json"
+            second = Path(temporary) / "second.json"
+            simulated_git = Path(temporary) / "git"
+            simulated_git.write_text("#!/bin/sh\nprintf '%s\\n' ffffffffffffffffffffffffffffffffffffffff\n", encoding="utf-8")
+            simulated_git.chmod(0o755)
+            simulated_head_env = {**os.environ, "PATH": f"{temporary}{os.pathsep}{os.environ['PATH']}"}
+            for output in (first, second):
+                result = run(output)
+                assert result.returncode == 0, f"analysis failed:\n{result.stdout}\n{result.stderr}"
+            assert first.read_bytes() == second.read_bytes(), "semantic evidence is not deterministic"
+            simulated = Path(temporary) / "simulated-post-commit.json"
+            result = run(simulated, simulated_head_env)
+            assert result.returncode == 0, f"simulated post-commit analysis failed:\n{result.stdout}\n{result.stderr}"
+            assert simulated.read_bytes() == first.read_bytes(), "report changed when simulated live HEAD changed"
+            generated = json.loads(first.read_text(encoding="utf-8"))
+            malformed_glb = mutate_accessor_byte_length(Path(temporary))
+            malformed_report = Path(temporary) / "malformed.json"
+            result = run_with_args(malformed_report, "--canonical", str(malformed_glb))
+            assert result.returncode != 0, "malformed accessor metadata unexpectedly passed"
+        assert generated == committed, "committed semantic evidence report is stale"
+    else:
+        # Without the LFS object the committed report is still checked against
+        # every invariant below; only regeneration/determinism is skipped.
+        generated = committed
+        for key, path in (("facedna", "src/face-model.js"), ("morphology", "src/morphology.js")):
+            assert committed["source"]["files"][key]["sha256"] == hashlib.sha256((ROOT / path).read_bytes()).hexdigest(), f"committed semantic evidence is stale for {path}"
     assert generated["schema"] == "sports-face-gnm-semantic-evidence/v1"
     assert generated["semanticMapping"] == "unestablished"
     assert generated["runtimeBasisLoaded"] is False
@@ -137,6 +146,9 @@ def main() -> int:
     assert_no_absolute_paths(generated)
     after = {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in FORBIDDEN_FILES}
     assert before == after, "analysis changed forbidden runtime/asset files"
+    if not regenerate:
+        print(skip_message("official GNM semantic evidence", "committed report hash, precision/size policy, overlap/ID validation, catalog/status coverage, FaceDNA/morphology source hashes"))
+        return 0
     print("PASS official GNM semantic evidence: deterministic report, malformed accessor rejection, overlap/ID validation, precision/size policy, catalog/status coverage, forbidden-file hashes")
     return 0
 

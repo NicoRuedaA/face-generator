@@ -28,6 +28,8 @@ Abre [http://localhost:8080/index.module.html](http://localhost:8080/index.modul
 
 El workflow de GitHub Pages ejecuta `npm test` antes de preparar y publicar el sitio estático en cada push a `main` o mediante ejecución manual. Después de que termine el workflow, la URL pública estará disponible en [GitHub Pages](https://nicoruedaa.github.io/sports-face-mvp/); no se considera publicada hasta completar esa ejecución.
 
+El checkout de CI no descarga objetos Git LFS, así que `tools/gnm/work/gnm-official-head.glb` llega como puntero. Las cuatro pruebas que regeneran evidencia desde ese GLB canónico (`render`, `basis`, `basis-lab` y `semantics`) verifican que el puntero referencia exactamente el `oid`/tamaño registrados, siguen validando los artefactos comprometidos y solo omiten la regeneración con un mensaje `SKIP` explícito. En local, `git lfs pull` materializa el GLB y activa las comprobaciones completas; la regeneración byte a byte de esos reportes requiere Python 3.12 o superior (el `sum()` de 3.11 redondea distinto el último dígito).
+
 ## Renderizadores
 
 El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2. La opción GNM es explícita: selecciona `Sports Morph Lab GNM v1` (`sports/morph-gnm-v1`) cuando quieras probar el pack portable.
@@ -385,8 +387,11 @@ Requisitos de desarrollo: un navegador moderno, Node.js para las pruebas/builds 
 npm test
 npm run build:offline
 npm run refresh:release
+npm run refresh:checksums
 sha256sum -c SHA256SUMS.txt
 ```
+
+`npm run refresh:checksums` recalcula `SHA256SUMS.txt` para todos los archivos versionados (conserva el orden existente e inserta los nuevos). Para un puntero Git LFS registra el `oid` del objeto real, por lo que la comprobación completa pasa cuando el GLB canónico está materializado.
 
 `npm test` cubre el modelo FaceDNA, el baseline congelado, Toon Polish, Morph Lab y los validadores del pipeline GNM. Para inspeccionar los comandos que el orquestador ejecutaría sin instalar GNM ni modificar archivos:
 

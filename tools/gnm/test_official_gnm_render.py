@@ -9,6 +9,7 @@ import struct
 import subprocess
 import sys
 
+from canonical_asset import LFS_POINTER, canonical_glb_status, skip_message
 from optimize_official_gnm_glb import COMPONENTS, read_glb, accessor_bytes
 
 
@@ -40,14 +41,18 @@ def main() -> int:
     result = run(sys.executable, str(VALIDATOR), str(RENDER), str(METADATA), str(MANIFEST), "--license", str(LICENSE))
     if result.returncode:
         raise AssertionError(f"render validator failed:\n{result.stdout}\n{result.stderr}")
-    canonical_document, canonical_binary = read_glb(CANONICAL)
     render_document, render_binary = read_glb(RENDER)
-    canonical_primitives = canonical_document["meshes"][0]["primitives"]
     render_primitives = render_document["meshes"][0]["primitives"]
     assert [p["extras"]["componentName"] for p in render_primitives] == list(COMPONENTS)
     metadata = json.loads(METADATA.read_text(encoding="utf-8"))
     assert metadata["lossless"]["lossyConversion"] is False
     assert metadata["lossless"]["quantization"] == "none"
+    assert "basis" not in render_document["extras"]["sportsFaceGnmOfficial"]
+    if canonical_glb_status(CANONICAL) == LFS_POINTER:
+        print(skip_message("official GNM render tests", "render validator, six components, basis omitted, no quantization"))
+        return 0
+    canonical_document, canonical_binary = read_glb(CANONICAL)
+    canonical_primitives = canonical_document["meshes"][0]["primitives"]
     for component, canonical_primitive, render_primitive in zip(COMPONENTS, canonical_primitives, render_primitives):
         canonical_positions, canonical_uvs, canonical_indices = decoded(canonical_document, canonical_binary, canonical_primitive)
         render_positions, render_uvs, render_indices = decoded(render_document, render_binary, render_primitive)
@@ -57,7 +62,6 @@ def main() -> int:
         assert reconstructed_uvs == [canonical_uvs[index] for index in canonical_indices], component
         assert len(canonical_indices) == len(render_indices)
         assert len(canonical_indices) // 3 == metadata["geometry"]["componentTriangleCounts"][component]
-    assert "basis" not in render_document["extras"]["sportsFaceGnmOfficial"]
     print("PASS official GNM render tests: exact decoded POSITION/UV triangle equality, index remap, triangle counts, six components, basis omitted, no quantization")
     return 0
 
