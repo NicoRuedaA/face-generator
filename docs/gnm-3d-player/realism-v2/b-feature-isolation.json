@@ -1,0 +1,250 @@
+{
+  "entrypoint": "index.module.html",
+  "results": [
+    {
+      "expression": "neutral",
+      "feature": "brows",
+      "value": 7,
+      "pixels": {
+        "changed": 1578,
+        "total": 248004,
+        "fraction": 0.006362800599990323,
+        "max": 94,
+        "bounds": [
+          136,
+          145,
+          282,
+          237
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "freckles",
+      "value": 1,
+      "pixels": {
+        "changed": 1880,
+        "total": 248004,
+        "fraction": 0.007580522894792019,
+        "max": 48,
+        "bounds": [
+          133,
+          172,
+          309,
+          262
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "eyeColor",
+      "value": 2,
+      "pixels": {
+        "changed": 254,
+        "total": 248004,
+        "fraction": 0.0010241770294027515,
+        "max": 166,
+        "bounds": [
+          154,
+          171,
+          265,
+          189
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "eyes",
+      "value": 3,
+      "pixels": {
+        "changed": 4247,
+        "total": 248004,
+        "fraction": 0.017124723794777502,
+        "max": 172,
+        "bounds": [
+          136,
+          151,
+          289,
+          209
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "mouth",
+      "value": 3,
+      "pixels": {
+        "changed": 4234,
+        "total": 248004,
+        "fraction": 0.017072305285398624,
+        "max": 80,
+        "bounds": [
+          154,
+          231,
+          254,
+          315
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "earShape",
+      "value": 3,
+      "pixels": {
+        "changed": 4181,
+        "total": 248004,
+        "fraction": 0.016858599054853953,
+        "max": 154,
+        "bounds": [
+          310,
+          149,
+          376,
+          373
+        ]
+      }
+    },
+    {
+      "expression": "neutral",
+      "feature": "nose",
+      "value": 1,
+      "pixels": {
+        "changed": 5794,
+        "total": 248004,
+        "fraction": 0.02336252641086434,
+        "max": 174,
+        "bounds": [
+          146,
+          156,
+          273,
+          266
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "brows",
+      "value": 7,
+      "pixels": {
+        "changed": 1601,
+        "total": 248004,
+        "fraction": 0.006455541039660651,
+        "max": 97,
+        "bounds": [
+          136,
+          143,
+          282,
+          276
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "freckles",
+      "value": 1,
+      "pixels": {
+        "changed": 1902,
+        "total": 248004,
+        "fraction": 0.007669231141433202,
+        "max": 50,
+        "bounds": [
+          133,
+          172,
+          309,
+          263
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "eyeColor",
+      "value": 2,
+      "pixels": {
+        "changed": 263,
+        "total": 248004,
+        "fraction": 0.0010604667666650539,
+        "max": 165,
+        "bounds": [
+          154,
+          171,
+          265,
+          189
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "eyes",
+      "value": 3,
+      "pixels": {
+        "changed": 4345,
+        "total": 248004,
+        "fraction": 0.01751987871163368,
+        "max": 170,
+        "bounds": [
+          137,
+          149,
+          287,
+          209
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "mouth",
+      "value": 3,
+      "pixels": {
+        "changed": 4409,
+        "total": 248004,
+        "fraction": 0.017777939065498943,
+        "max": 149,
+        "bounds": [
+          154,
+          231,
+          317,
+          390
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "earShape",
+      "value": 3,
+      "pixels": {
+        "changed": 4180,
+        "total": 248004,
+        "fraction": 0.01685456686182481,
+        "max": 154,
+        "bounds": [
+          310,
+          149,
+          376,
+          373
+        ]
+      }
+    },
+    {
+      "expression": "auto",
+      "feature": "nose",
+      "value": 1,
+      "pixels": {
+        "changed": 5855,
+        "total": 248004,
+        "fraction": 0.023608490185642168,
+        "max": 173,
+        "bounds": [
+          146,
+          156,
+          285,
+          278
+        ]
+      }
+    }
+  ],
+  "catalogs": {
+    "hair": 12,
+    "beard": 6,
+    "brows": 8
+  },
+  "mobileWidth": 390,
+  "errors": []
+}

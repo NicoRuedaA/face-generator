@@ -2,48 +2,33 @@
  * Sports Face GNM 3D player model (Phase 8)
  * SPDX-License-Identifier: GPL-2.0-only
  *
- * DOM/WebGL-free logic for the opt-in GNM 3D player generator. It turns a
+ * DOM/WebGL-free logic for the GNM 3D player generator. It turns a
  * FaceDNA profile into official GNM Head v3.0 identity coefficients, an
  * appearance description and official expression preset weights, and
  * reconstructs vertices from the offline payload built by
  * tools/gnm/build_player_generator.py. GNM itself never runs here.
  *
- * Identity geometry depends only on the geometric FaceDNA identity traits:
- * - a trait-keyed compositional unit Gaussian prior over the first official
- *   head components (each trait value seeds one block, weighted by a variance
- *   share), so editing one trait keeps most of the face;
- * - exact Gaussian conditioning on landmark-measured anthropometric features
- *   whose targets come from the FaceDNA catalog labels (e.g. nose/wide).
- * Pigmentation, appearance, age, presentation, kit, seed and expression never
- * change the identity coefficients.
+ * Mapping v2 separates the seeded broad head identity from compact-support
+ * feature edits. Cosmetic traits never enter the global prior or conditioning.
+ * Local edits reuse official GNM directions, blended only inside their region.
  */
 
 import { getFaceValues, hashSeed, Randomizer } from "./face-model.js";
-import { deriveMicroExpressionProfile } from "./morphology.js";
+import { deriveMicroExpressionProfile } from "./player-expression.js";
 
 export const GNM_PLAYER_RENDER_STYLE = "sports/gnm-3d-player-v1";
 export const GNM_PLAYER_PAYLOAD_URL = "./tools/gnm/work/gnm-player-generator.bin";
 export const GNM_PLAYER_METADATA_URL = "./tools/gnm/work/gnm-player-generator.json";
 export const GNM_PLAYER_SCHEMA = "sports-face-gnm-player-generator/v1";
-export const GNM_PLAYER_MAPPING_VERSION = "gnm-player-mapping-v1";
+export const GNM_PLAYER_MAPPING_VERSION = "gnm-player-mapping-v2-local";
 export const GNM_PLAYER_MAX_BYTES = 6_815_744;
 export const GNM_PLAYER_HEADER_BYTES = 64;
 export const GNM_PLAYER_PRIOR_CLAMP = 3;
 export const GNM_PLAYER_TARGET_CLAMP = 2;
 export const GNM_PLAYER_TARGET_TAU = 0.3;
 
-/** Variance share of each geometric identity trait in the compositional prior. */
-export const GNM_PLAYER_PRIOR_SHARES = Object.freeze({
-  head: 0.24,
-  jaw: 0.14,
-  faceProportion: 0.14,
-  nose: 0.12,
-  eyes: 0.10,
-  mouth: 0.10,
-  brows: 0.08,
-  earShape: 0.08,
-});
-export const GNM_PLAYER_GEOMETRIC_TRAITS = Object.freeze(Object.keys(GNM_PLAYER_PRIOR_SHARES));
+/** Labels supported by the geometry/grooming mapping; IDs retain their SF2 layout. */
+export const GNM_PLAYER_GEOMETRIC_TRAITS = Object.freeze(["head", "jaw", "faceProportion", "nose", "eyes", "mouth", "brows", "earShape"]);
 
 const target = (asset, targets = {}) => Object.freeze({ asset, targets: Object.freeze(targets) });
 
@@ -76,8 +61,8 @@ export const GNM_PLAYER_LABEL_TARGETS = Object.freeze({
     target("brows/thick"),
     target("brows/short"),
     target("brows/angular"),
-    target("brows/low", { browHeight: -1.3 }),
-    target("brows/high", { browHeight: 1.3 }),
+    target("brows/low"),
+    target("brows/high"),
   ]),
   nose: Object.freeze([
     target("nose/straight"),
@@ -144,19 +129,22 @@ const GREY_HAIR = "#bdbab3";
 
 /** Hair style parameters (mm on the scalp field). */
 export const GNM_PLAYER_HAIR_STYLES = Object.freeze([
-  Object.freeze({ asset: "hair/short-01", hairline: 0, thickness: 3.5, top: 2.5, fade: 0.0, back: 0, texture: 0.25, pattern: "plain" }),
-  Object.freeze({ asset: "hair/short-02", hairline: -2, thickness: 4.5, top: 5, fade: 0.15, back: 0, texture: 0.3, pattern: "plain" }),
-  Object.freeze({ asset: "hair/short-03", hairline: 2, thickness: 2.5, top: 1.5, fade: 0.35, back: 2, texture: 0.2, pattern: "plain" }),
-  Object.freeze({ asset: "hair/short-04", hairline: 0, thickness: 5, top: 7, fade: 0.25, back: 0, texture: 0.45, pattern: "plain" }),
+  Object.freeze({ asset: "hair/short-01", hairline: 0, thickness: 0.8, top: 0.4, fade: 0.0, back: 0, texture: 0.25, pattern: "plain" }),
+  Object.freeze({ asset: "hair/short-02", hairline: -2, thickness: 2, top: 11, fade: 0.8, back: 0, texture: 0.3, pattern: "plain" }),
+  Object.freeze({ asset: "hair/short-03", hairline: -8, thickness: 3, top: 4, fade: 0.35, back: 2, texture: 0.2, pattern: "plain" }),
+  Object.freeze({ asset: "hair/short-04", hairline: 0, thickness: 3, top: 27, fade: 0.85, back: 3, texture: 0.4, pattern: "side-part" }),
   Object.freeze({ asset: "hair/medium-01", hairline: -3, thickness: 9, top: 8, fade: 0.0, back: -12, texture: 0.35, pattern: "plain" }),
-  Object.freeze({ asset: "hair/medium-02", hairline: -4, thickness: 11, top: 10, fade: 0.0, back: -18, texture: 0.4, pattern: "plain" }),
-  Object.freeze({ asset: "hair/curly-01", hairline: -3, thickness: 13, top: 13, fade: 0.0, back: -8, texture: 1.0, pattern: "curly" }),
+  Object.freeze({ asset: "hair/medium-02", hairline: -4, thickness: 11, top: 19, fade: 0.0, back: -18, texture: 0.4, pattern: "center-part" }),
+  Object.freeze({ asset: "hair/curly-01", hairline: -3, thickness: 16, top: 20, fade: 0.0, back: -8, texture: 1.0, pattern: "curly" }),
   Object.freeze({ asset: "hair/long-01", hairline: -3, thickness: 12, top: 9, fade: 0.0, back: -42, texture: 0.4, pattern: "plain" }),
   Object.freeze({ asset: "hair/long-02", hairline: -4, thickness: 14, top: 10, fade: 0.0, back: -54, texture: 0.45, pattern: "plain" }),
-  Object.freeze({ asset: "hair/fade-01", hairline: 0, thickness: 5, top: 6, fade: 1.0, back: 4, texture: 0.3, pattern: "plain" }),
+  Object.freeze({ asset: "hair/fade-01", hairline: 0, thickness: 1.5, top: 19, fade: 1.0, back: 4, texture: 0.3, pattern: "plain" }),
   Object.freeze({ asset: "hair/braids-01", hairline: -1, thickness: 6, top: 4, fade: 0.0, back: -16, texture: 0.5, pattern: "braids" }),
   Object.freeze({ asset: "hair/bun-01", hairline: -1, thickness: 4, top: 3, fade: 0.0, back: -6, texture: 0.3, pattern: "bun" }),
 ]);
+
+/** Session-only prototype: never append to the seeded FaceDNA catalog. */
+export const GNM_PLAYER_SIDE_PART = Object.freeze({ asset: "hair/prototype-side-part", hairline: 0, thickness: 3, top: 27, fade: 0.85, back: 3, texture: 0.4, pattern: "side-part" });
 
 /** Beard style parameters (0 = none). */
 export const GNM_PLAYER_BEARD_STYLES = Object.freeze([
@@ -168,16 +156,16 @@ export const GNM_PLAYER_BEARD_STYLES = Object.freeze([
   Object.freeze({ asset: "beard/moustache", full: 0, moustache: 1, goatee: 0, density: 0.9, reach: 0 }),
 ]);
 
-/** Painted eyebrow shapes on the (browT, browD) field. */
+/** Eyebrow shapes on the official (browT, browD) fields: where the strand brows root (see gnm-player-facial-hair.js). */
 export const GNM_PLAYER_BROW_STYLES = Object.freeze([
   Object.freeze({ asset: "brows/soft", thickness: 5.0, arch: 1.6, peak: 0.55, length: 1.0, density: 0.8 }),
   Object.freeze({ asset: "brows/flat", thickness: 5.0, arch: 0.2, peak: 0.55, length: 1.0, density: 0.85 }),
   Object.freeze({ asset: "brows/arched", thickness: 4.4, arch: 3.6, peak: 0.55, length: 1.0, density: 0.85 }),
   Object.freeze({ asset: "brows/thick", thickness: 7.5, arch: 1.4, peak: 0.55, length: 1.05, density: 0.95 }),
   Object.freeze({ asset: "brows/short", thickness: 5.0, arch: 1.0, peak: 0.5, length: 0.75, density: 0.85 }),
-  Object.freeze({ asset: "brows/angular", thickness: 5.0, arch: 3.2, peak: 0.68, length: 1.0, density: 0.9 }),
-  Object.freeze({ asset: "brows/low", thickness: 5.2, arch: 1.2, peak: 0.55, length: 1.0, density: 0.85 }),
-  Object.freeze({ asset: "brows/high", thickness: 4.8, arch: 2.0, peak: 0.55, length: 1.0, density: 0.8 }),
+  Object.freeze({ asset: "brows/angular", angular: true, thickness: 5.0, arch: 3.2, peak: 0.68, length: 1.0, density: 0.9 }),
+  Object.freeze({ asset: "brows/low", offset: -3, thickness: 5.2, arch: 1.2, peak: 0.55, length: 1.0, density: 0.85 }),
+  Object.freeze({ asset: "brows/high", offset: 3, thickness: 4.8, arch: 2.0, peak: 0.55, length: 1.0, density: 0.8 }),
 ]);
 
 function fail(message) { throw new Error(message); }
@@ -212,16 +200,11 @@ export function gnmPlayerFeatureTargets(profile) {
   };
 }
 
-/** Trait-keyed compositional unit Gaussian prior over the first `count` head components. */
+/** Seed-stable unit Gaussian prior over the first `count` head components. */
 export function gnmPlayerPrior(profile, count) {
-  const values = getFaceValues(profile);
   const prior = new Float64Array(count);
-  for (const trait of GNM_PLAYER_GEOMETRIC_TRAITS) {
-    const weight = Math.sqrt(GNM_PLAYER_PRIOR_SHARES[trait]);
-    const randomizer = new Randomizer(hashSeed(`gnm-player:prior:${trait}:${values[trait]}`));
-    for (let index = 0; index < count; index += 1) prior[index] += weight * irwinHall(randomizer);
-  }
-  for (let index = 0; index < count; index += 1) prior[index] = clamp(prior[index], -GNM_PLAYER_PRIOR_CLAMP, GNM_PLAYER_PRIOR_CLAMP);
+  const randomizer = new Randomizer(hashSeed(`gnm-player:base:${profile.seed >>> 0}`));
+  for (let index = 0; index < count; index += 1) prior[index] = clamp(irwinHall(randomizer), -GNM_PLAYER_PRIOR_CLAMP, GNM_PLAYER_PRIOR_CLAMP);
   return prior;
 }
 
@@ -255,15 +238,14 @@ function choleskySolve(matrix, size, rhs) {
 }
 
 /**
- * Sample the official GNM identity for a profile: compositional prior on the
+ * Condition the official GNM identity for a profile: stable seeded prior on the
  * first K head components, then Matheron conditioning on the label targets.
  * Returns the full 170-coefficient head identity vector plus runtime weights.
  */
-export function sampleGnmPlayerIdentity(profile, model) {
+function sampleConditionedIdentity(profile, model, targets, sources) {
   const priorCount = model.priorCount;
   const headCount = model.headIdentityCount;
   const prior = gnmPlayerPrior(profile, priorCount);
-  const { targets, sources } = gnmPlayerFeatureTargets(profile);
   const active = Object.keys(targets).map((feature) => {
     const index = model.featureIndex.get(feature);
     if (index === undefined) fail(`Unknown GNM player feature ${feature}`);
@@ -308,6 +290,41 @@ export function sampleGnmPlayerIdentity(profile, model) {
   return { prior, coefficients, featureWeights, targets, sources, realizedZ: realized, maxAbsCoefficient };
 }
 
+/** Keep broad head identity separate from independently editable anatomical regions. */
+export function sampleGnmPlayerIdentity(profile, model) {
+  const values = getFaceValues(profile);
+  const targets = {}, sources = {};
+  for (const trait of ["head", "jaw", "faceProportion"]) {
+    for (const [feature, value] of Object.entries(GNM_PLAYER_LABEL_TARGETS[trait][values[trait]].targets)) {
+      targets[feature] = clamp((targets[feature] || 0) + value, -GNM_PLAYER_TARGET_CLAMP, GNM_PLAYER_TARGET_CLAMP);
+      (sources[feature] ||= []).push(`${trait}:${values[trait]}`);
+    }
+  }
+  const base = sampleConditionedIdentity(profile, model, targets, sources);
+  base.localEdits = {};
+  for (const trait of ["eyes", "nose", "mouth", "earShape"]) {
+    const local = GNM_PLAYER_LABEL_TARGETS[trait][values[trait]].targets;
+    if (Object.keys(local).length === 0) continue;
+    const localSources = Object.fromEntries(Object.keys(local).map(key => [key, [`${trait}:${values[trait]}`]]));
+    base.localEdits[trait] = sampleConditionedIdentity(profile, model, { ...targets, ...local }, { ...sources, ...localSources });
+  }
+  const labels = gnmPlayerFeatureTargets(profile);
+  base.targets = labels.targets;
+  base.sources = labels.sources;
+  return base;
+}
+
+/** Compact support in template space: changing one region cannot move the skull or collar. */
+export function gnmPlayerLocalMask(trait, position) {
+  const [x, y, z] = position;
+  const box = (dx, dy, dz) => (1 - smoothstep(0.68, 1, Math.abs(dx))) * (1 - smoothstep(0.68, 1, Math.abs(dy))) * (1 - smoothstep(0.68, 1, Math.abs(dz)));
+  if (trait === "eyes") return box((Math.abs(x) - 0.0311) / 0.025, (y - 0.2995) / 0.021, (z - 0.108) / 0.04);
+  if (trait === "nose") return box(x / 0.034, (y - 0.280) / 0.040, (z - 0.132) / 0.04);
+  if (trait === "mouth") return box(x / 0.041, (y - 0.231) / 0.031, (z - 0.119) / 0.046);
+  if (trait === "earShape") return box((Math.abs(x) - 0.084) / 0.026, (y - 0.271) / 0.044, (z - 0.018) / 0.038);
+  return 0;
+}
+
 /** Resolve the shared micro-expression mode to official GNM preset weights. */
 export function gnmPlayerExpression(profile, expressionMode = "auto") {
   const micro = deriveMicroExpressionProfile(profile, expressionMode);
@@ -321,10 +338,11 @@ function hexToRgb(value) {
 function mixRgb(a, b, t) { return a.map((value, index) => value + (b[index] - value) * t); }
 
 /** Appearance for the 3D player: pigments, painted styles and age effects. */
-export function gnmPlayerAppearance(profile) {
+export function gnmPlayerAppearance(profile, options = {}) {
+  if (options.hairstylePrototype !== undefined && !["original", "side-part"].includes(options.hairstylePrototype)) throw new Error("Unsupported hairstyle prototype");
   const values = getFaceValues(profile);
   const age = profile.age;
-  const skinJitter = new Randomizer(hashSeed(`gnm-player:skin:${values.skin}:${profile.identityBits >>> 0}`));
+  const skinJitter = new Randomizer(hashSeed(`gnm-player:skin:${values.skin}:${profile.seed >>> 0}`));
   const skinBase = hexToRgb(GNM_PLAYER_SKIN_TONES[values.skin]);
   const tint = 1 + (skinJitter.nextFloat() - 0.5) * 0.06;
   const warmth = (skinJitter.nextFloat() - 0.5) * 0.04;
@@ -335,15 +353,25 @@ export function gnmPlayerAppearance(profile) {
   const beardGrey = clamp((age - 30) / 32, 0, 0.8);
   const browGrey = clamp((age - 46) / 30, 0, 0.5);
   const hairVisible = values.hairVisible === 1;
-  const hairStyle = GNM_PLAYER_HAIR_STYLES[values.hair];
+  const hairStyle = options.hairstylePrototype === "side-part" ? GNM_PLAYER_SIDE_PART : GNM_PLAYER_HAIR_STYLES[values.hair];
   const recession = hairVisible ? clamp((age - 30) / 30, 0, 1) * ((profile.seed >>> 0) % 3 === 0 ? 9 : 3) : 0;
   return {
     skin,
     lip: mixRgb(skin, [0.62, 0.30, 0.30], 0.38),
     iris: hexToRgb(GNM_PLAYER_IRIS_COLORS[values.eyeColor]),
     hair: mixRgb(hairBase, grey, hairGrey),
+    // Strand hair greys as a fraction of grey strands whose mean is `hair`.
+    hairPigment: hairBase,
+    hairGreyColor: grey,
+    hairGrey,
     beard: mixRgb(hairBase.map((value) => value * 0.86), grey, beardGrey),
     brow: mixRgb(hairBase.map((value) => value * 0.68), grey, browGrey),
+    // Beard and brow strands grey the same way: a fraction of grey strands
+    // (hairGreyColor) whose mean is `beard` / `brow`.
+    beardPigment: hairBase.map((value) => value * 0.86),
+    beardGrey,
+    browPigment: hairBase.map((value) => value * 0.68),
+    browGrey,
     hairVisible,
     hairStyle: hairVisible ? { ...hairStyle, hairline: hairStyle.hairline + recession } : null,
     beardStyle: GNM_PLAYER_BEARD_STYLES[values.beard],
@@ -460,6 +488,18 @@ export function reconstructGnmPlayerPositions(model, template, identity, express
   for (let index = 0; index < count; index += 1) positions[index] = template[index];
   for (let k = 0; k < model.priorCount; k += 1) addVector(model, positions, k, identity.coefficients[k]);
   for (let feature = 0; feature < model.featureCount; feature += 1) addVector(model, positions, model.priorCount + feature, identity.featureWeights[feature]);
+  if (identity.localEdits) {
+    const base = new Float64Array(positions);
+    for (const [trait, local] of Object.entries(identity.localEdits)) {
+      const edited = reconstructGnmPlayerPositions(model, template, local);
+      for (let vertex = 0; vertex < model.vertexCount; vertex += 1) {
+        const offset = vertex * 3;
+        const mask = gnmPlayerLocalMask(trait, template.subarray(offset, offset + 3));
+        if (mask === 0) continue;
+        for (let axis = 0; axis < 3; axis += 1) positions[offset + axis] += mask * (edited[offset + axis] - base[offset + axis]);
+      }
+    }
+  }
   for (const [key, weight] of Object.entries(expressionWeights)) {
     const vectorIndex = model.presets.get(key);
     if (vectorIndex === undefined) fail(`Unknown GNM player expression preset ${key}`);
@@ -577,7 +617,8 @@ export function gnmPlayerHairThreshold(style, front) {
 export function gnmPlayerHairCoverage(style, scalpMm, front) {
   if (!style) return 0;
   const threshold = gnmPlayerHairThreshold(style, front);
-  return smoothstep(threshold - 1.2, threshold + 1.2, scalpMm);
+  const fade = 1 - style.fade * (1 - smoothstep(0.15, 0.85, front)) * (1 - smoothstep(0, 45, scalpMm - threshold));
+  return smoothstep(threshold - 1.2, threshold + 1.2, scalpMm) * fade;
 }
 
 /** Volumetric shell thickness (mm): ramps from the hairline, fuller on the crown, thinner on fades. */
@@ -590,13 +631,38 @@ export function gnmPlayerHairThicknessMm(style, scalpMm, front) {
   return volume * fade * smoothstep(0, 6, above);
 }
 
+/** Low-frequency clumps break up the silhouette without changing the scalp mesh. */
+export function gnmPlayerHairSurfaceOffset(style, scalpMm, front, position) {
+  const base = gnmPlayerHairThicknessMm(style, scalpMm, front);
+  if (base <= 0) return 0;
+  const [x, y, z] = position;
+  if (style.pattern === "side-part") {
+    // The crown and carved part define the silhouette, without embossed waves.
+    const above = scalpMm - gnmPlayerHairThreshold(style, front);
+    const crown = smoothstep(16, 58, above);
+    const partX = 0.026 + z * 0.045;
+    const sweptSide = 1 - smoothstep(partX - 0.004, partX + 0.008, x);
+    const part = 1 - Math.exp(-(((x - partX) / 0.007) ** 2));
+    const crest = Math.exp(-(((x + 0.018) / 0.055) ** 2));
+    return (2.5 + crown * (4 + 25 * sweptSide * crest) * (0.35 + 0.65 * smoothstep(-0.4, 0.65, front))) * (0.42 + 0.58 * part) * smoothstep(0, 6, above);
+  }
+  if (style.pattern === "center-part") {
+    const groove = 0.38 + 0.62 * smoothstep(0.001, 0.013, Math.abs(x));
+    return base * groove * (0.9 + 0.25 * smoothstep(-0.2, 0.8, front));
+  }
+  const curl = style.pattern === "curly";
+  const wave = Math.sin(x * (curl ? 420 : 190) + z * 120) * Math.sin(y * (curl ? 350 : 110) - z * 230);
+  const clump = curl ? 1.0 + 0.2 * wave : 1.0 + 0.075 * wave;
+  return base * clump;
+}
+
 /** Offset skin render vertices along their normals to form the hair shell. */
 export function gnmPlayerHairShell(style, staticData, renderPositions, renderNormals) {
   const positions = new Float32Array(renderPositions);
   if (!style) return { positions, triangleEstimate: 0 };
   for (let vertex = 0; vertex < staticData.renderCount; vertex += 1) {
     if (!staticData.skinVertex[vertex]) continue;
-    const thickness = gnmPlayerHairThicknessMm(style, staticData.scalp[vertex], staticData.front[vertex]) / 1000;
+    const thickness = gnmPlayerHairSurfaceOffset(style, staticData.scalp[vertex], staticData.front[vertex], renderPositions.subarray(vertex * 3, vertex * 3 + 3)) / 1000;
     if (thickness <= 0) continue;
     for (let axis = 0; axis < 3; axis += 1) positions[vertex * 3 + axis] += renderNormals[vertex * 3 + axis] * thickness;
   }
@@ -607,21 +673,22 @@ export function gnmPlayerHairShell(style, staticData, renderPositions, renderNor
 export function describeGnmPlayerMapping(profile, options = {}) {
   const expression = gnmPlayerExpression(profile, options.expressionMode);
   const { targets, sources } = gnmPlayerFeatureTargets(profile);
-  const appearance = gnmPlayerAppearance(profile);
+  const appearance = gnmPlayerAppearance(profile, options);
   return {
     renderer: GNM_PLAYER_RENDER_STYLE,
     prototype: true,
     mappingVersion: GNM_PLAYER_MAPPING_VERSION,
-    source: "official GNM Head v3.0 identity prior + landmark-measured feature conditioning + official semantic-sampler expression presets",
+    source: "official GNM Head v3.0 seeded identity + compact-support local feature conditioning + official expression presets",
     semanticMapping: "measured-landmark-features-v1",
     officialTexturesIncluded: false,
     identity: {
       identityOnly: true,
       geometricTraits: [...GNM_PLAYER_GEOMETRIC_TRAITS],
-      priorShares: { ...GNM_PLAYER_PRIOR_SHARES },
+      priorSource: "stable-profile-seed",
+      localRegions: ["eyes", "nose", "mouth", "earShape"],
       featureTargets: targets,
       featureTargetSources: sources,
-      note: "Pigmentation, appearance, age, presentation, kit, seed and expression never change identity coefficients.",
+      note: "The seed defines the stable base. Local shape edits use compact-support deltas; grooming, pigments and expression do not change base geometry.",
     },
     expression,
     appearance: {

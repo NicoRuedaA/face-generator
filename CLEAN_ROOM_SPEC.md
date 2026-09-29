@@ -4,7 +4,7 @@ Este documento describe el comportamiento observable que debe conservar una futu
 
 ## Objetivo
 
-Generar retratos 2D reproducibles de jugadores ficticios, adecuados para interfaces de gestión deportiva, sin almacenar una imagen por jugador.
+Generar retratos 3D reproducibles de jugadores ficticios, adecuados para interfaces de gestión deportiva, sin almacenar una imagen por jugador.
 
 ## Entrada mínima
 
@@ -35,7 +35,7 @@ La representación final puede ser un bitfield, bytes, JSON compacto u otro form
 ## Salida
 
 - Retrato cuadrado de referencia: 512 × 512 píxeles.
-- Fondo, cuello, equipación y cabeza en capas separables.
+- Fondo, cuello, equipación y cabeza como componentes 3D separables.
 - Resultado rasterizable a PNG o WebP.
 - Misma versión + misma identidad + misma edad = mismos píxeles, salvo cambios expresamente versionados.
 

@@ -15,27 +15,10 @@ import {
   setPresentation,
 } from "./face-model.js";
 import {
-  DEFAULT_RENDER_STYLE,
-  GNM_MORPH_RENDER_STYLE,
-  GNM_PLAYER_RENDER_STYLE,
-  MORPH_RENDER_STYLE,
-  RENDER_STYLES,
-  TOON_RENDER_STYLE,
-  WEBGL_MORPH_RENDER_STYLE,
-  WEBGL_OFFICIAL_RENDER_STYLE,
-  WEBGL_OFFICIAL_BASIS_LAB_STYLE,
-  TECHNICAL_VISUALIZATION_NONE,
-  technicalVisualizationState,
-  describeRender,
-  downloadPng,
-  resetGnmPlayerCamera,
-  resetWebglCamera,
-  renderPortrait,
-  renderPortraitThumbnail,
+  DEFAULT_RENDER_STYLE, describeRender, downloadPng, resetGnmPlayerCamera,
+  renderPortrait, renderPortraitThumbnail,
 } from "./render-router.js";
 
-const canvas = document.querySelector("#portrait");
-const webglCanvas = document.querySelector("#portrait-webgl");
 const gnm3dCanvas = document.querySelector("#portrait-gnm3d");
 const webglCameraControls = document.querySelector("#webgl-camera-controls");
 const gallery = document.querySelector("#gallery");
@@ -49,53 +32,11 @@ const faceCode = document.querySelector("#face-code");
 const debugOutput = document.querySelector("#debug-output");
 const featureControls = document.querySelector("#feature-controls");
 const toast = document.querySelector("#toast");
-const renderStyleInput = document.querySelector("#render-style");
-const expressionModeField = document.querySelector("#expression-mode-field");
 const expressionModeInput = document.querySelector("#expression-mode");
-const toonAttribution = document.querySelector("#toon-attribution");
-const landmarksInput = document.querySelector("#show-landmarks");
-const landmarkField = document.querySelector("#landmark-field");
-const basisLabPanel = document.querySelector("#basis-lab-controls");
-const technicalVisualizationPanel = document.querySelector("#technical-visualization-controls");
-const uvCheckerToggle = document.querySelector("#uv-checker-toggle");
-const wireframeToggle = document.querySelector("#wireframe-toggle");
-const technicalVisualizationStateLabel = document.querySelector("#technical-visualization-state");
 const EXPRESSION_MODE_STORAGE_KEY = "sports-face-expression-mode";
 const EXPRESSION_MODES = ["auto", "neutral", "alert", "soft", "focused"];
-const WEBGL_STYLES = [WEBGL_MORPH_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
-// The GNM 3D player owns a separate canvas so its camera listeners never
-// redraw another WebGL style (and vice versa).
-const PLAYER_3D_STYLES = [GNM_PLAYER_RENDER_STYLE];
-const MICRO_EXPRESSION_STYLES = [MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, GNM_PLAYER_RENDER_STYLE];
-const BASIS_LAB_STYLES = [WEBGL_OFFICIAL_BASIS_LAB_STYLE];
-// Technical visualization toggles are session state only (OFF by default) and
-// are never stored in FaceDNA, SF2, or localStorage.
-const OFFICIAL_WEBGL_STYLES = [WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE];
-let technicalVisualization = TECHNICAL_VISUALIZATION_NONE;
-const BASIS_LAB_LABELS = [
-  "GNM identity basis 000", "GNM identity basis 001", "GNM identity basis 002", "GNM identity basis 003",
-  "GNM expression basis 000", "GNM expression basis 001", "GNM expression basis 002", "GNM expression basis 003",
-];
-const basisLabCoefficients = Object.fromEntries(BASIS_LAB_LABELS.map((label) => [label, 0]));
-const basisLabControls = new Map();
-
-function basisLabCoefficientVector() {
-  return BASIS_LAB_LABELS.map((label) => {
-    const numeric = Number(basisLabCoefficients[label]);
-    return Number.isFinite(numeric) ? Math.max(-0.25, Math.min(0.25, numeric)) : 0;
-  });
-}
-
 let profile = createProfile({ seed: Date.now(), age: 22, presentation: "neutral" });
-function loadRenderStyle() {
-  try {
-    const saved = window.localStorage.getItem("sports-face-render-style");
-    return RENDER_STYLES.some((style) => style.id === saved) ? saved : DEFAULT_RENDER_STYLE;
-  } catch {
-    return DEFAULT_RENDER_STYLE;
-  }
-}
-let renderStyle = loadRenderStyle();
+const renderStyle = DEFAULT_RENDER_STYLE;
 function loadExpressionMode() {
   try {
     const saved = window.localStorage.getItem(EXPRESSION_MODE_STORAGE_KEY);
@@ -105,12 +46,15 @@ function loadExpressionMode() {
   }
 }
 let expressionMode = loadExpressionMode();
-function loadLandmarkPreference() {
-  try { return window.localStorage.getItem("sports-face-show-landmarks") === "1"; }
-  catch { return false; }
-}
-let showLandmarks = loadLandmarkPreference();
-let mainRenderPromise = Promise.resolve(canvas);
+let hairstylePrototype = "original";
+const hairstylePrototypeInput = document.querySelector("#hairstyle-prototype");
+hairstylePrototypeInput.addEventListener("change", () => {
+  hairstylePrototype = hairstylePrototypeInput.value === "side-part" ? "side-part" : "original";
+  refresh();
+});
+const renderStatus = document.querySelector("#render-status");
+const downloadButton = document.querySelector("#download-png");
+let mainRenderPromise = Promise.resolve(null);
 let renderRevision = 0;
 let toastTimer = null;
 
@@ -122,13 +66,66 @@ function showToast(message, type = "ok") {
   toastTimer = window.setTimeout(() => { toast.hidden = true; }, 2400);
 }
 
-function populateRenderStyles() {
-  renderStyleInput.innerHTML = "";
-  for (const style of RENDER_STYLES) {
-    const option = document.createElement("option");
-    option.value = style.id;
-    option.textContent = style.label;
-    renderStyleInput.append(option);
+const STYLE_NAMES = Object.freeze({
+  hair: ["Rapado", "Corto con volumen", "Flequillo corto", "Raya lateral", "Media melena", "Raya central", "Rizado con volumen", "Largo", "Largo abundante", "Degradado alto", "Trenzado", "Moño"],
+  beard: ["Sin barba", "Barba de tres días", "Barba corta", "Barba completa", "Perilla", "Bigote"],
+  brows: ["Suaves", "Rectas", "Arqueadas", "Gruesas", "Cortas", "Angulares", "Bajas", "Altas"],
+  eyes: ["Almendrados", "Redondos", "Hundidos", "Estrechos", "Inclinados arriba", "Inclinados abajo"],
+  nose: ["Recta", "Ancha", "Estrecha", "Corta", "Larga", "Aguileña", "Redondeada", "Puente bajo"],
+  mouth: ["Neutra", "Ancha", "Estrecha", "Labios gruesos", "Labios finos", "Comisuras arriba", "Comisuras abajo"],
+  earShape: ["Medianas", "Pequeñas", "Grandes", "Separadas"],
+  eyeColor: ["Marrón", "Avellana", "Azul", "Verde"],
+});
+
+function chooseStyle(key, value) {
+  if (key === "hair") {
+    hairstylePrototype = "original";
+    // Enable before selecting: FaceDNA canonicalizes hidden hair to slot zero.
+    profile = setFeature(profile, "hairVisible", 1);
+  }
+  profile = setFeature(profile, key, value);
+  refresh({ rebuildGallery: false });
+}
+
+/** Real renderer previews on a fixed reference face, using one shared WebGL context. */
+function populateStyleCatalogs() {
+  const host = document.querySelector("#style-catalogs");
+  let reference = createProfile({ seed: hashSeed("style-catalog-reference"), age: 24 });
+  for (const [key, value] of Object.entries({ skin: 2, hairColor: 2, hairVisible: 1, hair: 0, beard: 0, brows: 0, glasses: 0, scar: 0, freckles: 0 })) reference = setFeature(reference, key, value);
+  for (const [key, title] of [["hair", "Peinados"], ["beard", "Barbas"], ["brows", "Cejas"]]) {
+    const details = document.createElement("details");
+    details.dataset.catalog = key;
+    const summary = document.createElement("summary");
+    summary.textContent = `${title} · ${STYLE_NAMES[key].length} estilos`;
+    const grid = document.createElement("div");
+    grid.className = "style-catalog";
+    let loaded = false;
+    details.addEventListener("toggle", () => {
+      if (!details.open || loaded) return;
+      loaded = true;
+      for (const [index, name] of STYLE_NAMES[key].entries()) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "style-card";
+        button.dataset.styleFeature = key;
+        button.dataset.styleValue = String(index);
+        button.setAttribute("aria-pressed", String(getFaceValues(profile)[key] === index));
+        const canvas = document.createElement("canvas");
+        canvas.width = 160; canvas.height = 160; canvas.setAttribute("aria-hidden", "true");
+        const label = document.createElement("span"); label.textContent = name;
+        button.append(canvas, label);
+        button.addEventListener("click", () => chooseStyle(key, index));
+        grid.append(button);
+        renderPortraitThumbnail(canvas, setFeature(reference, key, index), { expressionMode: "neutral", hairstylePrototype: "original", camera: { yaw: key === "hair" ? (index === 11 ? 1.25 : 0.38) : 0, pitch: -0.06, distance: 1 } }).then(() => {
+          if (key !== "hair") {
+            const context = canvas.getContext("2d");
+            context.drawImage(canvas, 35, key === "brows" ? 28 : 62, 90, 85, 0, 0, 160, 160);
+          }
+          canvas.dataset.ready = "true";
+        }).catch(() => { button.title = "Vista previa no disponible; puedes seleccionar el estilo"; });
+      }
+    });
+    details.append(summary, grid); host.append(details);
   }
 }
 
@@ -144,12 +141,11 @@ function populateFeatureControls() {
     for (let index = 0; index < variable.validValues; index += 1) {
       const option = document.createElement("option");
       option.value = String(index);
-      option.textContent = variable.type === "toggle" ? (index === 0 ? "No" : "Sí") : `${index + 1}`;
+      option.textContent = variable.type === "toggle" ? (index === 0 ? "No" : "Sí") : (STYLE_NAMES[variable.key]?.[index] ?? `${index + 1}`);
       select.append(option);
     }
     select.addEventListener("change", () => {
-      profile = setFeature(profile, variable.key, Number(select.value));
-      refresh({ rebuildGallery: false });
+      chooseStyle(variable.key, Number(select.value));
     });
     wrapper.append(text, select);
     featureControls.append(wrapper);
@@ -169,24 +165,18 @@ function syncControls() {
   for (const select of featureControls.querySelectorAll("select[data-feature]")) {
     select.value = String(values[select.dataset.feature]);
   }
+  for (const button of document.querySelectorAll("button[data-style-feature]")) {
+    button.setAttribute("aria-pressed", String(values[button.dataset.styleFeature] === Number(button.dataset.styleValue)));
+  }
   debugOutput.textContent = JSON.stringify({
     ...describeProfile(profile),
     selectedRenderer: renderStyle,
     selectedExpressionMode: expressionMode,
-    renderMapping: describeRender(profile, renderStyle, { expressionMode, basisCoefficients: basisLabCoefficientVector(), technicalVisualization }),
+    hairstylePrototype,
+    renderMapping: describeRender(profile, renderStyle, { expressionMode, hairstylePrototype }),
   }, null, 2);
-  renderStyleInput.value = renderStyle;
   expressionModeInput.value = expressionMode;
-    toonAttribution.hidden = ![TOON_RENDER_STYLE, MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE, GNM_PLAYER_RENDER_STYLE, WEBGL_OFFICIAL_RENDER_STYLE, WEBGL_OFFICIAL_BASIS_LAB_STYLE].includes(renderStyle);
-    landmarkField.hidden = ![MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle);
-    expressionModeField.hidden = !MICRO_EXPRESSION_STYLES.includes(renderStyle);
-    basisLabPanel.hidden = !BASIS_LAB_STYLES.includes(renderStyle);
-    technicalVisualizationPanel.hidden = !OFFICIAL_WEBGL_STYLES.includes(renderStyle);
-  landmarksInput.checked = showLandmarks;
-  uvCheckerToggle.checked = technicalVisualization === "uv-checker" || technicalVisualization === "uv-checker+wireframe";
-  wireframeToggle.checked = technicalVisualization === "wireframe" || technicalVisualization === "uv-checker+wireframe";
-  technicalVisualizationStateLabel.textContent = technicalVisualization;
-  for (const [label, input] of basisLabControls) input.value = String(basisLabCoefficients[label]);
+  hairstylePrototypeInput.value = hairstylePrototype;
 }
 
 function renderGallery() {
@@ -204,8 +194,7 @@ function renderGallery() {
     const miniCanvas = document.createElement("canvas");
     miniCanvas.width = 192;
     miniCanvas.height = 192;
-    const galleryStyle = WEBGL_STYLES.includes(renderStyle) ? GNM_MORPH_RENDER_STYLE : renderStyle;
-    renderPortraitThumbnail(miniCanvas, itemProfile, { style: galleryStyle, expressionMode, showAge: false, showLandmarks: false }).catch((error) => showToast(error.message, "error"));
+    renderPortraitThumbnail(miniCanvas, itemProfile, { expressionMode, hairstylePrototype }).catch(() => { button.title = "Vista 3D no disponible"; });
     button.append(miniCanvas);
     button.addEventListener("click", () => {
       profile = cloneProfile(itemProfile);
@@ -216,51 +205,32 @@ function renderGallery() {
   }
 }
 
-function activeWebglCanvas() {
-  if (PLAYER_3D_STYLES.includes(renderStyle)) return gnm3dCanvas;
-  return WEBGL_STYLES.includes(renderStyle) ? webglCanvas : null;
-}
-
 function refresh({ rebuildGallery = true } = {}) {
   const revision = ++renderRevision;
-  const glCanvas = activeWebglCanvas();
-  if (!glCanvas) {
-    webglCanvas.hidden = true;
-    gnm3dCanvas.hidden = true;
-    canvas.hidden = false;
-    webglCameraControls.hidden = true;
-  }
-  const targetCanvas = glCanvas || canvas;
-  mainRenderPromise = renderPortrait(targetCanvas, profile, {
-    style: renderStyle,
-    expressionMode,
-    showLandmarks,
-    fallbackCanvas: canvas,
-    basisCoefficients: basisLabCoefficientVector(),
-    technicalVisualization,
-  }).then((result) => {
-    if (revision !== renderRevision) return result;
-    if (glCanvas) {
-      // Swap canvases only once the new render is ready, so switching between
-      // WebGL styles never leaves an empty portrait while assets load.
-      const usedFallback = result?.fallback === true;
-      for (const candidate of [webglCanvas, gnm3dCanvas]) {
-        if (candidate !== glCanvas) candidate.hidden = true;
-      }
-      glCanvas.hidden = usedFallback;
-      canvas.hidden = !usedFallback;
-      webglCameraControls.hidden = usedFallback;
-      if (usedFallback) showToast(`WebGL2 fallback: ${result.reason}`, "error");
-    }
+  downloadButton.disabled = true;
+  renderStatus.hidden = false;
+  renderStatus.textContent = "Cargando retrato 3D…";
+  mainRenderPromise = renderPortrait(gnm3dCanvas, profile, { expressionMode, hairstylePrototype }).then((result) => {
+    if (revision !== renderRevision) return null;
+    gnm3dCanvas.hidden = false;
+    webglCameraControls.hidden = false;
+    renderStatus.hidden = true;
+    downloadButton.disabled = false;
     return result;
-  }).catch((error) => { showToast(error.message, "error"); throw error; });
+  }).catch((error) => {
+    if (revision !== renderRevision) return null;
+    gnm3dCanvas.hidden = true;
+    webglCameraControls.hidden = true;
+    renderStatus.hidden = false;
+    renderStatus.textContent = `No se puede mostrar el retrato 3D: ${error.message}. Usa un navegador con WebGL2 y abre la aplicación mediante HTTP. No hay renderizado 2D alternativo.`;
+    return null;
+  });
   syncControls();
   if (rebuildGallery) renderGallery();
 }
 
 document.querySelector("#reset-webgl-camera").addEventListener("click", () => {
-  if (PLAYER_3D_STYLES.includes(renderStyle)) resetGnmPlayerCamera(gnm3dCanvas);
-  else resetWebglCamera(webglCanvas);
+  resetGnmPlayerCamera(gnm3dCanvas);
   showToast("Cámara restablecida");
 });
 
@@ -311,11 +281,14 @@ document.querySelector("#load-code").addEventListener("click", () => {
   }
 });
 
-document.querySelector("#download-png").addEventListener("click", async () => {
-  await mainRenderPromise;
-  const glCanvas = activeWebglCanvas();
-  downloadPng(glCanvas && !glCanvas.hidden ? glCanvas : canvas, `sports-face-${renderStyle.split("/").pop()}-${profile.seed}.png`);
-  showToast("PNG preparado");
+downloadButton.addEventListener("click", async () => {
+  const pending = mainRenderPromise;
+  const result = await pending;
+  if (!result || pending !== mainRenderPromise || downloadButton.disabled) return;
+  try {
+    await downloadPng(gnm3dCanvas, `sports-face-gnm-3d-player-v1-${profile.seed}.png`);
+    showToast("PNG preparado");
+  } catch (error) { showToast(error.message, "error"); }
 });
 
 ageInput.addEventListener("input", () => {
@@ -330,49 +303,12 @@ presentationInput.addEventListener("change", () => {
   showToast("Presentación actualizada; la identidad se conserva");
 });
 
-renderStyleInput.addEventListener("change", () => {
-  renderStyle = renderStyleInput.value;
-  try { window.localStorage.setItem("sports-face-render-style", renderStyle); } catch { /* file:// may disable storage */ }
-  refresh();
-  showToast([MORPH_RENDER_STYLE, GNM_MORPH_RENDER_STYLE].includes(renderStyle)
-    ? "Morph Lab activado; landmarks y FaceDNA permanecen separados"
-    : PLAYER_3D_STYLES.includes(renderStyle)
-      ? "GNM 3D Player activado: cabeza GNM oficial generada desde FaceDNA"
-    : WEBGL_STYLES.includes(renderStyle)
-      ? "WebGL2 opt-in activado; fallará de forma segura a GNM SVG"
-    : renderStyle === TOON_RENDER_STYLE
-      ? "Toon Polish activado; FaceDNA no ha cambiado"
-      : "Renderer original activado");
-});
-
 expressionModeInput.addEventListener("change", () => {
   expressionMode = EXPRESSION_MODES.includes(expressionModeInput.value) ? expressionModeInput.value : "auto";
   try { window.localStorage.setItem(EXPRESSION_MODE_STORAGE_KEY, expressionMode); } catch { /* file:// may disable storage */ }
   refresh();
   showToast("Microexpresión actualizada");
 });
-
-landmarksInput.addEventListener("change", () => {
-  showLandmarks = landmarksInput.checked;
-  try { window.localStorage.setItem("sports-face-show-landmarks", showLandmarks ? "1" : "0"); } catch { /* optional */ }
-  refresh({ rebuildGallery: false });
-  showToast(showLandmarks ? "Landmarks visibles" : "Landmarks ocultos");
-});
-
-function updateTechnicalVisualization() {
-  technicalVisualization = technicalVisualizationState(uvCheckerToggle.checked, wireframeToggle.checked);
-  technicalVisualizationStateLabel.textContent = technicalVisualization;
-  refresh({ rebuildGallery: false });
-}
-
-for (const toggle of [uvCheckerToggle, wireframeToggle]) {
-  toggle.addEventListener("change", () => {
-    updateTechnicalVisualization();
-    showToast(technicalVisualization === "none"
-      ? "Visualización técnica desactivada"
-      : `Visualización técnica: ${technicalVisualization}`);
-  });
-}
 
 for (const input of [kitPrimary, kitSecondary]) {
   input.addEventListener("input", () => {
@@ -381,29 +317,6 @@ for (const input of [kitPrimary, kitSecondary]) {
   });
 }
 
-populateRenderStyles();
 populateFeatureControls();
-for (const label of BASIS_LAB_LABELS) {
-  const field = document.createElement("label");
-  field.className = "field compact";
-  const caption = document.createElement("span");
-  caption.textContent = label;
-  const input = document.createElement("input");
-  input.type = "range";
-  input.min = "-0.25";
-  input.max = "0.25";
-  input.step = "0.01";
-  input.value = "0";
-  input.addEventListener("input", () => {
-    basisLabCoefficients[label] = Math.max(-0.25, Math.min(0.25, Number(input.value) || 0));
-    refresh({ rebuildGallery: false });
-  });
-  basisLabControls.set(label, input);
-  basisLabPanel.querySelector(".basis-grid").append(field);
-  field.append(caption, input);
-}
-document.querySelector("#reset-basis-lab").addEventListener("click", () => {
-  for (const label of BASIS_LAB_LABELS) basisLabCoefficients[label] = 0;
-  refresh({ rebuildGallery: false });
-});
+populateStyleCatalogs();
 refresh();

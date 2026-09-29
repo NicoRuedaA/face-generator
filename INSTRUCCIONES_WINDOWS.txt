@@ -1,17 +1,14 @@
-SPORTS FACE MVP v0.4.0 — INSTRUCCIONES PARA WINDOWS
-===================================================
+SPORTS GNM 3D PLAYER — INSTRUCCIONES PARA WINDOWS
+=================================================
 
-OPCIÓN 1 — MÁS FÁCIL
-1. Descomprime todo el ZIP.
-2. Abre index.html con doble clic.
-3. La cara debería aparecer inmediatamente.
+1. Descomprime el proyecto completo e instala Python si no lo tienes.
+2. Ejecuta iniciar-servidor.bat.
+3. Abre http://localhost:8080/ en un navegador con WebGL2.
 
-OPCIÓN 2 — MODO DESARROLLO
-1. Ejecuta iniciar-servidor.bat.
-2. Abre http://localhost:8080/index.module.html
+No abras index.html con doble clic: el modelo 3D necesita descargar los
+archivos locales mediante HTTP. No existe un renderer 2D alternativo.
+Si WebGL2 o los archivos necesarios no están disponibles, se muestra un
+error y se desactiva la exportación PNG.
 
-El error anterior ocurría porque Chrome bloquea los módulos JavaScript
-cargados desde una URL file://. Esta revisión incluye app.bundle.js y no
-usa módulos en la página principal.
-
-Selecciona "Sports Morph Lab v0.4.0" para probar landmarks y morfologías.
+index.module.html usa módulos para desarrollo; index.html usa el bundle.
+Ambos muestran únicamente Sports GNM 3D Player v1.

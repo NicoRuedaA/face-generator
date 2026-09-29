@@ -14,23 +14,6 @@ This temporary MVP is informed by OpenTTD's company-manager face architecture: c
 Copyright remains with the respective OpenTTD contributors.
 
 
-## ToonHead / DiceBear Toon Head
-
-This prototype includes a curated and modified subset of ToonHead vector
-components.
-
-- Creator: Johan Melin
-- Original work: ToonHead
-- License: CC BY 4.0
-- Source: https://www.figma.com/community/file/1589627891082866389
-- DiceBear style: https://www.dicebear.com/styles/toon-head/
-- Modifications: neutral facial mapping, recolouring, sports kit adaptation,
-  morphological scaling, original sports hair/beard overlays, age plausibility
-  rules and added sports-face details.
-
-See `third_party/toon-head/ATTRIBUTION.md`.
-
-
 ## GNM Head
 
 This MVP includes a generated official GNM-derived 3D package under the
@@ -42,45 +25,10 @@ and official NPZ SHA-256
 
 - License: Apache-2.0; complete upstream text is retained at `tools/gnm/work/LICENSE-GNM.txt`.
 - Permission: `project-owner`, `2026-08-12`, `sports-face-mvp-noncommercial-mvp-authorization`.
-- Runtime style: `sports/morph-webgl-official-v1`, opt-in only; default and prior geometry-only WebGL remain intact.
-- Components: skin, left/right eye, upper/lower teeth and gums, tongue.
-- Materials: neutral procedural materials only. No complete official material texture bundle is included; `edgeflow_bw_4k.png` is visualization-only and is not used as a texture.
-- Render optimization: the canonical `138,998,408` byte GLB is unchanged; the runtime render GLB is `665,904` bytes (`99.52%` smaller), with `18,437` unique render vertices and exact float32 POSITION/UV bytes. No quantization or lossy conversion is used. Official identity/expression basis payloads are omitted from the render asset and remain offline/optional.
-- Mapping: semantic FaceDNA/expression mapping is disabled because the names do not safely establish anatomical semantics. Identity-only invariance is preserved.
-- Basis diagnostic: `tools/gnm/diagnose_official_gnm_basis.py` and its committed
-  report are offline, stdlib-only evidence. The report validates the `253`
-  identity and `383` expression float32 bases, finite payloads, deterministic
-  reconstruction math, and all six sourceVertexId mappings. It does not load
-  bases at runtime or establish semantic mappings; `semanticMapping` remains
-  disabled and `runtimeBasisLoaded` remains false.
-- Technical Basis Lab: the separately delivered `gnm-official-basis-lab.bin` is
-  `1,843,736` bytes and selects only the first four identity and first four
-  expression vectors. It uses technical labels, exact float32 values and
-  sourceVertexId projection; it establishes no anatomical or FaceDNA mapping.
-- Phase 5 visual model: `neutral-procedural-components-v2` is project-authored
-  runtime code. It adds no textures or external dependencies; its six component
-  colors and lightweight lighting diagnostics are technical presentation choices,
-  not official GNM material claims or anatomical semantics.
-- Technical deformation visualization: the opt-in `UV checker` and `Wireframe`
-  overlays are project-authored procedural debug rendering. The checker samples
-  the official per-vertex `TEXCOORD_0` in a procedural pattern and the wireframe
-  is generated deterministically from the retained triangle indices; both are
-  inspection aids labeled `technicalVisualization`, OFF by default, and are not
-  official textures or material claims. No new third-party assets, code, or
-  dependencies are introduced, and `edgeflow_bw_4k.png` remains unused by the
-  runtime.
-- Phase 6 semantic evidence: `tools/gnm/analyze_official_gnm_semantics.py` emits
-  a deterministic stdlib-only quantitative report. It characterizes the basis
-  payload but explicitly keeps `semanticMapping: "unestablished"`; technical
-  groups and provisional landmark-region energy are not anatomical claims. No
-  FaceDNA-to-GNM paired dataset exists, and no runtime or Basis Lab mapping is
-  enabled.
-- Phase 7A calibration dataset: `tools/gnm/calibration_dataset.py` and its
-  checked-in empty template are offline-only metadata tooling. Labels are
-  free-form technical review labels, not anatomical truth; no sample means no
-  mapping. Geometry, basis arrays, secrets, PII, and absolute paths are not
-  stored. `semanticMapping` remains `unestablished`, `runtimeBasisLoaded`
-  remains `false`, and human approval is opt-in.
+- Runtime style: `sports/gnm-3d-player-v1`, the only renderer. Previous 2D and prototype viewers have been removed.
+- Components: skin, left/right eye, upper/lower teeth and gums, tongue, plus project-authored procedural hair, glasses and jersey.
+- Materials: procedural painting only; no official textures are included.
+- The canonical full GLB remains offline; the application loads the compact render GLB and player-generator payload.
 - Phase 8 GNM 3D Player: `tools/gnm/work/gnm-player-generator.bin` and its
   metadata are derived offline from the same official NPZ (32 head identity
   directions, 19 normalized feature-gradient tails and three expression
@@ -94,9 +42,3 @@ and official NPZ SHA-256
   data is redistributed (no decoder weights, no textures). Painting fields,
   hair shells, glasses and the jersey bust are project-authored procedural
   rendering, not official materials.
-- Phase 7B statistical validation: `tools/gnm/validate_gnm_calibration.py` and
-  its empty report are offline, standard-library-only evidence. The current
-  result is `insufficient_data` with no fabricated predictive metrics. It never
-  activates a mapping or modifies runtime, FaceDNA, GLBs, Basis Lab assets, or
-  the Phase 7A template samples; real reviewed samples must be added by a human
-  through Phase 7A first.

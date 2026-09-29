@@ -1,511 +1,96 @@
-# Sports Face MVP
+# Sports GNM 3D Player
 
-> Phase 4 Basis Lab is an opt-in technical experiment. It is not semantic FaceDNA mapping and does not change the default renderer or SF2 persistence.
+**Sports GNM 3D Player v1 is the only renderer.** It draws a procedural, real-time WebGL2 portrait of a football player with studio lighting, strand hair and strand grooming. 2D renderers, prototype WebGL viewers, Basis Lab and the SVG fallback have been removed.
 
-![Vista previa del generador](preview.png)
+## Screenshots
 
-Sports Face MVP es un prototipo web para generar retratos reproducibles de jugadores ficticios para un juego de gestión deportiva. La versión pública actual es `v0.4.0`: incluye FaceDNA v2, edición de rasgos, envejecimiento, equipación, galería, exportación PNG y ocho opciones de renderizado, entre ellas el generador 3D de jugadores `GNM 3D Player` (opt-in).
+Same seeds and same cameras, before (left) and after (right) the realism pass:
 
-**Estado:** prototipo técnico funcional, no producto de producción. La distribución abre el retrato con un bundle offline. El primer paquete 3D oficial GNM v3.0 está aceptado solo para el MVP público no comercial autorizado por `project-owner`; usa materiales procedurales neutros y no incluye el bundle completo de texturas.
+![Gallery of 16 players before and after the realism pass](docs/gnm-3d-player/realism-v2/readme-gallery-before-after.jpg)
 
-## Inicio rápido
+![Light, medium and dark skin close-ups before and after the realism pass](docs/gnm-3d-player/realism-v2/readme-closeups-before-after.jpg)
 
-### Abrir la distribución
+<details>
+<summary><strong>Hairstyles</strong>: 12 catalog styles plus the side-part prototype, front, profile and back</summary>
 
-Abre `index.html` directamente en un navegador. El bundle clásico incluido es compatible con URLs `file://` y no necesita un servidor local ni instalar dependencias para probar la aplicación.
+![Strand hairstyle catalog](docs/gnm-3d-player/realism-v2/readme-hair-catalog.jpg)
 
-### Desarrollo modular
+</details>
 
-Desde la raíz del repositorio, inicia un servidor HTTP:
+<details>
+<summary><strong>Beards and eyebrows</strong>: 6 beard styles and 8 eyebrow styles</summary>
 
-```bash
-python3 -m http.server 8080
-```
-
-Abre [http://localhost:8080/index.module.html](http://localhost:8080/index.module.html). Esta entrada carga `src/app.js` y el pack portable GNM generado para la entrada modular. En Windows también está disponible `iniciar-servidor.bat`.
-
-### Publicación en GitHub Pages
+![Strand beard and eyebrow catalog](docs/gnm-3d-player/realism-v2/readme-grooming-catalog.jpg)
 
-El workflow de GitHub Pages ejecuta `npm test` antes de preparar y publicar el sitio estático en cada push a `main` o mediante ejecución manual. Después de que termine el workflow, la URL pública estará disponible en [GitHub Pages](https://nicoruedaa.github.io/sports-face-mvp/); no se considera publicada hasta completar esa ejecución.
-
-El checkout de CI no descarga objetos Git LFS, así que `tools/gnm/work/gnm-official-head.glb` llega como puntero. Las cuatro pruebas que regeneran evidencia desde ese GLB canónico (`render`, `basis`, `basis-lab` y `semantics`) verifican que el puntero referencia exactamente el `oid`/tamaño registrados, siguen validando los artefactos comprometidos y solo omiten la regeneración con un mensaje `SKIP` explícito. En local, `git lfs pull` materializa el GLB y activa las comprobaciones completas; la regeneración byte a byte de esos reportes requiere Python 3.12 o superior (el `sum()` de 3.11 redondea distinto el último dígito).
-
-## Renderizadores
-
-El selector de la interfaz no forma parte de FaceDNA ni modifica el código SF2. La opción GNM es explícita: selecciona `Sports Morph Lab GNM v1` (`sports/morph-gnm-v1`) cuando quieras probar el pack portable.
-
-| Opción | Identificador | Descripción |
-| --- | --- | --- |
-| Default | `sports/default-v2` | Renderizador Canvas 2D original, basado en las variantes FaceDNA y los assets vectoriales provisionales. Es la opción inicial si no existe una preferencia guardada. |
-| Toon Polish | `sports/toon-prototype` | Pulido visual basado en el subconjunto modificado de ToonHead: expresiones neutralizadas, pelo, barba, gafas, envejecimiento y equipación deportiva. |
-| Morph Lab analítico | `sports/morph-v1` | Deformación morfológica 2D determinista con 8 familias, landmarks y deformaciones locales. Usa el starter pack analítico, independiente de GNM. |
-| Morph Lab GNM | `sports/morph-gnm-v1` | Usa el pack morfológico portable generado offline a partir de datos derivados de GNM. La asignación de familias aplica un mapeo semántico revisado de FaceDNA. Es opt-in y no carga GNM en el navegador. |
-| Morph Lab WebGL2 | `sports/morph-webgl-v1` | Prototipo opt-in geometry-only que carga un GLB portable con base y 16 targets PCA derivados de geometría. Usa WebGL2 sin dependencias, encuadre bounded, depth test, sombreado GLSL simple y controles de inspección (arrastre, rueda y restablecer cámara); cae al renderer GNM SVG si el contexto o el asset no están disponibles. No es production-ready. |
-| GNM Official 3D | `sports/morph-webgl-official-v1` | GLB render-only oficial GNM v3.0 opt-in con seis componentes, UVs exactas, deduplicación lossless por pares POSITION/UV, índices uint16 y materiales procedurales neutros. La Fase 5 añade `neutral-procedural-components-v2`: color técnico por componente, roughness perceptual, especular, ambiente hemisférico, key/fill/rim y cavidad; no usa texturas ni afirma semántica anatómica. La visualización técnica opt-in (UV checker + wireframe) ayuda a ver la deformación sin añadir texturas. |
-| GNM 3D Player | `sports/gnm-3d-player-v1` | Generador 3D opt-in (Fase 8): cada perfil FaceDNA produce su propia cabeza GNM Head v3.0 (un vector oficial de identidad) muestreada del prior oficial y condicionada por 19 rasgos medidos sobre los 68 landmarks oficiales según las etiquetas FaceDNA (`nose/wide`, `jaw/broad`, `ratio/long`…). Añade piel, iris, labios, cejas, barba, pelo volumétrico, pecas, cicatriz, gafas, moño y camiseta procedurales, microexpresiones con presets oficiales del semantic sampler, vista 3/4 orbitable y galería 3D. Cae al renderer GNM SVG si falta WebGL2 o el payload. |
-| GNM Official Basis Lab | `sports/morph-webgl-official-basis-lab-v1` | Laboratorio técnico opt-in con payload separado de `1,843,736` bytes, 4 bases de identidad y 4 de expresión sobre `18,437` vértices. Los controles `GNM identity basis 000..003` y `GNM expression basis 000..003` están acotados a `[-0.25, 0.25]`; no son nombres anatómicos ni mapeos FaceDNA. Incluye los mismos toggles de visualización técnica que el estilo oficial. |
-
-Morph Lab ofrece microexpresiones deterministas (`neutral`, `alert`, `soft`, `focused`, además de `auto`) derivadas de `eyes`, `brows` y `mouth`. Son ajustes visuales sutiles, no animación, y no cambian FaceDNA. GNM 3D Player usa el mismo selector con presets oficiales de expresión.
-
-### GNM 3D Player (Fase 8)
-
-`sports/gnm-3d-player-v1` convierte la cabeza GNM oficial en un generador de
-jugadores. Un builder offline (`tools/gnm/build_player_generator.py`, NumPy +
-h5py) lee el NPZ oficial fijado por hash, los 68 landmarks oficiales y el decoder
-de expresiones del semantic sampler oficial, y genera
-`tools/gnm/work/gnm-player-generator.bin` (`6,130,704` bytes) con su metadata.
-El navegador nunca ejecuta GNM:
-
-- **Identidad**: prior gaussiano composicional sobre `head_000..head_031`, con un
-  bloque por rasgo geométrico de FaceDNA (editar la nariz solo re-sortea su
-  cuota), condicionado exactamente (regla de Matheron) por objetivos en z-score
-  que salen de las etiquetas del catálogo FaceDNA. Cada jugador es un vector
-  oficial de identidad GNM reproducible offline. Pigmentación, apariencia, edad,
-  presentación, equipación, semilla y expresión no cambian la geometría.
-- **Apariencia**: 20 campos por vértice derivados de grupos oficiales y
-  landmarks guían la pintura procedural (iris/pupila, labios, cejas, barbas,
-  línea de pelo, pecas, cicatriz, cuello de la camiseta); el pelo añade una capa
-  volumétrica y las gafas se ajustan a los landmarks de cada jugador. No usa
-  texturas oficiales.
-- **Expresión**: SURPRISE, HAPPY y SQUINT decodificados del CVAE oficial en la
-  media latente; el selector de microexpresión los aplica con pesos sutiles.
-
-```bash
-npm run test:gnm-player              # modelo JS: invarianza, orden de etiquetas, reconstrucción exacta
-npm run test:gnm-player-generator    # validador stdlib + 16 mutaciones (+ rebuild con GNM_ROOT)
-npm run validate:gnm-player-generator
-GNM_ROOT=/path/to/GNM npm run build:gnm-player-generator
-```
-
-El contrato completo, la tabla de etiquetas, los criterios y los límites están en
-[`docs/ACCEPTANCE_GNM_3D_PLAYER.md`](docs/ACCEPTANCE_GNM_3D_PLAYER.md); la
-evidencia visual en [`docs/gnm-3d-player/`](docs/gnm-3d-player/).
-
-![Galería GNM 3D Player](docs/gnm-3d-player/gallery.png)
-
-La Fase 2 exporta offline la malla template retenida a
-`tools/gnm/work/head.glb`. Es un GLB geometry-only para inspección: no implementa
-WebGL ni cambia el runtime o el comportamiento SVG.
-
-### Fase 3: reducción offline de morph targets
-
-La primera slice acotada de Fase 3 genera `tools/gnm/work/gnm-morph-targets.json`
-y su payload `gnm-morph-targets.bin` desde las 200 mallas neutrales retenidas.
-Es un prototipo derivado de geometría, no controles semánticos oficiales de GNM.
-No añade WebGL, carga en navegador ni integración de morph targets en el GLB; el
-renderer SVG continúa siendo el predeterminado y `src/` no cambia.
-
-El builder verifica las claves y formas del NPZ: `identities` es `(200, 253)` y
-no es mesh data, por lo que usa `vertices` `(200, 17821, 3)` y registra esa
-decisión en la procedencia. Si no encuentra mallas válidas, termina sin generar
-targets. El paquete acepta de 12 a 20 targets y usa los IDs neutrales
-`gnm-pca-01` ... `gnm-pca-16`. La salida actual conserva `95.2596%` de varianza,
-con residual `4.7404%`, RMSE `0.0172562` y error absoluto máximo `0.147963`.
-
-```bash
-npm run build:gnm-morph-targets
-npm run test:gnm-morph-targets
-python tools/gnm/validate_gnm_morph_targets.py tools/gnm/work/gnm-morph-targets.json
-npm run build:gnm-glb-morph
-npm run test:gnm-glb-morph
-python tools/gnm/validate_gnm_glb.py tools/gnm/work/head-morph.glb
-```
-
-La integración GLB usa `template + meanDelta` como base y añade 16 deltas PCA en
-orden estable. Los nombres son neutrales y los pesos del renderer son una
-proyección bounded determinista de las variables de identidad permanente
-`head`, `skin`, `eyes`, `brows`, `nose`, `mouth`, `freckles`, `eyeColor`,
-`earShape`, `jaw` y `faceProportion`. Esta fase hace cumplir el contrato de que
-la geometría WebGL depende solo de identidad: apariencia, edad, presentación,
-equipación, expresión y semilla no alteran los pesos cuando `identityBits` es
-el mismo. No son controles anatómicos ni componentes PCA semánticos. WebGL2 es
-un prototipo opt-in, GNM no entra en runtime y SVG sigue siendo el camino
-predeterminado.
-
-### Comparativa visual A/B SVG/WebGL2
-
-La evidencia canónica de la comparación bounded está en
-[`docs/gnm-webgl-ab/`](docs/gnm-webgl-ab/) y su contrato está en
-[`docs/ACCEPTANCE_GNM_WEBGL_AB.md`](docs/ACCEPTANCE_GNM_WEBGL_AB.md). Usa ocho
-semillas fijas con los mismos perfiles FaceDNA, edad `22`, presentación neutral y
-microexpresión neutral. SVG GNM es la referencia/aceptación; WebGL2 es opt-in y
-geometry-only. La comparación es cualitativa/diagnóstica, no pixel equivalence,
-porque ambos renderers tienen distinto sombreado y proyección.
-
-```bash
-npm run capture:gnm-webgl-ab
-npm run validate:gnm-webgl-ab
-```
-
-La ausencia de WebGL2 se reporta honestamente como `fallback` o `unavailable`,
-nunca como un PASS fabricado. Persisten las limitaciones de no tener UVs,
-texturas, ojos, dientes, lengua ni animación; los IDs PCA neutrales no son
-controles semánticos. La evidencia también registra dimensiones, ocupación y
-bounding box mediante una sonda `readPixels` WebGL2 y un decodificador PNG stdlib;
-son métricas proporcionales de salud/framing, no una afirmación de corrección
-anatómica o semántica.
-
-#### Controles de inspección WebGL2
-
-Solo cuando se selecciona `sports/morph-webgl-v1`, el canvas WebGL2 permite
-arrastrar para orbitar, usar la rueda para acercar o alejar y pulsar
-`Restablecer cámara`. El estado está acotado y vive por canvas; el reset devuelve
-siempre la vista frontal por defecto. Son controles de inspección únicamente:
-no cambian FaceDNA, SF2, pesos morph ni assets, y no añaden texturas ni assets
-oficiales.
-
-##### Visualización técnica de deformación (official / Basis Lab)
-
-Los estilos `sports/morph-webgl-official-v1` y
-`sports/morph-webgl-official-basis-lab-v1` muestran un panel
-`Technical visualization` con dos toggles opt-in, OFF por defecto y solo de
-sesión (nunca en FaceDNA/SF2):
-
-- `UV checker (exact TEXCOORD_0)`: patrón checker procedural determinista
-  muestreado en el espacio UV oficial (`16` celdas por unidad), de modo que el
-  patrón se deforma con la malla y expone el desplazamiento de las bases.
-- `Wireframe edges`: segundo pase `gl.LINES` con aristas generadas
-  deterministicamente desde los triángulos existentes, sobre la superficie
-  sombreada y respetando depth test y culling (two-sided).
-
-Es ayuda de inspección, no una textura ni material oficial. Los diagnósticos
-exponen `technicalVisualization` (`"none"`, `"uv-checker"`, `"wireframe"`,
-`"uv-checker+wireframe"`), `technicalVisualizationNote`, `uvCheckerDensity`,
-`wireframeColor` y `wireframeEdgeCount`. Con los toggles OFF, el render y su
-hash de píxeles permanecen idénticos a los anteriores; los GLB, el payload de
-Basis Lab y el mapping semántico no cambian.
-
-### Intake de bundle oficial GNM
-
-La siguiente slice añade una puerta de procedencia y licencia para un futuro
-bundle oficial, sin descargarlo ni redistribuirlo. El ejemplo es un manifest
-`proposed` con placeholders y `runtimeAllowed: false`:
-
-```bash
-npm run validate:gnm-official-example
-npm run test:gnm-official-bundle
-python3 tools/gnm/validate_official_bundle.py /path/to/official-bundle.json
-```
-
-Los estados son `proposed` -> `reviewed` -> `accepted`. La aceptación exige
-archivos completos y hasheados para mesh, UVs, materiales/texturas, ojos,
-dientes y lengua, topología consistente, evidencia de licencia y una decisión
-humana explícita de redistribución. No se infiere permiso desde la licencia del
-repositorio. No se añaden UVs, texturas, ojos, dientes o lengua al
-navegador/runtime antes de `accepted`; esta fase no aceptó ni redistribuyó
-assets oficiales. El contrato completo está en
-[`docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md`](docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md).
-
-La integración aceptada usa el repositorio `https://github.com/google/GNM` en la
-revisión `8ea2906a31aab7f8b550e33968f3c0a86051a92d`, archive SHA-256
-`2aabb75107ed5a3c7be45ba93700fbfa7e1333c646054ff9dc9d267dd02b730d`, y NPZ
-SHA-256 `03649b09d1f756c94e8b3db709edcfa07ac367de0ba35e2d04c985ebcadbaf14`.
-La autorización registrada es `project-owner`, `2026-08-12`,
-`sports-face-mvp-noncommercial-mvp-authorization`. El GLB contiene `17.821`
-vértices fuente, `35.324` triángulos, `17.662` quads, seis componentes, 253
-direcciones de identidad y 383 de expresión. Las UVs oficiales `triangle_uvs`
-se conservan con corner-split; no se colapsan seams. El mapeo semántico queda
-desactivado por seguridad y la identidad permanece invariante. El runtime usa el
-render GLB optimizado (`18,437` vértices render, `35,324` triángulos); el GLB
-canónico de `138,998,408` bytes permanece archivado y sin cambios. Su payload de
-bases (`253` identidad, `383` expresión) se omite del asset render y queda
-offline/opcional hasta diseñar una integración segura.
-
-El siguiente paso conservador es un diagnóstico offline, no una integración de
-bases. `npm run diagnose:gnm-official-basis` genera un reporte determinista que
-valida los payloads float32, nombres, reconstrucciones zero/one-hot y mappings
-`sourceVertexId` de las seis componentes. El resultado actual confirma `253`
-identidades, `383` expresiones y `17.821` vértices, con valores finitos y
-correspondencia byte-a-byte. Mantiene explícitamente `semanticMapping: disabled`
-y `runtimeBasisLoaded: false`; no cambia FaceDNA, morphology, render-router,
-browser basis loading ni ninguno de los dos GLB.
-
-```bash
-npm run build:gnm-official
-npm run validate:gnm-official
-npm run build:gnm-official-render
-npm run validate:gnm-official-render
-npm run test:gnm-official-render
-npm run diagnose:gnm-official-basis
-npm run test:gnm-official-basis
-npm run capture:gnm-official-smoke
-```
-
-#### Fase 6: evidencia cuantitativa de semántica
-
-La Fase 6 es una herramienta offline, no una integración runtime. Lee el GLB
-canónico, metadata, diagnóstico, mapa provisional, definiciones FaceDNA y
-morfología, y genera el reporte versionado
-[`tools/gnm/work/gnm-official-semantic-evidence.json`](tools/gnm/work/gnm-official-semantic-evidence.json):
-
-```bash
-npm run analyze:gnm-official-semantics
-npm run test:gnm-official-semantics
-```
-
-El reporte mide las `253` bases de identidad y `383` de expresión sobre `17.821`
-vértices, energías por base/familia/componente, grupos técnicos por prefijo y
-regiones provisionales con radio `0.01` en unidades de la malla. La energía es
-la suma de desplazamientos al cuadrado; no hay normalización por área ni
-afirmaciones anatómicas. Los grupos son descriptivos, no semánticos. El campo
-`source.evidenceBaseRevision` identifica la revisión del proyecto cuyo snapshot
-de código fue analizado, no el commit futuro que contiene el reporte.
-
-La conclusión conservadora es `semanticMapping: "unestablished"` y
-`runtimeBasisLoaded: false`: no existe un dataset emparejado FaceDNA →
-coeficiente/objetivo GNM. Esta fase no cambia FaceDNA, morphology, runtime,
-GLBs ni Basis Lab; Basis Lab permanece numérico/técnico.
-
-#### Fase 7A: dataset offline de calibración humana
-
-La Fase 7A define un dataset pequeño y determinista de anotaciones humanas.
-El template `tools/gnm/work/gnm-calibration-dataset.json` está vacío:
-**sin muestras no existe mapeo**. Las etiquetas son libres para revisión
-técnica, no verdad anatómica. Se guardan SF2 canónico, metadatos estables,
-coeficientes técnicos, hashes y split; no geometría, arrays de bases, secretos,
-PII ni rutas absolutas. `semanticMapping` permanece `unestablished`,
-`runtimeBasisLoaded` es `false` y la aprobación es falsa por defecto.
-
-```bash
-npm run calibration:gnm-init
-npm run calibration:gnm-validate
-npm run calibration:gnm-test
-npm run calibration:gnm-validate-stats
-npm run calibration:gnm-test-stats
-```
-
-#### Fase 7B: validación estadística offline
-
-El reporte canónico `tools/gnm/work/gnm-calibration-validation.json` confirma el
-estado actual `insufficient_data`: el template no tiene muestras y todos los
-conteos/estadísticas son cero. No inventa R² ni correlaciones y mantiene
-`semanticMapping: unestablished`, `runtimeBasisLoaded: false` y
-`mappingActivation: false`. La siguiente acción humana es añadir muestras reales
-revisadas mediante Fase 7A. El gate futuro exige 40 train, 10 validation, 20
-muestras revisadas aprobadas, 5 seeds y 5 códigos distintos, además de R² held-out
->= 0.80 cuando existan outcomes, validación cruzada, consistencia bilateral,
-pruebas one-hot causales, controles negativos, aprobación humana y metadata de
-mapeo versionada.
-
-Ejemplo de anotación humana (no ejecutado durante esta fase):
-
-```bash
-python3 tools/gnm/calibration_dataset.py add \
-  --sample-id review-0001 \
-  --face-code 'SF2~sports/default-v2~m0uth~1ai~epw9f3~m~n~b91c1c~f8fafc~1uf7aoh' \
-  --coefficients 0 0 0 0 0 0 0 0 \
-  --label 'technical review label' --status unreviewed --annotator-role technical
-```
-
-El split determinista usa `sample-id-sha256-v1` y semilla
-`phase-7a-calibration`; `0..7` es `train` y `8..9` es `validation`.
-
-```bash
-python3 tools/gnm/calibration_dataset.py split \
-  --dataset tools/gnm/work/gnm-calibration-dataset.json \
-  --output-dir /tmp/gnm-calibration-splits
-```
-
-## Estado de GNM
-
-GNM es **solo offline** en este proyecto. El navegador y el runtime no instalan, importan ni ejecutan GNM. El límite entre ambos es un JSON portable: el pipeline offline genera `tools/gnm/work/gnm-morphology-pack.json`, y `npm run build:offline` lo inyecta en `src/app.bundle.js` y escribe también `tools/gnm/work/gnm-morphology-pack.js` para la entrada modular.
-
-El estado actual del pack es:
-
-- 200 cabezas muestreadas de forma determinista.
-- 31 landmarks del mapa de vértices actual, todos provisionales.
-- 14 features morfológicas: anchuras de cráneo, mejillas, mandíbula y barbilla; alturas y proporciones faciales; separación, anchura y altura de ojos; longitud y anchura de nariz; anchura de boca; separación de orejas; y pendiente de sienes.
-- 8 familias agrupadas con clustering determinista.
-- Mapeo semántico `face-dna-shape-v1` basado únicamente en `head` y `faceProportion`, con reglas explícitas y revisadas. No es un mapeo aprendido ni se deriva de la semilla.
-- Microexpresiones deterministas compartidas por los dos estilos Morph Lab.
-
-La puerta de calidad de landmarks es deliberadamente report-only: amplía la
-evidencia con excursiones de proyección, extremos de malla cruda y procedencia
-de nombres de archivo, pero no corrige IDs ni demuestra corrección anatómica.
-El reporte siempre conserva `provisionalReview: required` y
-`anatomicalCorrectness: not_proven`. El drift actual entre `heads-test.npz` en
-el mapa y `gnm-heads-200.npz` en los artefactos se informa como WARN porque los
-landmarks canónicos y retenidos son idénticos byte a byte.
-
-### Fase 2: exportación GLB offline
-
-Con el entorno externo de GNM activado (debe aportar NumPy), exporta y valida la
-malla template retenida:
-
-```bash
-npm run build:gnm-glb
-npm run test:gnm-glb
-python tools/gnm/validate_gnm_glb.py tools/gnm/work/head.glb
-```
-
-El resultado actual contiene 17.821 vértices, 35.324 triángulos y 105.972
-índices. El NPZ retenido no contiene UVs, texturas, ojos, dientes, lengua ni
-morph targets; esos datos solo deben incorporarse desde datos oficiales de GNM
-en una fase posterior. `npm test` no ejecuta este paso porque requiere NumPy y
-GNM no es una dependencia del proyecto.
-
-La provisionalidad del mapa es un límite conocido: los índices fueron seleccionados como anclajes de superficie a partir de inspección de la malla y varias zonas no tienen etiquetas anatómicas semánticas. Cualquier promoción de un pack debe revisar el mapa y los datos generados antes de incorporarlos al runtime.
-
-### Regeneración reproducible del pack
-
-El proyecto no instala GNM como dependencia npm o Python. Instala GNM Shape desde su repositorio oficial en un entorno separado de Python 3.13 y actívalo solo para la generación offline. Mantén ese checkout y su entorno fuera de este repositorio.
-
-Desde la raíz del proyecto y con ese entorno activado, genera primero un candidato:
-
-```bash
-source /path/to/gnm/shape/.venv/bin/activate
-python tools/gnm/build_runtime_pack.py \
-  --count 200 --seed 400 --sigma 1.15 --families 8
-```
-
-El candidato queda en `tools/gnm/work/gnm-morphology-pack-200.json`. Revisa `tools/gnm/work/gnm-vertex-map.json`, la muestra de landmarks y el candidato. La primera ejecución no reemplaza el pack canónico.
-
-Después de la revisión humana, promueve explícitamente el candidato y regenera los artefactos:
-
-```bash
-python tools/gnm/build_runtime_pack.py \
-  --count 200 --seed 400 --sigma 1.15 --families 8 --promote
-npm run build:offline
-npm test
-npm run test:gnm-quality
-npm run refresh:release
-python3 -m json.tool docs/release-manifest-v040.json >/dev/null
-```
-
-`--promote` es obligatorio para copiar el candidato al pack canónico. `npm run build:offline` es el paso que cruza la frontera hacia el navegador. `npm run refresh:release` actualiza los hashes del manifiesto operativo. Para comprobar la instantánea distribuida, ejecuta:
-
-```bash
-sha256sum -c SHA256SUMS.txt
-```
-
-La verificación completa de `SHA256SUMS.txt` solo es válida cuando el archivo de checksums corresponde exactamente a la instantánea que se está comprobando. Después de cambiar archivos operativos, actualiza los metadatos de release antes de publicar una nueva instantánea.
-
-## Qué incluye el MVP
-
-- FaceDNA v2 con identidad y apariencia codificadas en un código SF2 reproducible.
-- Variables de tipo `sprite`, `palette` y `toggle`, con edición individual de rasgos.
-- Semilla determinista, importación y exportación del código facial.
-- Separación entre identidad permanente, apariencia mutable, edad y equipación.
-- Composición por capas con gráficos vectoriales provisionales propios y exportación PNG.
-- Envejecimiento y galería de identidades para revisar variedad.
-- Renderizado Canvas 2D, SVG intermedio para Morph Lab, WebGL2 opt-in y bundle offline reproducible.
-- Generador 3D de jugadores GNM (opt-in): identidad GNM oficial por jugador condicionada por FaceDNA, apariencia procedural, expresiones oficiales y galería 3D.
-
-## Arquitectura y mapa de archivos
-
-| Ruta | Responsabilidad |
+</details>
+
+<details>
+<summary><strong>Eyes</strong>: lashes, tear line and iris detail for four iris colours</summary>
+
+![Eye close-ups](docs/gnm-3d-player/realism-v2/readme-eyes.jpg)
+
+</details>
+
+Full-resolution evidence, techniques and known limits are in the [realism notes](docs/gnm-3d-player/REALISM.md). This is stylized real-time rendering, not photorealism.
+
+## What the renderer does
+
+| Area | Technique |
 | --- | --- |
-| `index.html` | Entrada distribuible con el bundle clásico y el pack GNM embebido. |
-| `index.module.html` | Entrada de desarrollo modular; carga el pack portable y `src/app.js`. |
-| `src/face-model.js` | FaceDNA/SF2, bitfield, variables, PRNG, semillas, perfiles y envejecimiento. |
-| `src/renderer.js` | Renderizador Canvas original y assets vectoriales provisionales. |
-| `src/toon-renderer.js` | Composición Toon Polish y mapping de sus componentes. |
-| `src/toon-head-assets.js` | Datos vectoriales del subconjunto ToonHead y assets deportivos. |
-| `src/morphology.js` | Features, familias, landmarks, selección semántica GNM y microexpresiones. |
-| `src/morph-renderer.js` | Deformación local, composición SVG y renderizado de ambos estilos Morph Lab. |
-| `src/render-router.js` | Catálogo y selección de los ocho renderizadores. |
-| `src/webgl-renderer.js` | Renderer WebGL2 opt-in, parser GLB, textura de targets y fallback GNM SVG. |
-| `src/gnm-player-model.js` | Lógica pura del GNM 3D Player: prior composicional, condicionamiento por rasgos medidos, apariencia, expresiones, reconstrucción y medición. |
-| `src/gnm-player-renderer.js` | Renderer WebGL2 del GNM 3D Player: normales suaves, pintura procedural, pelo, gafas, camiseta, cámara, miniaturas y fallback. |
-| `src/app.js` | Interfaz, controles, galería, persistencia de preferencias y exportación. |
-| `src/app.bundle.js` | Bundle generado para abrir `index.html` directamente. |
-| `tools/gnm/` | Pipeline completamente offline, validadores, esquemas y documentación GNM. |
-| `tools/gnm/work/` | Pack canónico, candidato, mapa de vértices y artefactos generados. |
-| `tools/gnm/capture_webgl_ab.py` | Captura Playwright bounded de la comparación SVG/WebGL2. |
-| `tools/gnm/build_player_generator.py` | Builder offline del payload del GNM 3D Player (NumPy + h5py). |
-| `tools/gnm/validate_player_generator.py` | Validador stdlib del payload del GNM 3D Player. |
-| `tools/gnm/capture_player_gallery.py` | Captura Playwright de la galería y los pares de etiquetas del GNM 3D Player. |
-| `tools/gnm/validate_webgl_ab.py` | Validador stdlib-only del manifest de evidencia. |
-| `scripts/build-offline-bundle.mjs` | Inyecta el JSON portable en el bundle clásico y la entrada modular. |
-| `scripts/refresh-release-manifest.mjs` | Actualiza hashes en `docs/release-manifest-v040.json`. |
-| `tests/` | Pruebas del modelo, baseline, Toon Polish, Morph Lab y herramientas GNM. |
-| `baseline/` | Baseline congelado de perfiles SF2 y migraciones para regresión. |
-| `docs/` | Especificaciones, aceptación, comparativas visuales y manifiestos. |
+| Lighting | Soft key-light shadows (PCSS), per-player GPU ambient occlusion, procedural studio environment projected to spherical harmonics |
+| Skin | Pre-integrated subsurface scattering, dual specular lobes, regional colour (redness, under-eye darkening, beard shadow) |
+| Eyes | Clumped eyelashes, tear line, caruncle, iris fibres and limbal ring, corneal catchlights |
+| Hair | Strand grooms with head, ear, neck and shoulder collisions, Marschner-style shading and strand shadows |
+| Beard and eyebrows | Strands with regional growth direction, soft edges and the same fibre shading as the hair |
+| Camera | Offscreen 4× MSAA HDR pipeline, filmic tone mapping, subtle depth of field, grain, vignette and studio backdrop |
 
-## Verificación
+Strands and ambient occlusion are generated once per player and cached, so orbiting the camera only redraws.
 
-Requisitos de desarrollo: un navegador moderno, Node.js para las pruebas/builds y Python 3 para las herramientas offline. No hay dependencias npm de runtime.
+## Run
 
-```bash
-npm test
-npm run build:offline
+```sh
+npm run serve
+```
+
+Open **http://localhost:8080/**. Both `index.html` (generated bundle) and `index.module.html` (ES modules) require HTTP and a browser with WebGL2. Opening `file://` is not supported: the player fetches local binary assets. Windows users can run `iniciar-servidor.bat`.
+
+Generate a player, edit FaceDNA traits, change age, presentation, kit and micro-expression, orbit/zoom the camera, select a gallery player, share an SF2 code or export a PNG. Renderer preferences from older versions are ignored; existing FaceDNA/SF2 data remains supported.
+
+Expand **Catálogo de estilos** for 12 hairstyles, 6 beard styles and 8 eyebrow styles with actual-render thumbnails. Local controls preserve the rest of the face. SF2 codes remain supported, but the corrected v2-local mapping can render older codes differently. See [feature isolation and catalog evidence](docs/gnm-3d-player/feature-isolation/README.md).
+
+When WebGL2 or required assets are unavailable, the application displays a persistent error and disables PNG export. It never silently substitutes another renderer. Gallery canvases are 2D copies of actual 3D renders, not a separate portrait implementation.
+
+## Develop and verify
+
+```sh
+npm run build:offline                 # regenerate src/app.bundle.js (still requires HTTP assets)
+npm test                             # model, 3D player, lighting, eyes, post, hair, asset and offline pipeline tests
+npm run test:browser-smoke            # Playwright + Chromium; both entrypoints and failures
 npm run refresh:release
 npm run refresh:checksums
-sha256sum -c SHA256SUMS.txt
 ```
 
-`npm run refresh:checksums` recalcula `SHA256SUMS.txt` para todos los archivos versionados (conserva el orden existente e inserta los nuevos). Para un puntero Git LFS registra el `oid` del objeto real, por lo que la comprobación completa pasa cuando el GLB canónico está materializado.
+The browser smoke needs `uv`, Python, Playwright and Chromium (`CHROMIUM_PATH` can override `/usr/bin/chromium`). The npm browser command uses the installed webapp-testing server helper; alternatively start `npm run serve` and run `python3 tests/browser_smoke.py` in an environment with Playwright.
 
-`npm test` cubre el modelo FaceDNA, el baseline congelado, Toon Polish, Morph Lab y los validadores del pipeline GNM. Para inspeccionar los comandos que el orquestador ejecutaría sin instalar GNM ni modificar archivos:
+To regenerate the screenshots, keep `npm run serve` running and use `tools/gnm/capture_player_gallery.py` (gallery) or `tools/gnm/capture_realism_closeups.py --output <png> [--mode ...]` (close-ups, lighting, eyes, post effects, hair and grooming). The [GNM tools guide](tools/gnm/README.md) lists every mode.
 
-```bash
-python tools/gnm/build_runtime_pack.py --dry-run
-```
+| Area | Files |
+| --- | --- |
+| Profile format and compatibility | `src/face-model.js` |
+| Player geometry and appearance | `src/gnm-player-model.js`, `src/player-expression.js` |
+| WebGL2 rendering and shared thumbnail context | `src/gnm-player-renderer.js` |
+| Shadows, ambient occlusion, environment and skin shading math | `src/gnm-player-lighting.js` |
+| Eyes and eyelashes | `src/gnm-player-eyes.js` |
+| Tone mapping, depth of field and grain | `src/gnm-player-post.js` |
+| Strand scalp hair | `src/gnm-player-hair.js` |
+| Strand beard and eyebrows | `src/gnm-player-facial-hair.js` |
+| GLB validation and SHA-256 | `src/gnm-assets.js` |
+| Single rendering route and PNG export | `src/render-router.js` |
+| UI | `src/app.js`, `index.html`, `index.module.html` |
+| Offline generation and provenance | [GNM tools](tools/gnm/README.md) |
 
-La puerta de calidad determinista del pack canónico se puede ejecutar de forma
-independiente con `npm run test:gnm-quality`. Solo usa la biblioteca estándar de
-Python; el chequeo de límites de malla se omite claramente si falta el `.npz`.
+## Assets and licenses
 
-La comparación bounded de escalas se mantiene separada de esa puerta canónica:
+Runtime downloads only `gnm-official-head-render.glb`, `gnm-player-generator.json` and `gnm-player-generator.bin` from `tools/gnm/work/`. Materials, hair and grooming are generated in code; no textures or external assets are downloaded. The canonical full GNM asset and offline source datasets are preserved but are not loaded by the application. Some canonical-asset regeneration tests explicitly skip when the Git LFS object is absent; this does not skip player runtime validation.
 
-```bash
-npm run test:gnm-quality-scales
-npm run compare:gnm-quality-scales
-npm run plan:gnm-quality-scales:400
-npm run compare:gnm-quality-scales:400
-```
-
-La evidencia actual está en [`docs/gnm-quality-scale-comparison.json`](docs/gnm-quality-scale-comparison.json).
-El candidato real de 400 muestras produce `warn`: cero duplicados exactos y dos
-reruns deterministas byte-idénticos, pero balance `22..72`, vecino normalizado
-mínimo `0.1899833723` y delta máximo de centroides `0.123909`. La comparación
-solo mide calidad morfológica estadística a otra escala; no promueve, no cambia
-runtime/FaceDNA/SF2 ni demuestra anatomía. La promoción futura exige revisión
-humana explícita.
-
-El runner usa GNM/NumPy únicamente desde el entorno externo indicado por
-`GNM_PYTHON`. Si falta, genera un reporte `unavailable` acotado sin fabricar
-packs ni métricas.
-
-La auditoría de landmarks de la fase 1 se ejecuta con `npm run test:gnm-landmarks`.
-También empieza con la biblioteca estándar y solo usa NumPy cuando está presente
-`tools/gnm/work/gnm-heads-200.npz`; su resultado esperado es `PASS with WARN`.
-
-La aceptación del GLB de la fase 2 está descrita en
-[`docs/ACCEPTANCE_GNM_GLB.md`](docs/ACCEPTANCE_GNM_GLB.md). El validador usa solo
-la biblioteca estándar y comprueba el contenedor GLB, los chunks, las escenas,
-los accesores, los bounds y los límites del BIN.
-
-La aceptación visual reproducible de las ocho familias GNM se captura fuera del
-release con el procedimiento de [`docs/ACCEPTANCE_GNM_GALLERY.md`](docs/ACCEPTANCE_GNM_GALLERY.md):
-
-```bash
-python /home/nico/.agents/skills/webapp-testing/scripts/with_server.py \
-  --server "python3 -m http.server 8080" --port 8080 -- \
-  python3 tools/gnm/capture_acceptance_gallery.py
-```
-
-La aceptación visual A/B SVG/WebGL2 se captura con `npm run capture:gnm-webgl-ab`
-y se valida con `npm run validate:gnm-webgl-ab`; no forma parte de `npm test`.
-
-## Licencia, atribución y clean room
-
-El código de este repositorio se distribuye bajo **GNU General Public License v2.0 only**. Consulta [`LICENSE`](LICENSE) para los términos completos.
-
-- La arquitectura funcional toma como referencia el generador de caras de compañía de OpenTTD: campos compactos, variables ordenadas, paletas y toggles. No se redistribuyen sprites originales de OpenTTD. La referencia y sus avisos están en [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
-- ToonHead es un subconjunto curado y modificado bajo **CC BY 4.0**. La atribución, fuente y modificaciones están en [`third_party/toon-head/ATTRIBUTION.md`](third_party/toon-head/ATTRIBUTION.md).
-- GNM no se redistribuye. [`third_party/GNM_REFERENCE.md`](third_party/GNM_REFERENCE.md) documenta la referencia externa y sus límites. El pack portable generado offline no convierte a GNM en una dependencia de runtime; revisa siempre la licencia y versión de la instalación externa que uses.
-- Los assets propios se consideran provisionales. No se deben inferir derechos adicionales ni compatibilidad comercial a partir de la licencia GPL del repositorio cuando se combinan materiales con licencias distintas.
-
-Si el producto final debe ser propietario, no incorpores directamente este prototipo GPL ni sus assets licenciados de forma distinta. [`CLEAN_ROOM_SPEC.md`](CLEAN_ROOM_SPEC.md) define el comportamiento observable para una reimplementación independiente y neutral. Una separación clean-room sólida requiere que el equipo que implemente la versión final trabaje solo con esa especificación, ejemplos y requisitos visuales, sin estudiar el código fuente de este prototipo ni el código GPL de referencia. Este documento no sustituye asesoramiento jurídico.
-
-## Próximos pasos
-
-- GNM 3D Player: validar la tabla etiqueta → rasgo con revisión humana (pipeline de calibración de la Fase 7), sustituir las aproximaciones de pelo largo/trenzas por geometría propia (hair cards) y decidir si el estilo 3D pasa a ser el predeterminado.
-
-1. Revisar visualmente los 31 landmarks provisionales contra la malla frontal y corregir el mapa de vértices.
-2. Regenerar y validar el pack GNM después de cada cambio del mapa, manteniendo la promoción explícita.
-3. Comparar el pack medido con el starter pack analítico y evaluar diversidad, estabilidad y casi duplicados en muestras mayores.
-4. Sustituir progresivamente los assets temporales por arte deportivo propio y documentar sus licencias.
-5. Ampliar la cobertura visual y de aceptación para los cinco renderizadores y las microexpresiones.
-6. Hacer una revisión legal antes de cualquier distribución comercial o reimplementación propietaria.
+Project code: GPL-2.0-only. Official GNM-derived assets: Apache-2.0 with recorded project-owner noncommercial authorization. No official texture bundle is included. See [third-party notices](THIRD_PARTY_NOTICES.md), [FaceDNA specification](docs/FACE_DNA_V2_SPEC.md) and [3D player acceptance](docs/ACCEPTANCE_GNM_3D_PLAYER.md).

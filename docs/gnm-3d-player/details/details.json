@@ -1,0 +1,452 @@
+[
+  {
+    "label": "Skin 0 / Age 22",
+    "age": 22,
+    "skin": 0,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 0 / Age 40",
+    "age": 40,
+    "skin": 0,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.375,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 0 / Age 60",
+    "age": 60,
+    "skin": 0,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 1,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 4 / Age 22",
+    "age": 22,
+    "skin": 4,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 4 / Age 40",
+    "age": 40,
+    "skin": 4,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.375,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 4 / Age 60",
+    "age": 60,
+    "skin": 4,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 1,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 7 / Age 22",
+    "age": 22,
+    "skin": 7,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 7 / Age 40",
+    "age": 40,
+    "skin": 7,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.375,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Skin 7 / Age 60",
+    "age": 60,
+    "skin": 7,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 1,
+    "groomingStrands": {
+      "hair": 0,
+      "beard": 0,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Medium hair + full beard / yaw 0",
+    "age": 45,
+    "skin": 3,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.53125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 750,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Medium hair + full beard / yaw 0.5",
+    "age": 45,
+    "skin": 3,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.53125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 750,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Medium hair + full beard / yaw 1.45",
+    "age": 45,
+    "skin": 3,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.53125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 750,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Curly + stubble / yaw 0",
+    "age": 32,
+    "skin": 1,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 379,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Curly + stubble / yaw 0.5",
+    "age": 32,
+    "skin": 1,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 379,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  },
+  {
+    "label": "Curly + stubble / yaw 1.45",
+    "age": 32,
+    "skin": 1,
+    "fixedGroomingAge": 30,
+    "identity": [
+      0.454197,
+      0.485721,
+      -0.555118,
+      0.756513,
+      -0.21615,
+      -0.303262,
+      -0.89484,
+      1.009526
+    ],
+    "wrinkleStrength": 0.125,
+    "groomingStrands": {
+      "hair": 1500,
+      "beard": 379,
+      "brow": 69
+    },
+    "collar": {
+      "model": "fitted-ribbed-crew-neck",
+      "plane": [
+        0.1531053224037027,
+        -0.008785018594763935
+      ],
+      "ringVertices": 128
+    }
+  }
+]

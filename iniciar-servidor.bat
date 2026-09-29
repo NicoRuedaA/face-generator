@@ -12,5 +12,5 @@ if %errorlevel%==0 (
     python -m http.server 8080
     goto :eof
 )
-echo No se encontro Python. Abre index.html directamente con doble clic.
+echo No se encontro Python. Instala Python y vuelve a ejecutar este servidor; el visor 3D requiere HTTP.
 pause
