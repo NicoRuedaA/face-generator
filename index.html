@@ -9,17 +9,16 @@
 <body>
   <header class="topbar">
     <div>
-      <p class="eyebrow">PROTOTIPO DE RETRATOS 2D Y 3D</p>
+      <p class="eyebrow">PROTOTIPO DE RETRATOS 3D</p>
       <h1>Sports Face MVP</h1>
     </div>
-    <div class="license-pill">Fase 3 · Morph Lab · v0.4.0</div>
+    <div class="license-pill">Sports GNM 3D Player v1</div>
   </header>
 
   <main class="layout">
     <section class="portrait-panel card">
-      <canvas id="portrait" width="768" height="768" aria-label="Retrato generado en Canvas 2D"></canvas>
-      <canvas id="portrait-webgl" width="768" height="768" aria-label="Retrato generado con WebGL2" hidden></canvas>
       <canvas id="portrait-gnm3d" width="768" height="768" aria-label="Retrato 3D generado con la identidad GNM oficial" hidden></canvas>
+      <p id="render-status" role="status">Cargando retrato 3D…</p>
       <div id="webgl-camera-controls" class="webgl-camera-controls" hidden>
         <button id="reset-webgl-camera" class="button small" type="button">Restablecer cámara</button>
         <small>Inspección: arrastra para orbitar y usa la rueda para acercar o alejar.</small>
@@ -27,13 +26,12 @@
       <div class="primary-actions">
         <button id="new-player" class="button primary">Nuevo jugador</button>
         <button id="age-five" class="button">+5 años</button>
-        <button id="download-png" class="button">Exportar PNG</button>
+        <button id="download-png" class="button" disabled>Exportar PNG</button>
       </div>
       <p class="caption">Retrato deportivo neutral: la identidad permanece estable y la edad ajusta detalles sin cambiar la morfología permanente.</p>
-       <aside id="toon-attribution" class="attribution" hidden>
-        <strong>Arte ToonHead</strong> de <a href="https://www.johanmelin.com" target="_blank" rel="noreferrer">Johan Melin</a>,
-        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>.
-         Subconjunto modificado y neutralizado para este prototipo deportivo. Morph Lab añade landmarks y deformación local; GNM Official 3D usa materiales procedurales neutros y no incluye texturas oficiales. GNM 3D Player genera cada cabeza con la identidad GNM oficial (Apache-2.0) y pintura procedural, sin texturas oficiales.
+      <aside class="attribution">
+        Geometría derivada de GNM Head (<a href="./tools/gnm/work/LICENSE-GNM.txt">Apache-2.0</a>).
+        Pintura, cabello y equipación procedurales; sin texturas oficiales.
       </aside>
     </section>
 
@@ -67,12 +65,7 @@
             <option value="feminine">Femenina</option>
           </select>
         </label>
-        <label class="field wide">
-          <span>Estilo de renderizado</span>
-          <select id="render-style"></select>
-          <small>Este selector no se guarda dentro de FaceDNA ni modifica el código SF2.</small>
-        </label>
-        <label id="expression-mode-field" class="field wide" hidden>
+        <label id="expression-mode-field" class="field wide">
           <span>Microexpresión</span>
           <select id="expression-mode">
             <option value="auto">Automática</option>
@@ -81,27 +74,16 @@
             <option value="soft">Relajada</option>
             <option value="focused">Concentrada</option>
           </select>
-          <small>Se aplica en Morph Lab y en GNM 3D Player (presets oficiales de expresión); no modifica FaceDNA ni el código SF2.</small>
+          <small>Se aplica en GNM 3D Player (presets oficiales de expresión); no modifica FaceDNA ni el código SF2.</small>
         </label>
-        <label id="landmark-field" class="field wide landmark-toggle" hidden>
-          <span>Diagnóstico morfológico</span>
-          <span class="checkbox-line"><input id="show-landmarks" type="checkbox"> Mostrar landmarks 2D sobre el retrato</span>
-          <small>La superposición es solo de depuración y no se incluye en FaceDNA.</small>
+        <label class="field wide">
+          <span>Prueba de peinado</span>
+          <select id="hairstyle-prototype" aria-describedby="hairstyle-prototype-note">
+            <option value="original">Peinado del perfil</option>
+            <option value="side-part">Raya lateral con volumen · prototipo</option>
+          </select>
+          <small id="hairstyle-prototype-note">Solo esta sesión; no se guarda en el código facial. Activa «Pelo visible» en el editor para verlo.</small>
         </label>
-        <section id="basis-lab-controls" class="basis-lab-panel field wide" hidden>
-          <strong>GNM Basis Lab · technical coefficients</strong>
-          <small>Bounded to [-0.25, 0.25]. These controls do not mutate FaceDNA or SF2.</small>
-          <div class="basis-grid"></div>
-          <button id="reset-basis-lab" class="button small" type="button">Reset Basis Lab</button>
-        </section>
-        <section id="technical-visualization-controls" class="technical-visualization-panel field wide" hidden>
-          <strong>Technical visualization · inspection aid</strong>
-          <small>Procedural debug overlays drawn over the neutral material. Not an official texture or material; does not mutate FaceDNA or SF2.</small>
-          <label class="checkbox-line"><input id="uv-checker-toggle" type="checkbox"> UV checker (exact TEXCOORD_0)</label>
-          <label class="checkbox-line"><input id="wireframe-toggle" type="checkbox"> Wireframe edges</label>
-          <small>State: <span id="technical-visualization-state">none</span></small>
-        </section>
-
         <label class="field colour-field">
           <span>Equipación principal</span>
           <input id="kit-primary" type="color" value="#b91c1c">
@@ -113,6 +95,11 @@
         </label>
       </div>
 
+      <section class="catalog-panel" aria-label="Catálogo de estilos">
+        <h2>Catálogo de estilos</h2>
+        <p class="catalog-note">Miniaturas sobre una cara de referencia. Al seleccionar un estilo, se aplica a tu jugador sin cambiar su identidad. Peinados procedurales; trenzas y largos son aproximaciones.</p>
+        <div id="style-catalogs"></div>
+      </section>
       <details open>
         <summary>Editor de rasgos</summary>
         <div id="feature-controls" class="feature-grid"></div>

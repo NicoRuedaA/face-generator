@@ -79,7 +79,7 @@ def main() -> int:
 
     render_metadata = json.loads((ROOT / "tools/gnm/work/gnm-official-head-render.json").read_text(encoding="utf-8"))
     assert render_metadata["basisIncluded"] is False
-    runtime_source = (ROOT / "src/webgl-renderer.js").read_text(encoding="utf-8")
+    runtime_source = (ROOT / "src/gnm-assets.js").read_text(encoding="utf-8")
     assert f'WEBGL_OFFICIAL_ASSET_URL = "{RUNTIME_URL}"' in runtime_source
     if not regenerate:
         print(skip_message("official GNM basis tests", "committed report dimensions/names, reconstruction flags, source mappings, canonical hash, render-only boundary, runtime URL"))

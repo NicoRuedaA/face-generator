@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 /*
- * Refreshes SHA256SUMS.txt for every tracked file of the current snapshot.
+ * Refreshes SHA256SUMS.txt for every tracked or new non-ignored file of the current snapshot.
  * Existing lines keep their order; new files are inserted by a stable
  * case-insensitive key and removed files are dropped. A Git LFS pointer is
  * recorded with the pointer's oid (the SHA-256 of the real object), so
@@ -34,7 +34,7 @@ function compareKeys(left, right) {
   return 0;
 }
 
-const tracked = execFileSync("git", ["ls-files", "-z"], { cwd: root, encoding: "utf8" })
+const tracked = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], { cwd: root, encoding: "utf8" })
   .split("\0")
   .filter((filePath) => filePath && !excluded.has(filePath) && fs.existsSync(path.join(root, filePath)));
 const trackedSet = new Set(tracked);
@@ -49,4 +49,4 @@ for (const filePath of tracked.filter((item) => !existing.includes(item)).sort(c
   ordered.splice(index === -1 ? ordered.length : index, 0, filePath);
 }
 fs.writeFileSync(checksumsPath, `${ordered.map((filePath) => `${digest(filePath)}  ${filePath}`).join("\n")}\n`);
-console.log(`Updated SHA256SUMS.txt with ${ordered.length} tracked files.`);
+console.log(`Updated SHA256SUMS.txt with ${ordered.length} project files.`);

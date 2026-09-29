@@ -1,14 +1,13 @@
 # Aceptación: GNM 3D Player (Fase 8)
 
-El estilo opt-in `sports/gnm-3d-player-v1` convierte la cabeza GNM oficial en un
+El único estilo `sports/gnm-3d-player-v1` convierte la cabeza GNM oficial en un
 **generador 3D de jugadores**: cada perfil FaceDNA produce su propia geometría
 GNM Head v3.0 (un vector oficial de identidad), con tono de piel, iris, labios,
 cejas, barba, pelo, pecas, cicatriz, gafas, microexpresión y camiseta según su
 FaceDNA. GNM nunca se ejecuta en el navegador: un builder offline genera un
 payload portable y el runtime solo reconstruye combinaciones lineales.
 
-El estilo por defecto sigue siendo `sports/default-v2`; FaceDNA, SF2, el baseline
-congelado, el renderer oficial neutro y el Basis Lab no cambian.
+`sports/gnm-3d-player-v1` es el estilo único y predeterminado. Los renderers anteriores y el fallback SVG se han eliminado; FaceDNA y SF2 mantienen su compatibilidad. WebGL2 y HTTP son obligatorios.
 
 ## Camino rápido
 
@@ -139,8 +138,7 @@ identidad.
   mapping ACES.
 - Vista inicial 3/4 determinista; arrastre, rueda y `Restablecer cámara`.
 - La galería renderiza miniaturas 3D con un único contexto WebGL2 compartido.
-- Sin WebGL2, sin `fetch` (`file://`) o con hash/esquema inválido, se usa el
-  renderer 2D GNM SVG con el mismo aviso que los demás estilos WebGL.
+- Sin WebGL2, sin `fetch` (`file://`) o con hash/esquema inválido, se muestra un error persistente y se desactiva la exportación PNG. No existe fallback 2D.
 
 ## Criterios de aceptación
 
@@ -157,7 +155,7 @@ identidad.
 | Presets oficiales: HAPPY sube comisuras, SQUINT cierra ojos, SURPRISE sube cejas | Aprobado | `tests/gnm-player.test.mjs` |
 | Paridad con el catálogo FaceDNA (paletas, pelo, barba, cejas, etiquetas) | Aprobado | `tests/gnm-player.test.mjs` |
 | Navegador: diagnósticos, cámara, edad sin cambio de identidad, nariz y expresión, galería 3D | Aprobado | `tests/browser_smoke.py` |
-| `index.html` por HTTP renderiza 3D; por `file://` cae al SVG sin errores | Aprobado | comprobación Playwright |
+| Ambos entrypoints renderizan por HTTP; sin WebGL2 o con activos inválidos muestran error y bloquean PNG | Aprobado | `tests/browser_smoke.py` |
 | CI sin objetos LFS | Aprobado | `tools/gnm/canonical_asset.py` |
 
 ## Evidencia visual

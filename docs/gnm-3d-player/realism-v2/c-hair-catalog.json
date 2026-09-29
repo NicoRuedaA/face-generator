@@ -1,0 +1,5336 @@
+{
+  "cameras": [
+    {
+      "camera": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 0.0
+      },
+      "key": "front",
+      "label": "front"
+    },
+    {
+      "camera": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "key": "profile",
+      "label": "profile"
+    },
+    {
+      "camera": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.1416
+      },
+      "key": "back",
+      "label": "back"
+    }
+  ],
+  "detailPlayer": null,
+  "hairCatalog": [
+    {
+      "hair": 0,
+      "label": "short-01",
+      "prototype": false
+    },
+    {
+      "hair": 1,
+      "label": "short-02",
+      "prototype": false
+    },
+    {
+      "hair": 2,
+      "label": "short-03",
+      "prototype": false
+    },
+    {
+      "hair": 3,
+      "label": "short-04",
+      "prototype": false
+    },
+    {
+      "hair": 4,
+      "label": "medium-01",
+      "prototype": false
+    },
+    {
+      "hair": 5,
+      "label": "medium-02",
+      "prototype": false
+    },
+    {
+      "hair": 6,
+      "label": "curly-01",
+      "prototype": false
+    },
+    {
+      "hair": 7,
+      "label": "long-01",
+      "prototype": false
+    },
+    {
+      "hair": 8,
+      "label": "long-02",
+      "prototype": false
+    },
+    {
+      "hair": 9,
+      "label": "fade-01",
+      "prototype": false
+    },
+    {
+      "hair": 10,
+      "label": "braids-01",
+      "prototype": false
+    },
+    {
+      "hair": 11,
+      "label": "bun-01",
+      "prototype": false
+    },
+    {
+      "hair": 3,
+      "label": "side-part prototype",
+      "prototype": true
+    }
+  ],
+  "hairColours": [
+    [
+      0,
+      "black"
+    ],
+    [
+      4,
+      "blond"
+    ],
+    [
+      6,
+      "red"
+    ],
+    [
+      7,
+      "grey"
+    ]
+  ],
+  "kit": [
+    "#27405f",
+    "#e2e8f0"
+  ],
+  "mode": "hair-catalog",
+  "note": "Qualitative evidence rendered with WebGL2 (SwiftShader). Pixels depend on the GPU/driver; identity values are deterministic.",
+  "players": [
+    {
+      "age": 27,
+      "key": "hair",
+      "label": "Hair catalog identity",
+      "presentation": "neutral",
+      "seed": "realism-v2-hair",
+      "traits": {
+        "beard": 0,
+        "brows": 0,
+        "eyeColor": 1,
+        "freckles": 0,
+        "glasses": 0,
+        "hair": 0,
+        "hairColor": 0,
+        "hairVisible": 1,
+        "scar": 0,
+        "skin": 2
+      }
+    }
+  ],
+  "renderer": "sports/gnm-3d-player-v1",
+  "schema": "sports-face-gnm-3d-player-realism-closeups/v1",
+  "tileSize": 512,
+  "tiles": [
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~sg~1p2pxr6~r~n~27405f~e2e8f0~04vqo0w",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 123,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "buzz cut",
+        "guides": 1204,
+        "kinds": {
+          "baby": 123,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 0,
+          "scalp": 12477
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 37800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-01 / black / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 1,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~sg~1p2pxr6~r~n~27405f~e2e8f0~04vqo0w",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 123,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "buzz cut",
+        "guides": 1204,
+        "kinds": {
+          "baby": 123,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 0,
+          "scalp": 12477
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 37800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-01 / black / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 2,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~sg~1p2pxr6~r~n~27405f~e2e8f0~04vqo0w",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 123,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "buzz cut",
+        "guides": 1204,
+        "kinds": {
+          "baby": 123,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 0,
+          "scalp": 12477
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 37800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-01 / black / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 3,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-02",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~16p~1p2pxr6~r~n~27405f~e2e8f0~0md23y1",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 48,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "textured crop with fade",
+        "guides": 1193,
+        "kinds": {
+          "baby": 48,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 243,
+          "scalp": 12309
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 75600,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.818,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-02 / blond / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 4,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-02",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~16p~1p2pxr6~r~n~27405f~e2e8f0~0md23y1",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 48,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "textured crop with fade",
+        "guides": 1193,
+        "kinds": {
+          "baby": 48,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 243,
+          "scalp": 12309
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 75600,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.818,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-02 / blond / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 5,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-02",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~16p~1p2pxr6~r~n~27405f~e2e8f0~0md23y1",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 48,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 12600,
+          "widthScale": 1
+        },
+        "groom": "textured crop with fade",
+        "guides": 1193,
+        "kinds": {
+          "baby": 48,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 243,
+          "scalp": 12309
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 75600,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 12600,
+        "tipFadeStart": 0.818,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-02 / blond / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 6,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-03",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1du~1p2pxr6~r~n~27405f~e2e8f0~0k71dwo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 59,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 11700,
+          "widthScale": 1
+        },
+        "groom": "caesar crop",
+        "guides": 1220,
+        "kinds": {
+          "baby": 59,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 85,
+          "scalp": 11556
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 58500,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 11700,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-03 / red / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 7,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-03",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1du~1p2pxr6~r~n~27405f~e2e8f0~0k71dwo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 59,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 11700,
+          "widthScale": 1
+        },
+        "groom": "caesar crop",
+        "guides": 1220,
+        "kinds": {
+          "baby": 59,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 85,
+          "scalp": 11556
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 58500,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 11700,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-03 / red / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 8,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-03",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1du~1p2pxr6~r~n~27405f~e2e8f0~0k71dwo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 59,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 11700,
+          "widthScale": 1
+        },
+        "groom": "caesar crop",
+        "guides": 1220,
+        "kinds": {
+          "baby": 59,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 85,
+          "scalp": 11556
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 58500,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 11700,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-03 / red / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 9,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-04",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hf~1p2pxr6~r~n~27405f~e2e8f0~1qvjt9p",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 46,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1171,
+        "kinds": {
+          "baby": 46,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 118,
+          "scalp": 9736
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-04 / grey / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 10,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-04",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hf~1p2pxr6~r~n~27405f~e2e8f0~1qvjt9p",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 46,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1171,
+        "kinds": {
+          "baby": 46,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 118,
+          "scalp": 9736
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-04 / grey / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 11,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/short-04",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hf~1p2pxr6~r~n~27405f~e2e8f0~1qvjt9p",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 46,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1171,
+        "kinds": {
+          "baby": 46,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 118,
+          "scalp": 9736
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "short-04 / grey / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 12,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~sk~1p2pxr6~r~n~27405f~e2e8f0~11istcs",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 54,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 8100,
+          "widthScale": 1
+        },
+        "groom": "tousled medium",
+        "guides": 1243,
+        "kinds": {
+          "baby": 54,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 145,
+          "scalp": 7901
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 8100,
+        "tipFadeStart": 0.911,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-01 / black / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 13,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~sk~1p2pxr6~r~n~27405f~e2e8f0~11istcs",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 54,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 8100,
+          "widthScale": 1
+        },
+        "groom": "tousled medium",
+        "guides": 1243,
+        "kinds": {
+          "baby": 54,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 145,
+          "scalp": 7901
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 8100,
+        "tipFadeStart": 0.911,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-01 / black / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 14,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~sk~1p2pxr6~r~n~27405f~e2e8f0~11istcs",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 54,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 8100,
+          "widthScale": 1
+        },
+        "groom": "tousled medium",
+        "guides": 1243,
+        "kinds": {
+          "baby": 54,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 145,
+          "scalp": 7901
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 8100,
+        "tipFadeStart": 0.911,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-01 / black / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 15,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-02",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~16t~1p2pxr6~r~n~27405f~e2e8f0~0vioyvx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 53,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7600,
+          "widthScale": 1
+        },
+        "groom": "centre-parted bob",
+        "guides": 1262,
+        "kinds": {
+          "baby": 53,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 108,
+          "scalp": 7439
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 91200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7600,
+        "tipFadeStart": 0.941,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-02 / blond / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 16,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-02",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~16t~1p2pxr6~r~n~27405f~e2e8f0~0vioyvx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 53,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7600,
+          "widthScale": 1
+        },
+        "groom": "centre-parted bob",
+        "guides": 1262,
+        "kinds": {
+          "baby": 53,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 108,
+          "scalp": 7439
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 91200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7600,
+        "tipFadeStart": 0.941,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-02 / blond / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 17,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/medium-02",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~16t~1p2pxr6~r~n~27405f~e2e8f0~0vioyvx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 53,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7600,
+          "widthScale": 1
+        },
+        "groom": "centre-parted bob",
+        "guides": 1262,
+        "kinds": {
+          "baby": 53,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 108,
+          "scalp": 7439
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 91200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7600,
+        "tipFadeStart": 0.941,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "medium-02 / blond / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 18,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/curly-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1dy~1p2pxr6~r~n~27405f~e2e8f0~0p4omr8",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 40,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 5400,
+          "widthScale": 1
+        },
+        "groom": "tight curls",
+        "guides": 1220,
+        "kinds": {
+          "baby": 40,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 144,
+          "scalp": 5216
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 97200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 5400,
+        "tipFadeStart": 0.875,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "curly-01 / red / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 19,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/curly-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1dy~1p2pxr6~r~n~27405f~e2e8f0~0p4omr8",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 40,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 5400,
+          "widthScale": 1
+        },
+        "groom": "tight curls",
+        "guides": 1220,
+        "kinds": {
+          "baby": 40,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 144,
+          "scalp": 5216
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 97200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 5400,
+        "tipFadeStart": 0.875,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "curly-01 / red / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 20,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/curly-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1dy~1p2pxr6~r~n~27405f~e2e8f0~0p4omr8",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 40,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 5400,
+          "widthScale": 1
+        },
+        "groom": "tight curls",
+        "guides": 1220,
+        "kinds": {
+          "baby": 40,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 144,
+          "scalp": 5216
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 97200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 5400,
+        "tipFadeStart": 0.875,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "curly-01 / red / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 21,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hj~1p2pxr6~r~n~27405f~e2e8f0~1xajxgx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long straight",
+        "guides": 1328,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 94,
+          "scalp": 7061
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 100800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-01 / grey / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 22,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hj~1p2pxr6~r~n~27405f~e2e8f0~1xajxgx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long straight",
+        "guides": 1328,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 94,
+          "scalp": 7061
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 100800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-01 / grey / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 23,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hj~1p2pxr6~r~n~27405f~e2e8f0~1xajxgx",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long straight",
+        "guides": 1328,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 94,
+          "scalp": 7061
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 100800,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-01 / grey / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 24,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~so~1p2pxr6~r~n~27405f~e2e8f0~09touuw",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 44,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long wavy with side part",
+        "guides": 1363,
+        "kinds": {
+          "baby": 44,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 96,
+          "scalp": 7060
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 108000,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-02 / black / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 25,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~so~1p2pxr6~r~n~27405f~e2e8f0~09touuw",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 44,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long wavy with side part",
+        "guides": 1363,
+        "kinds": {
+          "baby": 44,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 96,
+          "scalp": 7060
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 108000,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-02 / black / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 26,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/long-02",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~so~1p2pxr6~r~n~27405f~e2e8f0~09touuw",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 44,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7200,
+          "widthScale": 1
+        },
+        "groom": "long wavy with side part",
+        "guides": 1363,
+        "kinds": {
+          "baby": 44,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 96,
+          "scalp": 7060
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 108000,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7200,
+        "tipFadeStart": 0.96,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "long-02 / black / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 27,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~16x~1p2pxr6~r~n~27405f~e2e8f0~1iczxwh",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 41,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "high skin fade with quiff",
+        "guides": 1171,
+        "kinds": {
+          "baby": 41,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 155,
+          "scalp": 9704
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 69300,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.879,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "fade-01 / blond / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 28,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~16x~1p2pxr6~r~n~27405f~e2e8f0~1iczxwh",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 41,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "high skin fade with quiff",
+        "guides": 1171,
+        "kinds": {
+          "baby": 41,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 155,
+          "scalp": 9704
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 69300,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.879,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "fade-01 / blond / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 29,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/fade-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~16x~1p2pxr6~r~n~27405f~e2e8f0~1iczxwh",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 41,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "high skin fade with quiff",
+        "guides": 1171,
+        "kinds": {
+          "baby": 41,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 155,
+          "scalp": 9704
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 69300,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.879,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "fade-01 / blond / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 30,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/braids-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1e2~1p2pxr6~r~n~27405f~e2e8f0~0enpxdo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 11,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 4940,
+          "widthScale": 1
+        },
+        "groom": "cornrows with hanging braids",
+        "guides": 1151,
+        "kinds": {
+          "baby": 11,
+          "braid": 240,
+          "bun": 0,
+          "flyaway": 25,
+          "scalp": 4664
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 74788,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 4940,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "braids-01 / red / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 31,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/braids-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1e2~1p2pxr6~r~n~27405f~e2e8f0~0enpxdo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 11,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 4940,
+          "widthScale": 1
+        },
+        "groom": "cornrows with hanging braids",
+        "guides": 1151,
+        "kinds": {
+          "baby": 11,
+          "braid": 240,
+          "bun": 0,
+          "flyaway": 25,
+          "scalp": 4664
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 74788,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 4940,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "braids-01 / red / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 32,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/braids-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1e2~1p2pxr6~r~n~27405f~e2e8f0~0enpxdo",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 11,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 4940,
+          "widthScale": 1
+        },
+        "groom": "cornrows with hanging braids",
+        "guides": 1151,
+        "kinds": {
+          "baby": 11,
+          "braid": 240,
+          "bun": 0,
+          "flyaway": 25,
+          "scalp": 4664
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 74788,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 4940,
+        "tipFadeStart": 0.8,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "braids-01 / red / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 33,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": true,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/bun-01",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hn~1p2pxr6~r~n~27405f~e2e8f0~1lw814l",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 52,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7500,
+          "widthScale": 1
+        },
+        "groom": "slicked back into a bun",
+        "guides": 1214,
+        "kinds": {
+          "baby": 52,
+          "braid": 0,
+          "bun": 1200,
+          "flyaway": 57,
+          "scalp": 6191
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 88200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7500,
+        "tipFadeStart": 0.952,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "bun-01 / grey / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 34,
+          "directions": 32,
+          "points": 38529,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": true,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/bun-01",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hn~1p2pxr6~r~n~27405f~e2e8f0~1lw814l",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 52,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7500,
+          "widthScale": 1
+        },
+        "groom": "slicked back into a bun",
+        "guides": 1214,
+        "kinds": {
+          "baby": 52,
+          "braid": 0,
+          "bun": 1200,
+          "flyaway": 57,
+          "scalp": 6191
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 88200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7500,
+        "tipFadeStart": 0.952,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "bun-01 / grey / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 35,
+          "directions": 32,
+          "points": 38529,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": true,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/bun-01",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~1hn~1p2pxr6~r~n~27405f~e2e8f0~1lw814l",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 52,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 7500,
+          "widthScale": 1
+        },
+        "groom": "slicked back into a bun",
+        "guides": 1214,
+        "kinds": {
+          "baby": 52,
+          "braid": 0,
+          "bun": 1200,
+          "flyaway": 57,
+          "scalp": 6191
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 88200,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 7500,
+        "tipFadeStart": 0.952,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "bun-01 / grey / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 36,
+          "directions": 32,
+          "points": 38529,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/prototype-side-part",
+        "scar": false
+      },
+      "camera": "front",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": -0.0
+      },
+      "code": "SF2~sports/default-v2~29k3px~sj~1p2pxr6~r~n~27405f~e2e8f0~0c18pcj",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1179,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 114,
+          "scalp": 9741
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "side-part prototype / black / front",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 37,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/prototype-side-part",
+        "scar": false
+      },
+      "camera": "profile",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 1.52
+      },
+      "code": "SF2~sports/default-v2~29k3px~sj~1p2pxr6~r~n~27405f~e2e8f0~0c18pcj",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1179,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 114,
+          "scalp": 9741
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "side-part prototype / black / profile",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 38,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    },
+    {
+      "appearance": {
+        "beardStyle": "beard/none",
+        "browStyle": "brows/soft",
+        "bun": false,
+        "freckles": false,
+        "glasses": false,
+        "hairStyle": "hair/prototype-side-part",
+        "scar": false
+      },
+      "camera": "back",
+      "cameraState": {
+        "distance": 0.95,
+        "pitch": -0.06,
+        "yaw": 3.141592653589793
+      },
+      "code": "SF2~sports/default-v2~29k3px~sj~1p2pxr6~r~n~27405f~e2e8f0~0c18pcj",
+      "expression": {
+        "mode": "neutral",
+        "requestedMode": "neutral",
+        "weights": {}
+      },
+      "hair": {
+        "babyHairs": 45,
+        "built": "full",
+        "drawn": {
+          "dithered": false,
+          "lod": "full",
+          "minPixels": 0.6,
+          "strands": 9900,
+          "widthScale": 1
+        },
+        "groom": "swept side part with faded sides",
+        "guides": 1179,
+        "kinds": {
+          "baby": 45,
+          "braid": 0,
+          "bun": 0,
+          "flyaway": 114,
+          "scalp": 9741
+        },
+        "model": "guide-interpolated-clumped-strands",
+        "points": 89100,
+        "shading": "marschner-r-tt-trt-deep-shadow-approximation",
+        "strands": 9900,
+        "tipFadeStart": 0.909,
+        "version": "strand-hair-v1"
+      },
+      "identityCoefficientsHead": [
+        0.734559,
+        -2.316434,
+        -1.23174,
+        0.477597,
+        -0.48354,
+        -0.059396,
+        0.367055,
+        0.919453
+      ],
+      "identityFeatureZ": {
+        "bridgeHeight": 0.1152,
+        "browHeight": 0.8903,
+        "canthalTilt": -0.5569,
+        "chinWidth": -1.1045,
+        "earHeight": -1.7802,
+        "earProjection": 0.5896,
+        "eyeDepth": 0.002,
+        "eyeOpening": -1.189,
+        "eyeWidth": -1.282,
+        "faceHeight": 0.4004,
+        "faceWidth": 0.2725,
+        "foreheadHeight": 0.1623,
+        "jawWidth": -1.9207,
+        "lipThickness": -1.1155,
+        "mouthCornerLift": 0.4237,
+        "mouthWidth": -1.117,
+        "noseLength": 1.0995,
+        "noseProjection": 0.291,
+        "noseWidth": -0.7814
+      },
+      "label": "side-part prototype / black / back",
+      "lighting": {
+        "ambientOcclusion": "gpu-multi-direction-depth-maps-per-profile",
+        "ambientOcclusionBake": {
+          "bakeSerial": 39,
+          "directions": 32,
+          "points": 38282,
+          "size": 192,
+          "status": "complete",
+          "storage": "gpu-texture"
+        },
+        "cavity": "local-normal-curvature",
+        "environment": "procedural-studio-sh-l2-diffuse-sg-specular",
+        "eyeOcclusion": "lid-contact-polar-table",
+        "model": "studio-environment-v3",
+        "rimShadowMap": {
+          "filter": "4-tap bilinear PCF",
+          "format": "DEPTH_COMPONENT24",
+          "size": 1024,
+          "status": "complete"
+        },
+        "shadowMap": {
+          "filter": "pcss: 8-tap blocker search, 16/32-tap rotated bilinear PCF, 2x2 quad average",
+          "format": "DEPTH_COMPONENT24",
+          "size": 2048,
+          "status": "complete"
+        },
+        "shadows": "key-pcss-and-rim-pcf-depth-maps",
+        "skinDetail": "footprint-filtered-microrelief",
+        "skinDiffuse": "preintegrated-sss-lut",
+        "skinLut": {
+          "encoding": "sqrt-rgba8",
+          "maxCurvaturePerMm": 1,
+          "size": 64
+        },
+        "skinRegions": {
+          "beardShadow": 0,
+          "lightness": 0.8232,
+          "mottleOffset": [
+            -9.51,
+            41.463,
+            5.206
+          ],
+          "oiliness": 0.3092,
+          "periorbital": 0.6683,
+          "redness": 0.7571
+        },
+        "skinSpecular": "dual-lobe-ggx",
+        "space": "view",
+        "toneMapping": "aces-filmic-hue-preserving-highlights"
+      },
+      "player": "hair",
+      "view": "final"
+    }
+  ]
+}

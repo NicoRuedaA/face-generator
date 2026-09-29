@@ -1,0 +1,42 @@
+{
+  "pairedCases": 24,
+  "unchanged": [
+    "SF2",
+    "identity",
+    "camera",
+    "expression",
+    "style IDs",
+    "face measurements"
+  ],
+  "boundedGrooming": true,
+  "originalStylePixelEquivalence": {
+    "front": {
+      "absolutePixelError": "0 (0)",
+      "comparedRegion": [
+        0,
+        0,
+        1536,
+        912
+      ],
+      "styles": [
+        "short",
+        "medium",
+        "curly"
+      ]
+    },
+    "side": {
+      "absolutePixelError": "0 (0)",
+      "comparedRegion": [
+        0,
+        0,
+        1536,
+        912
+      ],
+      "styles": [
+        "short",
+        "medium",
+        "curly"
+      ]
+    }
+  }
+}

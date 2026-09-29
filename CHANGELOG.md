@@ -1,249 +1,58 @@
-## Unreleased — Operativa GNM
-
-- Añade la Fase 8, **GNM 3D Player** (`sports/gnm-3d-player-v1`, opt-in): un
-  generador 3D de jugadores sobre la cabeza GNM Head v3.0 oficial. Cada perfil
-  FaceDNA obtiene su propio vector oficial de identidad GNM: un prior gaussiano
-  composicional sobre `head_000..head_031` (un bloque por rasgo geométrico, de
-  modo que editar un rasgo conserva la cara) condicionado exactamente por 19
-  rasgos antropométricos medidos sobre los 68 landmarks oficiales, con objetivos
-  que salen de las etiquetas del catálogo FaceDNA. Pigmentación, apariencia,
-  edad, presentación, equipación, semilla y expresión no alteran la geometría.
-  El builder offline `tools/gnm/build_player_generator.py` (NumPy + h5py) fija
-  por hash el NPZ, los landmarks (corrección upstream `0ae8cc7` del orden del
-  contorno mandibular) y el decoder de expresiones del semantic sampler oficial
-  (evaluado en NumPy), y genera `gnm-player-generator.bin` (`6,130,704` bytes) y
-  su metadata; `validate_player_generator.py` lo valida sin dependencias y
-  `test_player_generator.py` añade 16 mutaciones fail-closed y un rebuild byte a
-  byte cuando hay entradas upstream. El renderer WebGL2 reconstruye en CPU,
-  calcula normales suaves y pinta de forma procedural piel, iris, labios, cejas,
-  barbas, pelo volumétrico, pecas y cicatriz; añade gafas ajustadas a los
-  landmarks, moño, camiseta con los colores de la equipación, presets oficiales
-  SURPRISE/HAPPY/SQUINT para las microexpresiones, vista 3/4 orbitable y
-  miniaturas 3D en la galería. Sin WebGL2 o sin `fetch` cae al renderer GNM SVG.
-  No usa texturas oficiales. Evidencia en `docs/gnm-3d-player/` y contrato en
-  `docs/ACCEPTANCE_GNM_3D_PLAYER.md`. El workflow de Pages publica el payload;
-  `tests/browser_smoke.py` cubre el estilo y acepta `CHROMIUM_PATH`.
-
-- Corrige el workflow de GitHub Pages, que fallaba en todas las ejecuciones
-  desde que el GLB canónico pasó a Git LFS: `actions/checkout` no descarga
-  objetos LFS y cuatro pruebas abortaban al leer el puntero como GLB. El nuevo
-  helper `tools/gnm/canonical_asset.py` distingue GLB materializado, puntero
-  LFS verificado (`oid`/tamaño exactos) y cualquier otro caso (falla cerrado).
-  Con puntero, las pruebas `render`, `basis`, `basis-lab` y `semantics` validan
-  los artefactos comprometidos y omiten solo la regeneración canónica con un
-  `SKIP` explícito; con el GLB materializado ejecutan todo igual que antes.
-  Añade `npm run refresh:checksums` para regenerar `SHA256SUMS.txt` de forma
-  reproducible (incluye los tres archivos del diagnóstico de bases que faltaban).
-
-- Añade visualización técnica de deformación opt-in (session state, OFF por
-  defecto) en los estilos oficial neutral y Basis Lab, para hacer visibles las
-  diferencias de las bases GNM sobre los materiales planos sin inventar
-  texturas. `UV checker` sube las `TEXCOORD_0` oficiales exactas por vértice y
-  dibuja un checker procedural determinista muestreado en espacio UV
-  (`OFFICIAL_UV_CHECKER_DENSITY = 16`) que se deforma con la malla; `Wireframe
-  edges` añade un segundo pase `gl.LINES` con aristas generadas
-  deterministicamente desde los triángulos existentes (edge count `105,972`
-  para `35,324` triángulos), compartiendo el buffer de posiciones con la
-  deformación CPU de Basis Lab y conservando depth test y culling two-sided.
-  Los diagnósticos exponen `technicalVisualization` (`none`/`uv-checker`/
-  `wireframe`/`uv-checker+wireframe`), `technicalVisualizationNote` (ayuda de
-  inspección, no textura/material oficial), `uvCheckerDensity`,
-  `wireframeColor` y `wireframeEdgeCount`. Con los toggles OFF el hash de
-  píxeles es byte-idéntico al anterior; no cambian GLBs, payload de Basis Lab,
-  FaceDNA, SF2, material defaults ni mapping semántico. Añade tests Node del
-  contrato y cobertura Playwright en `tests/browser_smoke.py`.
-
-- Añade la Fase 7B: validador estadístico offline stdlib-only y reporte
-  determinista de calibración. El resultado actual es `insufficient_data` con
-  template vacío, conteos y métricas cero, sin R²/correlaciones inventadas. El
-  siguiente paso humano es añadir muestras reales revisadas mediante Fase 7A;
-  ningún mapping se activa y `semanticMapping`/`runtimeBasisLoaded` permanecen
-  `unestablished`/`false`.
-
-- Añade la Fase 7A: contrato offline determinista para anotaciones humanas de
-  calibración. El template queda vacío —sin muestras no existe mapeo— y las
-  etiquetas son libres para revisión técnica, no verdad anatómica. Conserva
-  SF2, metadatos estables, ocho coeficientes bounded, hashes, procedencia y
-  split reproducible; no guarda geometría, arrays, secretos, PII ni rutas
-  absolutas. `semanticMapping` sigue `unestablished`, el runtime no carga bases
-  y `humanApproved` es falso salvo aprobación explícita.
-
-- Añade la Fase 6 de evidencia cuantitativa offline: reporte stdlib-only con
-  hashes/revisión, dimensiones `253`/`383`/`17.821`, energía por base, familia,
-  componente y prefijo técnico, inventario FaceDNA/morphology y análisis
-  provisional de regiones. Declara `semanticMapping: unestablished` y
-  `runtimeBasisLoaded: false` porque no existe un dataset emparejado FaceDNA →
-  coeficiente/objetivo GNM. No cambia runtime, FaceDNA, morphology, GLBs ni el
-  Basis Lab técnico.
-
-- Mejora la calidad visual del renderer oficial con el modelo inmutable
-  `neutral-procedural-components-v2`: seis materiales procedurales neutros por
-  componente, roughness perceptual, respuesta especular, ambiente hemisférico,
-  key/fill/rim y cavidad bounded derivada de señales estables de vista/normal.
-  No añade texturas, dependencias, semántica anatómica ni cambios a los GLB o al
-  payload de Basis Lab. Los diagnósticos exponen versión, seis materiales y
-  flags de iluminación; el shader GLSL ES 3.00 conserva two-sided, cámara y
-  fallback seguro.
-
-- Añade el estilo opt-in `sports/morph-webgl-official-basis-lab-v1` con payload
-  binario separado de `1,843,736` bytes, cuatro primeras bases por familia,
-  sliders técnicos bounded, verificación estricta de hash/schema/budget y
-  fallback seguro. No modifica FaceDNA, SF2 ni los GLB canónico/render.
-
-- Añade un diagnóstico/scrubber offline determinista para las bases oficiales
-  GNM: schema v2, dimensiones `253 x 17.821 x 3` y `383 x 17.821 x 3`, nombres
-  ordenados, payloads float32 finitos con longitudes exactas, reconstrucción
-  zero/one-hot, bounds de desplazamiento y mappings `sourceVertexId` byte-a-byte
-  para las seis componentes. El reporte no contiene rutas absolutas e indica
-  `semanticMapping: disabled` y `runtimeBasisLoaded: false`. Es evidencia
-  únicamente; no modifica GLB, FaceDNA, morphology, render-router ni la carga de
-  bases en navegador.
-
-- Añade el GLB render-only oficial GNM optimizado de forma lossless: `665,904`
-  bytes frente a `138,998,408` bytes canónicos (`99.52%` menos), `18,437`
-  vértices únicos, seis componentes, UVs/posiciones float32 exactas e índices
-  uint16. El runtime y Pages usan solo este asset; el GLB canónico archivado y
-  sus bases permanecen sin cambios. Las bases de identidad/expresión quedan
-  omitidas y offline/opcionales; el mapeo semántico continúa desactivado.
-
-- Integra el primer paquete 3D oficial de GNM Head v3.0 en el alcance público no
-  comercial autorizado por el propietario del proyecto: GLB portable con skin,
-  ojos, dientes/encías y lengua separados, UVs oficiales sin colapsar seams,
-  bases de identidad/expresión y materiales procedurales neutros. El estilo
-  `sports/morph-webgl-official-v1` es opt-in, conserva el fallback anterior y no
-  asigna semántica anatómica no demostrada. No se incluye el bundle completo de
-  texturas materiales.
-
-- Añade una comparación bounded report-only entre el pack GNM canónico de 200 y
-  candidatos de 400/800 muestras: diversidad, duplicados, vecinos normalizados,
-  rangos/varianzas, balance familiar, deltas de centroides, procedencia y
-  reruns deterministas. La evidencia actual de 400 muestras es `warn`; no
-  promueve candidatos, no cambia runtime ni demuestra anatomía y requiere
-  revisión humana antes de promoción. Sin GNM/NumPy el reporte queda en
-  `unavailable` sin inventar métricas.
-- Mejora la auditoría provisional de landmarks como quality gate report-only:
-  informa `provisionalReview: required`, no promociona corrección anatómica,
-  detalla excursiones de proyección y extremos XYZ crudos cuando NumPy está
-  disponible, y registra el drift de nombres de fuente como WARN con evidencia
-  de identidad byte a byte. No cambia IDs ni artefactos GNM.
-- Añade un workflow que ejecuta `npm test` antes de publicar el sitio estático mínimo en GitHub Pages.
-- Añade `tools/gnm/build_runtime_pack.py`, un orquestador determinista para
-  generar y validar candidatos GNM de 200 cabezas sin reemplazar el paquete de
-  runtime salvo mediante `--promote` explícito.
-- Añade pruebas de planificación sin importar GNM/NumPy y el helper no-GNM
-  `npm run refresh:release` para actualizar hashes del manifiesto.
-- Documenta instalación externa de GNM, revisión del mapa provisional,
-  promoción, regeneración del bundle y comprobaciones de release.
-- Añade la exportación y validación offline del template GNM retenido como GLB
-  geometry-only; no inventa UVs, texturas o submallas ausentes.
-- Añade la primera slice acotada de Fase 3: reducción PCA/SVD offline de las 200
-  mallas GNM a 16 morph targets neutrales con payload binario float32 validado;
-  la integración WebGL posterior mantiene los nombres neutrales y no añade controles semánticos.
-- Integra esos 16 targets en `tools/gnm/work/head-morph.glb` con base
-  `template + meanDelta` y añade `sports/morph-webgl-v1`, un prototipo WebGL2
-  opt-in con textura `sampler2DArray` y fallback seguro al SVG GNM. SVG sigue
-  siendo el default; los targets son geometry-derived y sus nombres son neutrales.
-- Añade una comparativa A/B bounded y reproducible de ocho perfiles FaceDNA entre
-  SVG GNM y WebGL2, con capturas PNG, reporte HTML, manifest JSON y validador
-  stdlib-only. La evidencia es cualitativa, no pixel-equivalent; WebGL2 ausente
-  queda como `fallback` o `unavailable`.
-- Endurece únicamente `sports/morph-webgl-v1` con encuadre determinista basado
-  en bounds y desplazamiento morph conservador, depth test diagnosticado,
-  sombreado GLSL ambiente/difuso/fill/rim y dibujo two-sided porque el GLB tiene
-  winding mixto. Añade métricas objetivas de canvas, ocupación, bounding box,
-  `readPixels` y errores GL a la evidencia A/B; no declara corrección semántica
-  ni WebGL production-ready.
-- Añade microexpresiones sutiles y deterministas en Morph Lab, coordinadas entre
-  ojos, cejas y boca sin convertir el retrato neutral en una animación.
-- Añade selector persistente de microexpresión (`Automática`, `Neutral`,
-  `Alerta`, `Relajada`, `Concentrada`) exclusivo de Morph Lab.
-- Añade una puerta stdlib-only de intake para un futuro bundle oficial GNM:
-  manifest fail-closed, procedencia/licencia, permiso explícito de
-  redistribución, hashes, completitud geométrica y estados `proposed` ->
-  `reviewed` -> `accepted`. Esta fase no acepta ni redistribuye assets oficiales
-  ni cambia el runtime.
-- Corrige el contrato de `sports/morph-webgl-v1`: sus 16 pesos PCA dependen solo
-  de la identidad permanente (`getFaceValues` de identidad y, para
-  decorrelación, `identityBits`). Cambios de apariencia, edad, presentación,
-  equipación, expresión o semilla con los mismos bits de identidad no alteran la
-  geometría. Los componentes PCA continúan siendo direcciones derivadas de
-  geometría, no controles anatómicos semánticos.
-- Añade controles opt-in de inspección para WebGL2: órbita con arrastre, zoom con
-  rueda y restablecimiento accesible de cámara. El estado por canvas es bounded,
-  el frente por defecto sigue siendo determinista y los gestos redibujan recursos
-  GPU existentes sin refetch ni reupload. WebGL continúa geometry-only y no añade
-  texturas ni assets oficiales.
-
-## 0.4.0 — Morph Lab
-
-- Añade el renderer `sports/morph-v1`.
-- Añade 28 landmarks 2D deterministas.
-- Añade ocho familias de cabeza y mandíbula.
-- Sustituye la escala facial global por silueta generada y deformaciones locales.
-- Añade overlay de landmarks en la interfaz.
-- Añade pipeline offline preparado para GNM Head.
-- Añade el renderer opt-in `sports/morph-gnm-v1` con un paquete portable
-  incrustado en el bundle; `sports/morph-v1` sigue siendo el default analítico.
-- Mantiene GNM fuera del navegador y del runtime; la selección de familia GNM
-  usa la tabla semántica revisada `face-dna-shape-v1` sobre `head` y
-  `faceProportion`, alineada con las etiquetas actuales del pack.
-- Identifica el starter pack como analítico y no derivado de GNM.
-- Marca como provisional el mapa de landmarks usado por el paquete GNM actual.
-- Conserva FaceDNA v2, SF2, SF1 y los renderers anteriores.
-
-## 0.3.1 — Fase 2.5 / Toon Polish
-
-- Neutraliza ojos, cejas y bocas para retratos de ficha deportiva.
-- Diferencia los 12 IDs de pelo y corrige pelo largo y trenzas.
-- Añade reglas visuales de canas y barba por edad sin modificar FaceDNA.
-- Mejora gafas, sombreado, nariz, arrugas y rango morfológico.
-- Añade cuatro patrones de equipación recortados y cuello deportivo.
-- Conserva el baseline completo de v0.2.1.
-- Añade comparativa antes/después y galería de aceptación de 50 jugadores.
-
-## 0.3.0
-
-- Añade el renderer local `sports/toon-prototype`.
-- Añade selector de estilo sin modificar FaceDNA/SF2.
-- Integra un subconjunto modificado de ToonHead con atribución CC BY 4.0.
-- Añade pelo frontal/trasero, adaptación deportiva y morfología básica.
-- Añade pruebas sobre 100 identidades congeladas y 1.000 perfiles nuevos.
-- Conserva íntegramente el baseline de v0.2.1.
-
-## Freeze 2026-08-05
-
-- Congela 100 perfiles FaceDNA v2 reproducibles.
-- Congela 12 migraciones SF1 → SF2.
-- Añade dos galerías visuales de referencia.
-- Conserva cinco muestras manuales.
-- Añade hashes y verificación automática.
-- No modifica el renderer ni el esquema FaceDNA.
-
-## 0.2.1
-
-- Corrige la pantalla vacía al abrir `index.html` mediante `file://`.
-- Añade `src/app.bundle.js`, compatible con apertura directa por doble clic.
-- Conserva la entrada modular en `index.module.html`.
-- Añade instrucciones y un lanzador opcional para Windows.
-
 # Changelog
 
-## 0.2.0 — Fase 1 / FaceDNA v2
+## Unreleased — strand beards and eyebrows (realism v2, part D)
 
-- Separada identidad permanente de apariencia mutable.
-- Añadidos estilos etiquetados y registro de especificaciones.
-- Añadidos IDs lógicos de assets.
-- Añadidas variables reservadas para orejas, mandíbula y proporción facial.
-- Implementadas reglas de compatibilidad y máscara canónica de campos inactivos.
-- Añadido código SF2 con checksum.
-- Añadida migración automática desde SF1.
-- Aleatoriedad estable derivada por rasgo.
-- Presentación y edad conservan la identidad.
-- Añadidas pruebas de 1.000 perfiles.
-- Añadida documentación de auditoría, formato, migración y aceptación.
+- Replace the painted brows, painted beard and short beard/brow ribbons with generated strands that walk the deformed skin (straightest geodesics across its triangles), so they follow every identity and expression and never go under the skin.
+- Grow eyebrows with a real growth pattern from the official brow fields: head hairs up and slightly out, body hairs up and out converging from both edges, tail hairs out and down, lying close to the skin in layers with fine hairs and irregular sparse edges. All eight catalogue shapes (thickness, arch, peak, length, density, angular, low/high) stay recognisable, and the old brow paint no longer leaks into the nostrils.
+- Grow beards by region (down on the cheeks, down and forward on the chin, down and out on the moustache, back and down on the neck) with soft, fading cheek lines and necklines, clumping, and a volume that lets the full beard's silhouette break the jawline. Stubble is dense 1 mm stubs plus a graded follicle darkening; goatee and moustache keep their shapes. Hair stops at the red lip, stays out of the mouth under every expression preset, off the nose and above the collar.
+- Shade beards and brows with the scalp hair's fibre program (pigment-gated absorption, per-strand greying that keeps the model's beard and brow colours as the mean), strand shadows, root AO, alpha-to-coverage and the reduced tier for thumbnails. A per-vertex root density tints the skin faintly under the hair; `beard/none` keeps the presentation-gated beard shadow.
+- Add `--mode grooming-catalog` and `--mode grooming-details` captures and `tests/gnm-player-facial-hair.test.mjs`. FaceDNA/SF2, identity, catalogue order and the gallery manifest are unchanged.
 
-## 0.1.0 — MVP inicial
+## Unreleased — strand-based scalp hair (realism v2, part C)
 
-- Bitfield facial de 32 bits.
-- Render Canvas provisional.
-- Semilla, editor, envejecimiento, galería y exportación PNG.
+- Replace the helmet-like hair shell with generated strands for every catalogue style and the side-part prototype. Each style has a groom: a flow field with parting and crown whorl, lengths by region with fade gradients, guide curves, and clumped interpolated strands with frizz, curls or waves, baby hairs and flyaways. Braids are plaited fibres and the bun is wrapped strands.
+- Keep strands outside the head, ears, neck, jersey and shoulders with per-frame collision proxies. Hanging hair climbs onto the ears and drapes over the front or back of the shoulders; short cuts are trimmed around the ears.
+- Draw strands as tapered camera-facing ribbons with alpha-to-coverage on tips, a minimum pixel width, and wider ribbons where hair hangs away from the scalp. A painted root underlayer keeps dense hair opaque and shows scalp on buzz cuts and fades; partings are narrow and shaded.
+- Shade hair with a Marschner-style model (shifted R, TT and TRT lobes, pigment absorption, darker roots, sun-lightened tips, per-strand greying). Strands cast soft, broken shadows into the key-light map and occlude the ambient-occlusion bake.
+- Build a reduced strand tier (an exact prefix) for thumbnails and the direct fallback; strands are cached per profile, so camera orbits never regenerate them. Beard and brows are unchanged.
+- Add hair catalogue and hair detail captures (`--mode hair-catalog`, `--mode hair-details`) and `tests/gnm-player-hair.test.mjs`. FaceDNA/SF2, identity, catalogue order and the gallery manifest are unchanged.
+
+## Unreleased — eyes, lashes and photographic post-processing (realism v2, part B)
+
+- Add seed-stable, clumped strand eyelashes rooted on the reconstructed lid margins. Upper and lower lashes are tapered and kept outside the eyeball and skin. They are drawn with alpha-to-coverage, cast soft key-light shadows and receive shadows and AO; sub-pixel lashes are skipped.
+- Add a per-frame eye rig (sclera/cornea sphere fits, iris plane, lid contact table) with analytic eye occlusion, a wet tear line and a moist caruncle and lid margin.
+- Replace the painted iris with a procedural one (radial fibres, crypts, collarette, limbal ring, optional central heterochromia) seen through a refractive cornea with key and fill catchlights. Catalogue colours, order and FaceDNA semantics are unchanged.
+- Render into an offscreen 4× MSAA RGBA16F target, with RGBA8 and direct fallbacks reported in diagnostics. The final composite applies tone mapping, sRGB, eye-focused depth of field, deterministic grain and a gentle vignette.
+- Replace the striped backdrop with seamless studio paper in the kit colour's family, and add eye-detail and post-processing evidence captures.
+
+## Unreleased — lighting, shadows and skin (realism v2, part A)
+
+- Add soft contact-hardening key-light shadows and rim-light shadows from per-redraw GPU depth maps; hair, ribbons, glasses, bun and jersey cast and receive.
+- Bake per-profile ambient occlusion on the GPU from 32 fixed directional depth layers (never on camera orbit) and apply it to diffuse and specular ambient light.
+- Replace the hemisphere ambient and directional fill with a procedural studio environment (L2 SH diffuse, spherical-Gaussian specular); switch highlights to hue-preserving ACES.
+- Shade skin with a pre-integrated scattering LUT (d'Eon & Luebke profile), per-vertex curvature, dual-lobe GGX and seed-stable regional redness, periorbital, beard-shadow and T-zone variation.
+- Add fixed close-up capture evidence (`tools/gnm/capture_realism_closeups.py`); FaceDNA/SF2, identity and catalog order are unchanged.
+
+## Unreleased — crew neck, skin aging and grooming
+
+- Replace the wide torso-cut neckline with a fitted closed ribbed crew neck, intersected against each reconstructed neck and backed by real garment geometry.
+- Add age-progressive forehead, eye-corner, under-eye and nasolabial creases guided by facial landmarks; identity geometry stays unchanged.
+- Add bounded tapered hair, beard and eyebrow ribbons; clumped scalp volume with recomputed normals, directional texture and softer grooming boundaries.
+- Add fixed-pigment age captures, three skin tones and front/three-quarter/profile evidence.
+
+## Unreleased — facial material realism
+
+- Add bounded geometry-derived cavity shading around concave facial features, without changing GNM identity or vertex positions.
+- Reduce waxy skin highlights and add subtle, footprint-filtered pore microrelief and roughness variation.
+- Add upper-eyelid landmark contact shading, less luminous sclera/iris and restrained corneal highlights.
+- Rebalance studio lighting; retain one WebGL2 context for gallery thumbnails and deterministic FaceDNA/SF2.
+
+## Unreleased — 3D player only
+
+- Promote Sports GNM 3D Player v1 to the sole default rendering path.
+- Remove legacy 2D/SVG, prototype WebGL and Basis Lab implementations, galleries and obsolete tools.
+- Preserve FaceDNA/SF2 compatibility, 3D thumbnails, camera, expressions and PNG export.
+- Fail explicitly when WebGL2 or assets are unavailable; no alternate renderer or blank PNG export.
+- Preserve official GNM geometry, offline source datasets and license provenance.
+
+Earlier versions remain available in Git history.

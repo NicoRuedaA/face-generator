@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Browser smoke test for default, official GNM WebGL, Basis Lab and GNM 3D Player paths."""
+"""Browser smoke test for the sole GNM 3D Player path and explicit unavailable states."""
 
 from __future__ import annotations
 
@@ -9,6 +9,37 @@ from playwright.sync_api import sync_playwright
 
 PLAYER_CANVAS = "#portrait-gnm3d"
 PLAYER_DIAGNOSTICS = f"document.querySelector('{PLAYER_CANVAS}').__sportsFaceWebglDiagnostics"
+# Offscreen-pipeline fallbacks: no float colour buffers (RGBA8 compressed
+# encoding), and no multisampled renderbuffer storage (direct-to-canvas).
+NO_FLOAT_COLOR_BUFFERS = """const getExtension = WebGL2RenderingContext.prototype.getExtension;
+WebGL2RenderingContext.prototype.getExtension = function(name) {
+  return name === 'EXT_color_buffer_float' ? null : getExtension.call(this, name);
+};"""
+NO_MULTISAMPLE_STORAGE = "WebGL2RenderingContext.prototype.renderbufferStorageMultisample = function() {};"
+
+
+def player_pixel_summary(page) -> dict:
+    """Mean colour, spread and a 24x24 luminance grid of the composited canvas."""
+    return page.evaluate("""() => {
+        const canvas = document.querySelector('#portrait-gnm3d');
+        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
+        const width = gl.drawingBufferWidth, height = gl.drawingBufferHeight;
+        const pixels = new Uint8Array(width * height * 4);
+        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const mean = [0, 0, 0]; let squares = 0;
+        const grid = new Array(24 * 24).fill(0), counts = new Array(24 * 24).fill(0);
+        for (let y = 0; y < height; y += 1) for (let x = 0; x < width; x += 1) {
+          const i = (y * width + x) * 4;
+          const luminance = 0.2126 * pixels[i] + 0.7152 * pixels[i + 1] + 0.0722 * pixels[i + 2];
+          for (let c = 0; c < 3; c += 1) mean[c] += pixels[i + c];
+          squares += luminance * luminance;
+          const cell = Math.floor(y * 24 / height) * 24 + Math.floor(x * 24 / width);
+          grid[cell] += luminance; counts[cell] += 1;
+        }
+        const n = width * height;
+        const meanLuminance = (0.2126 * mean[0] + 0.7152 * mean[1] + 0.0722 * mean[2]) / n;
+        return { mean: mean.map((value) => value / n), std: Math.sqrt(Math.max(squares / n - meanLuminance * meanLuminance, 0)), grid: grid.map((value, cell) => value / counts[cell]) };
+    }""")
 
 
 def player_pixel_hash(page) -> str:
@@ -25,14 +56,10 @@ def player_pixel_hash(page) -> str:
 
 def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     """GNM 3D Player: diagnostics contract, camera, identity invariance, expressions, gallery."""
-    selected = page.locator("#render-style")
-    before_requests = len(asset_requests)
-    selected.select_option("sports/gnm-3d-player-v1")
-    page.wait_for_function(f"() => {{ const c = document.querySelector('{PLAYER_CANVAS}'); return (c.__sportsFaceWebglDiagnostics && !c.hidden) || !document.querySelector('#portrait').hidden; }}", timeout=60000)
-    if not page.locator(PLAYER_CANVAS).is_visible():
-        assert page.locator("#portrait").is_visible(), f"{entry}: GNM 3D Player fallback must show the 2D canvas"
-        return f"BOUNDED FALLBACK: GNM 3D Player -> 2D GNM SVG ({page.locator('#toast').text_content()!r})"
-    assert not page.locator("#portrait-webgl").is_visible(), f"{entry}: the shared WebGL canvas must stay hidden for the 3D player"
+    before_requests = 0
+    page.wait_for_function(f"() => {{ const c = document.querySelector('{PLAYER_CANVAS}'); return c.__sportsFaceWebglDiagnostics && !c.hidden; }}", timeout=60000)
+    assert page.locator("#render-style").count() == 0
+    assert page.locator("#portrait, #portrait-webgl").count() == 0
     assert page.locator("#webgl-camera-controls").is_visible(), f"{entry}: camera controls should be visible"
     assert page.locator("#expression-mode-field").is_visible(), f"{entry}: micro-expression selector should be visible"
     diagnostics = page.evaluate(PLAYER_DIAGNOSTICS)
@@ -42,6 +69,44 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     assert diagnostics["identityPriorCount"] == 32 and diagnostics["featureCount"] == 19 and diagnostics["identityCoefficientCount"] == 170, diagnostics
     assert diagnostics["maxAbsIdentityCoefficient"] < 4.6, diagnostics
     assert diagnostics["framebufferStatus"] == "complete", diagnostics
+    lighting = diagnostics["lighting"]
+    assert lighting["model"] == "studio-environment-v3", lighting
+    assert lighting["cavity"] == "local-normal-curvature", lighting
+    assert lighting["shadowMap"]["status"] == "complete" and lighting["shadowMap"]["size"] >= 1024, lighting
+    assert lighting["rimShadowMap"]["status"] == "complete", lighting
+    bake = lighting["ambientOcclusionBake"]
+    assert bake["status"] == "complete" and bake["directions"] == 32 and bake["points"] > 18000 and bake["storage"] == "gpu-texture", bake
+    assert diagnostics["collar"]["model"] == "fitted-ribbed-crew-neck", diagnostics
+    assert diagnostics["collar"]["ringVertices"] == 128, diagnostics
+    assert all(0 <= diagnostics["groomingStrands"][key] <= cap for key, cap in (("hair", 16000), ("beard", 16000), ("brow", 4000))), diagnostics
+    # Strand hair: built once per profile; the main view draws the full tier.
+    hair = diagnostics["hair"]
+    assert hair["model"] == "guide-interpolated-clumped-strands" and hair["strands"] == diagnostics["groomingStrands"]["hair"], hair
+    if hair["strands"] > 0:
+        assert hair["built"] == "full" and hair["guides"] > 0 and hair["babyHairs"] > 0, hair
+        expected_lod = "full" if min(diagnostics["canvas"]["width"], diagnostics["canvas"]["height"]) > 320 else "reduced"
+        assert hair["drawn"]["lod"] == expected_lod and hair["drawn"]["dithered"] is False, hair
+    # Beard and brows are strands too: built once per profile, same levels of detail.
+    facial = diagnostics["facialHair"]
+    assert facial["model"] == "surface-walked-clumped-strands" and facial["underlay"] == "per-vertex-root-density", facial
+    for part, key in (("beard", "beard"), ("brows", "brow")):
+        built = facial[part]
+        assert built["strands"] == diagnostics["groomingStrands"][key], (part, built)
+        if built["strands"] > 0:
+            expected_lod = "full" if min(diagnostics["canvas"]["width"], diagnostics["canvas"]["height"]) > 320 else "reduced"
+            assert built["built"] == "full" and built["drawn"]["lod"] == expected_lod and built["drawn"]["dithered"] is False, (part, built)
+    # Offscreen HDR pipeline: MSAA scene target, resolve, composite (tone mapping, grain, vignette, DOF).
+    post = diagnostics["post"]
+    assert post["pipeline"] == "offscreen" and post["status"] == "complete", post
+    assert post["mode"] in ("float16", "rgba8-compressed") and post["samples"] >= 2, post
+    assert post["framebuffers"] == {"scene": "complete", "resolve": "complete", "depthOfField": "complete"}, post
+    assert post["toneMapping"] == "composite" and post["backdrop"] == "seamless-studio-paper", post
+    assert post["grain"]["amplitude"] > 0 and 0 < post["vignette"]["strength"] <= 0.25, post
+    size = diagnostics["canvas"]
+    assert post["depthOfField"]["enabled"] == (min(size["width"], size["height"]) > 320), post
+    eyes = diagnostics["eyes"]
+    assert eyes["lashes"]["upper"] > 0 and eyes["lashes"]["lower"] > 0 and eyes["lashes"]["strands"] == eyes["lashes"]["upper"] + eyes["lashes"]["lower"], eyes
+    assert eyes["tearLineVertices"] > 0 and eyes["contactSamples"] == 32, eyes
     assert diagnostics["camera"] == {"yaw": 0.38, "pitch": -0.06, "distance": 1}, diagnostics
     new_requests = asset_requests[before_requests:]
     assert any(url.endswith("gnm-player-generator.bin") for url in new_requests) and any(url.endswith("gnm-player-generator.json") for url in new_requests), new_requests
@@ -50,6 +115,14 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     page.locator("#reset-webgl-camera").click()
     page.wait_for_timeout(300)
     neutral_hash = player_pixel_hash(page)
+    bake_serial = page.evaluate(PLAYER_DIAGNOSTICS)["lighting"]["ambientOcclusionBake"]["bakeSerial"]
+    visible = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert visible["post"]["framebuffers"]["scene"] == "complete" and visible["framebufferStatus"] == "complete", visible["post"]
+    if visible["canvas"]["height"] >= 420:
+        assert visible["eyes"]["lashes"]["drawn"] is True, visible["eyes"]
+    page.locator("#reset-webgl-camera").click()
+    page.wait_for_timeout(300)
+    assert player_pixel_hash(page) == neutral_hash, "grain and depth of field are deterministic for the same profile and camera"
 
     canvas = page.locator(PLAYER_CANVAS)
     box = canvas.bounding_box()
@@ -65,6 +138,8 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     page.locator("#reset-webgl-camera").click()
     page.wait_for_function(f"() => {{ const camera = {PLAYER_DIAGNOSTICS}.camera; return camera.yaw === 0.38 && camera.pitch === -0.06 && camera.distance === 1; }}")
     assert player_pixel_hash(page) == neutral_hash, "camera reset must restore the default portrait"
+    orbited = page.evaluate(PLAYER_DIAGNOSTICS)["lighting"]["ambientOcclusionBake"]
+    assert orbited["bakeSerial"] == bake_serial, "camera orbit must not re-bake ambient occlusion"
 
     identity = diagnostics["identityCoefficientsHead"]
     page.locator("#age").fill("48")
@@ -72,6 +147,7 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     page.wait_for_timeout(400)
     aged = page.evaluate(PLAYER_DIAGNOSTICS)
     assert aged["identityCoefficientsHead"] == identity, "age must not change the GNM identity"
+    assert aged["wrinkleStrength"] == 0.625, "skin wrinkles follow age, independently of hair pigment"
     nose = page.locator("select[data-feature=nose]")
     # Index 1 is nose/wide and 2 is nose/narrow; pick whichever differs from
     # the random starting player so the edit is never a no-op.
@@ -79,7 +155,7 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
     nose.select_option(index=target_index)
     page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.featureTargets.noseWidth !== undefined")
     widened = page.evaluate(PLAYER_DIAGNOSTICS)
-    assert widened["identityCoefficientsHead"] != identity, "editing a geometric trait must change the GNM identity"
+    assert widened["identityCoefficientsHead"] == identity, "local edits must preserve the global GNM identity"
     nose_z = widened["identityFeatureZ"]["noseWidth"]
     assert (nose_z > 0.5) if target_index == 1 else (nose_z < -0.5), widened["identityFeatureZ"]
     page.locator("#expression-mode").select_option("focused")
@@ -95,290 +171,127 @@ def check_gnm_player(page, entry: str, asset_requests: list[str]) -> str:
         return data[3] > 0;
     }).length""")
     assert painted == 12, f"{entry}: 3D gallery thumbnails missing ({painted}/12)"
+    # The session override must not mutate the facial code or lose identity.
+    code = page.locator("#face-code").input_value()
+    page.locator("select[data-feature=hairVisible]").select_option("1")
+    page.wait_for_timeout(200)
+    code = page.locator("#face-code").input_value()
+    original = page.evaluate(PLAYER_DIAGNOSTICS)
+    page.locator("#hairstyle-prototype").select_option("side-part")
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.appearance.hairStyle === 'hair/prototype-side-part'")
+    trial = page.evaluate(PLAYER_DIAGNOSTICS)
+    assert trial["identityCoefficientsHead"] == original["identityCoefficientsHead"]
+    assert page.locator("#face-code").input_value() == code
+    assert 'hair/prototype-side-part' in page.locator("#debug-output").text_content()
+    page.locator("#hairstyle-prototype").select_option("original")
+    page.wait_for_function(f"() => {PLAYER_DIAGNOSTICS}.appearance.hairStyle !== 'hair/prototype-side-part'")
+    assert page.evaluate(PLAYER_DIAGNOSTICS)["appearance"]["hairStyle"] == original["appearance"]["hairStyle"]
     return f"PASS GNM 3D Player: identity={identity[:3]} hash={neutral_hash} gallery=12"
+
+
+def check_offscreen_fallbacks(browser, entry: str) -> str:
+    """Same face through the float, RGBA8-compressed and direct-to-canvas paths."""
+    code = None
+    identity = None
+    results = {}
+    for label, init in (("float", None), ("rgba8", NO_FLOAT_COLOR_BUFFERS), ("direct", NO_MULTISAMPLE_STORAGE)):
+        context = browser.new_context(accept_downloads=True)
+        context.add_init_script("localStorage.setItem('sports-face-expression-mode', 'neutral')")
+        if init:
+            context.add_init_script(init)
+        page = context.new_page()
+        errors = []
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto(f"http://127.0.0.1:8080/{entry}")
+        page.wait_for_load_state("networkidle")
+        page.wait_for_function(f"() => {{ const c = document.querySelector('{PLAYER_CANVAS}'); return c.__sportsFaceWebglDiagnostics && !c.hidden; }}", timeout=60000)
+        if code is None:
+            code = page.locator("#face-code").input_value()
+            identity = page.evaluate(PLAYER_DIAGNOSTICS)["identityCoefficientsHead"]
+        else:
+            page.locator("#face-code").fill(code)
+            page.locator("#load-code").click()
+            page.wait_for_function(f"(head) => JSON.stringify({PLAYER_DIAGNOSTICS}.identityCoefficientsHead) === JSON.stringify(head)", arg=identity, timeout=60000)
+        page.locator("#reset-webgl-camera").click()
+        page.wait_for_timeout(500)
+        diagnostics = page.evaluate(PLAYER_DIAGNOSTICS)
+        assert diagnostics["framebufferStatus"] == "complete", diagnostics["framebufferStatus"]
+        drawn = diagnostics["hair"]["drawn"]
+        if diagnostics["hair"]["strands"] > 0:
+            # The direct fallback (no MSAA) draws the reduced tier with dithered coverage.
+            assert (drawn["lod"], drawn["dithered"]) == (("reduced", True) if label == "direct" else ("full", False)), (label, drawn)
+        brows = diagnostics["facialHair"]["brows"]
+        if brows["strands"] > 0:
+            assert (brows["drawn"]["lod"], brows["drawn"]["dithered"]) == (("reduced", True) if label == "direct" else ("full", False)), (label, brows["drawn"])
+        summary = player_pixel_summary(page)
+        assert summary["std"] > 12, f"{entry} {label}: rendered image is not blank ({summary['std']})"
+        with page.expect_download() as download:
+            page.locator("#download-png").click()
+        assert download.value.suggested_filename.endswith(".png")
+        assert not errors, errors
+        results[label] = (diagnostics["post"], summary)
+        context.close()
+    float_post, float_pixels = results["float"]
+    rgba8_post, rgba8_pixels = results["rgba8"]
+    direct_post, direct_pixels = results["direct"]
+    assert float_post["mode"] in ("float16", "rgba8-compressed"), float_post
+    assert rgba8_post["mode"] == "rgba8-compressed" and rgba8_post["colorFormat"] == "RGBA8" and rgba8_post["pipeline"] == "offscreen", rgba8_post
+    assert direct_post["pipeline"] == "direct" and direct_post["toneMapping"] == "scene-shader" and direct_post["depthOfField"]["enabled"] is False, direct_post
+    grid_difference = lambda a, b: sum(abs(x - y) for x, y in zip(a["grid"], b["grid"])) / len(a["grid"])
+    rgba8_difference = grid_difference(float_pixels, rgba8_pixels)
+    direct_difference = grid_difference(float_pixels, direct_pixels)
+    assert rgba8_difference < 3, f"{entry}: RGBA8 fallback matches the float path ({rgba8_difference:.2f})"
+    assert direct_difference < 12, f"{entry}: direct fallback keeps the portrait ({direct_difference:.2f})"
+    return f"PASS offscreen pipeline {float_post['mode']}/{float_post['samples']}x, RGBA8 fallback (grid diff {rgba8_difference:.2f}), direct fallback (grid diff {direct_difference:.2f}), exports"
 
 
 def main() -> int:
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True, executable_path=os.environ.get("CHROMIUM_PATH", "/usr/bin/chromium"))
-        messages: list[str] = []
-        page_errors: list[str] = []
+        browser = playwright.chromium.launch(headless=True, executable_path=os.environ.get("CHROMIUM_PATH", "/usr/bin/chromium"), args=["--enable-unsafe-swiftshader"])
         for entry in ("index.html", "index.module.html"):
-            context = browser.new_context()
+            context = browser.new_context(accept_downloads=True)
+            context.add_init_script("localStorage.setItem('sports-face-render-style', 'sports/default-v2')")
             page = context.new_page()
-            asset_requests: list[str] = []
-            page.route("**/favicon.ico", lambda route: route.fulfill(status=204, body=""))
-            page.on("request", lambda request: asset_requests.append(request.url) if any(request.url.endswith(asset) for asset in ("gnm-official-head-render.glb", "gnm-official-basis-lab.bin", "gnm-official-basis-lab.json", "gnm-player-generator.bin", "gnm-player-generator.json")) else None)
-            page.on("console", lambda message: messages.append(f"{message.type}: {message.text}"))
-            page.on("pageerror", lambda error: page_errors.append(f"{entry}: {error}"))
+            errors = []
+            requests = []
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.on("request", lambda request: requests.append(request.url))
             page.goto(f"http://127.0.0.1:8080/{entry}")
             page.wait_for_load_state("networkidle")
-            page.wait_for_function("document.querySelector('#portrait').width > 0")
-            assert page.locator("#portrait").is_visible(), f"{entry}: default 2D canvas is not visible"
-            assert not page.locator("#portrait-webgl").is_visible(), f"{entry}: WebGL canvas should be hidden by default"
-            selected = page.locator("#render-style")
-            assert selected.input_value() == "sports/default-v2", selected.input_value()
-            assert not page.locator("#webgl-camera-controls").is_visible(), f"{entry}: WebGL controls should be hidden by default"
-            assert not asset_requests, f"{entry}: default renderer requested official WebGL assets: {asset_requests}"
-
-            selected.select_option("sports/morph-webgl-official-v1")
-            page.wait_for_timeout(1800)
-            neutral_asset_request_count = len(asset_requests)
-            webgl_visible = page.locator("#portrait-webgl").is_visible()
-            fallback_visible = page.locator("#portrait").is_visible()
-            diagnostic = page.locator("#toast").text_content() or ""
-            assert webgl_visible or fallback_visible, f"{entry}: neither WebGL nor 2D fallback canvas is visible"
-            if webgl_visible:
-                controls = page.locator("#webgl-camera-controls")
-                assert controls.is_visible(), f"{entry}: WebGL camera controls should be visible"
-                canvas = page.locator("#portrait-webgl")
-                diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert diagnostics["components"] == 6, diagnostics
-                assert diagnostics["materials"] == 6, diagnostics
-                assert diagnostics["officialTexturesIncluded"] is False, diagnostics
-                assert diagnostics["renderOnly"] is True, diagnostics
-                assert diagnostics["basisIncluded"] is False, diagnostics
-                assert diagnostics["assetSchema"] == "sports-face-gnm-official-head/v1", diagnostics
-                assert diagnostics["materialModel"] == "neutral-procedural-components-v2", diagnostics
-                assert diagnostics["materialModelVersion"] == "neutral-procedural-components-v2", diagnostics
-                assert diagnostics["lighting"] == {"hemisphere": True, "key": True, "fill": True, "rim": True, "specular": True, "cavity": True}, diagnostics
-                assert len(diagnostics["componentMaterialInfo"]) == 6, diagnostics
-                assert [material["component"] for material in diagnostics["componentMaterialInfo"]] == ["skin", "left_eye", "right_eye", "upper_teeth_and_gums", "lower_teeth_and_gums", "tongue"], diagnostics
-                assert [material["materialIndex"] for material in diagnostics["componentMaterialInfo"]] == list(range(6)), diagnostics
-                assert all(material["materialSource"] == "neutral-procedural" and material["officialTexturesIncluded"] is False for material in diagnostics["componentMaterialInfo"]), diagnostics
-                assert not any(url.endswith("gnm-official-basis-lab.bin") or url.endswith("gnm-official-basis-lab.json") for url in asset_requests[:neutral_asset_request_count]), asset_requests
-                assert any(url.endswith("tools/gnm/work/gnm-official-head-render.glb") for url in asset_requests), asset_requests
-
-                def pixel_sample() -> dict:
-                    return page.evaluate("""() => {
-                        const canvas = document.querySelector('#portrait-webgl');
-                        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
-                        if (!gl || canvas.width <= 0 || canvas.height <= 0) {
-                            return { readbackFailure: 'webgl2-unavailable-or-empty-canvas', samples: [] };
-                        }
-                        while (gl.getError() !== gl.NO_ERROR) {}
-                        const coordinates = [[0, 0], [Math.floor(canvas.width / 2), Math.floor(canvas.height / 2)], [canvas.width - 1, canvas.height - 1]];
-                        const samples = [];
-                        for (const [x, y] of coordinates) {
-                            const pixel = new Uint8Array(4);
-                            gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-                            samples.push(...pixel);
-                        }
-                        const error = gl.getError();
-                        return { readbackFailure: error === gl.NO_ERROR ? null : `gl-error-${error}`, samples };
-                    }""")
-
-                def pixel_hash() -> str:
-                    return page.evaluate("""() => {
-                        const canvas = document.querySelector('#portrait-webgl');
-                        const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
-                        const pixels = new Uint8Array(gl.drawingBufferWidth * gl.drawingBufferHeight * 4);
-                        gl.readPixels(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-                        let hash = 2166136261;
-                        for (const value of pixels) hash = Math.imul(hash ^ value, 16777619);
-                        return (hash >>> 0).toString(16).padStart(8, '0');
-                    }""")
-
-                official_pixel_sample = pixel_sample()
-                assert official_pixel_sample["readbackFailure"] is None, official_pixel_sample
-                assert official_pixel_sample["samples"] and all(isinstance(value, int) and 0 <= value <= 255 for value in official_pixel_sample["samples"]), official_pixel_sample
-                box = canvas.bounding_box()
-                assert box, f"{entry}: WebGL canvas has no bounds"
-                center_x = box["x"] + box["width"] / 2
-                center_y = box["y"] + box["height"] / 2
-                before = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera")
-                page.mouse.move(center_x, center_y)
-                page.mouse.down()
-                page.mouse.move(center_x + 96, center_y - 48, steps=4)
-                page.mouse.up()
-                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw !== 0 || camera.pitch !== 0; }")
-                after_drag = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera")
-                assert after_drag["yaw"] != before["yaw"] or after_drag["pitch"] != before["pitch"], after_drag
-                page.mouse.wheel(0, 280)
-                page.wait_for_function("distance => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera.distance !== distance", arg=after_drag["distance"])
-                after_wheel = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera")
-                assert after_wheel["distance"] != after_drag["distance"], after_wheel
-                page.locator("#reset-webgl-camera").click()
-                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
-                reset = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera")
-                assert reset == {"yaw": 0, "pitch": 0, "distance": 1}, reset
-
-                # --- Technical deformation visualization toggles (official neutral) ---
-                tech_panel = page.locator("#technical-visualization-controls")
-                assert tech_panel.is_visible(), f"{entry}: technical visualization panel should be visible in official style"
-                uv_checker = page.locator("#uv-checker-toggle")
-                wireframe_toggle = page.locator("#wireframe-toggle")
-                assert not uv_checker.is_checked() and not wireframe_toggle.is_checked(), f"{entry}: toggles must default OFF"
-                assert page.locator("#technical-visualization-state").inner_text() == "none"
-                neutral_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert neutral_diagnostics["technicalVisualization"] == "none", neutral_diagnostics
-                assert "not an official texture" in neutral_diagnostics["technicalVisualizationNote"], neutral_diagnostics
-                assert neutral_diagnostics["uvCheckerDensity"] == 16, neutral_diagnostics
-                assert neutral_diagnostics["wireframeColor"] == [0.96, 0.16, 0.86], neutral_diagnostics
-                neutral_hash = pixel_hash()
-
-                uv_checker.check()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker'")
-                assert page.locator("#technical-visualization-state").inner_text() == "uv-checker"
-                uv_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert uv_diagnostics["technicalVisualization"] == "uv-checker", uv_diagnostics
-                uv_hash = pixel_hash()
-                assert uv_hash != neutral_hash, {"neutral": neutral_hash, "uv": uv_hash}
-                # Camera controls keep working while the checker is enabled.
-                before_uv = uv_diagnostics["camera"]
-                page.mouse.move(center_x, center_y)
-                page.mouse.down()
-                page.mouse.move(center_x + 64, center_y - 32, steps=3)
-                page.mouse.up()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera.yaw !== 0 || document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera.pitch !== 0")
-                after_uv_drag = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert after_uv_drag["camera"]["yaw"] != before_uv["yaw"] or after_uv_drag["camera"]["pitch"] != before_uv["pitch"], after_uv_drag["camera"]
-                assert after_uv_drag["technicalVisualization"] == "uv-checker", after_uv_drag
-                page.locator("#reset-webgl-camera").click()
-                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
-
-                wireframe_toggle.check()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker+wireframe'")
-                combined_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert combined_diagnostics["technicalVisualization"] == "uv-checker+wireframe", combined_diagnostics
-                assert combined_diagnostics["wireframeEdgeCount"] == 105972, combined_diagnostics
-                combined_hash = pixel_hash()
-                assert combined_hash != uv_hash and combined_hash != neutral_hash, {"neutral": neutral_hash, "uv": uv_hash, "combined": combined_hash}
-
-                uv_checker.uncheck()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'wireframe'")
-                wireframe_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert wireframe_diagnostics["technicalVisualization"] == "wireframe", wireframe_diagnostics
-                wire_hash = pixel_hash()
-                assert wire_hash != neutral_hash, {"neutral": neutral_hash, "wire": wire_hash}
-
-                wireframe_toggle.uncheck()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'none'")
-                restored_hash = pixel_hash()
-                assert restored_hash == neutral_hash, {"neutral": neutral_hash, "restored": restored_hash}
-                print(f"{entry} official technical visualization: neutral={neutral_hash} uv={uv_hash} combined={combined_hash} wire={wire_hash} restored={restored_hash}")
-                result = "PASS WebGL2: opt-in canvas visible"
-            else:
-                assert "WebGL2" in diagnostic or "fallback" in diagnostic.lower(), diagnostic
-                result = f"BOUNDED FALLBACK: 2D GNM SVG visible; diagnostic={diagnostic!r}"
-            selected.select_option("sports/morph-webgl-official-basis-lab-v1")
-            page.wait_for_timeout(1800)
-            basis_visible = page.locator("#portrait-webgl").is_visible()
-            if basis_visible:
-                basis_controls = page.locator("#basis-lab-controls")
-                assert basis_controls.is_visible(), f"{entry}: Basis Lab controls should be visible"
-                assert basis_controls.locator("input[type=range]").count() == 8
-                labels = basis_controls.locator("span").all_text_contents()
-                assert "GNM identity basis 000" in labels and "GNM expression basis 003" in labels, labels
-                basis_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert basis_diagnostics["basisIncluded"] is True, basis_diagnostics
-                assert basis_diagnostics["semanticMapping"] == "disabled", basis_diagnostics
-                assert basis_diagnostics["runtimeBasisLoaded"] is True, basis_diagnostics
-                assert basis_diagnostics["identityCount"] == 4 and basis_diagnostics["expressionCount"] == 4, basis_diagnostics
-                assert len(basis_diagnostics["selectedVectors"]) == 8, basis_diagnostics
-                assert basis_diagnostics["activeCoefficients"] == [0] * 8, basis_diagnostics
-                assert basis_diagnostics["materialModel"] == "neutral-procedural-components-v2", basis_diagnostics
-                assert basis_diagnostics["lighting"] == {"hemisphere": True, "key": True, "fill": True, "rim": True, "specular": True, "cavity": True}, basis_diagnostics
-                assert [material["materialIndex"] for material in basis_diagnostics["componentMaterialInfo"]] == list(range(6)), basis_diagnostics
-                basis_requests = asset_requests[neutral_asset_request_count:]
-                assert basis_requests and all(url.endswith("gnm-official-basis-lab.bin") or url.endswith("gnm-official-basis-lab.json") for url in basis_requests), basis_requests
-                basis_pixel_sample = page.evaluate("""() => {
-                    const canvas = document.querySelector('#portrait-webgl');
-                    const gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });
-                    if (!gl || canvas.width <= 0 || canvas.height <= 0) {
-                        return { readbackFailure: 'webgl2-unavailable-or-empty-canvas', samples: [] };
-                    }
-                    while (gl.getError() !== gl.NO_ERROR) {}
-                    const coordinates = [[0, 0], [Math.floor(canvas.width / 2), Math.floor(canvas.height / 2)], [canvas.width - 1, canvas.height - 1]];
-                    const samples = [];
-                    for (const [x, y] of coordinates) {
-                        const pixel = new Uint8Array(4);
-                        gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
-                        samples.push(...pixel);
-                    }
-                    const error = gl.getError();
-                    return { readbackFailure: error === gl.NO_ERROR ? null : `gl-error-${error}`, samples };
-                }""")
-                assert basis_pixel_sample["readbackFailure"] is None, basis_pixel_sample
-                assert basis_pixel_sample["samples"] and all(isinstance(value, int) and 0 <= value <= 255 for value in basis_pixel_sample["samples"]), basis_pixel_sample
-                neutral_hash = pixel_hash()
-                slider = basis_controls.locator("input[type=range]").nth(0)
-                assert slider.get_attribute("min") == "-0.25"
-                assert slider.get_attribute("max") == "0.25"
-                slider.fill("0.25")
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.activeCoefficients[0] === 0.25")
-                changed_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                changed_hash = pixel_hash()
-                assert changed_diagnostics["activeCoefficients"] == [0.25] + [0] * 7, changed_diagnostics
-                assert changed_hash != neutral_hash, {"neutral": neutral_hash, "changed": changed_hash}
-                page.locator("#reset-basis-lab").click()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.activeCoefficients.every((value) => value === 0)")
-                reset_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                reset_hash = pixel_hash()
-                assert reset_diagnostics["activeCoefficients"] == [0] * 8, reset_diagnostics
-                assert reset_hash == neutral_hash, {"neutral": neutral_hash, "reset": reset_hash}
-                print(f"{entry} Basis Lab coefficients/pixels: neutral={neutral_hash} changed={changed_hash} reset={reset_hash}")
-
-                # --- Technical deformation visualization toggles (Basis Lab) ---
-                tech_panel = page.locator("#technical-visualization-controls")
-                assert tech_panel.is_visible(), f"{entry}: technical visualization panel should be visible in Basis Lab style"
-                basis_uv_checker = page.locator("#uv-checker-toggle")
-                basis_wireframe = page.locator("#wireframe-toggle")
-                assert not basis_uv_checker.is_checked() and not basis_wireframe.is_checked(), f"{entry}: toggles must default OFF"
-                basis_neutral_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert basis_neutral_diagnostics["technicalVisualization"] == "none", basis_neutral_diagnostics
-                assert "not an official texture" in basis_neutral_diagnostics["technicalVisualizationNote"], basis_neutral_diagnostics
-                # Re-apply a coefficient and prove the checker changes the deformed pixels.
-                slider.fill("0.25")
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.activeCoefficients[0] === 0.25")
-                coefficient_hash = pixel_hash()
-                assert coefficient_hash != neutral_hash, {"neutral": neutral_hash, "coefficient": coefficient_hash}
-                basis_uv_checker.check()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker'")
-                assert page.locator("#technical-visualization-state").inner_text() == "uv-checker"
-                basis_uv_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert basis_uv_diagnostics["technicalVisualization"] == "uv-checker", basis_uv_diagnostics
-                assert basis_uv_diagnostics["basisIncluded"] is True and basis_uv_diagnostics["activeCoefficients"] == [0.25] + [0] * 7, basis_uv_diagnostics
-                checker_hash = pixel_hash()
-                assert checker_hash != coefficient_hash, {"coefficient": coefficient_hash, "checker": checker_hash}
-                # Camera controls keep working with checker + coefficient active.
-                before_basis = basis_uv_diagnostics["camera"]
-                page.mouse.move(center_x, center_y)
-                page.mouse.down()
-                page.mouse.move(center_x - 80, center_y + 40, steps=3)
-                page.mouse.up()
-                page.wait_for_function("() => { const d = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics; return d.camera.yaw !== 0 || d.camera.pitch !== 0; }")
-                after_basis_drag = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert after_basis_drag["camera"]["yaw"] != before_basis["yaw"] or after_basis_drag["camera"]["pitch"] != before_basis["pitch"], after_basis_drag["camera"]
-                assert after_basis_drag["technicalVisualization"] == "uv-checker", after_basis_drag
-                page.locator("#reset-webgl-camera").click()
-                page.wait_for_function("() => { const camera = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.camera; return camera.yaw === 0 && camera.pitch === 0 && camera.distance === 1; }")
-                basis_wireframe.check()
-                page.wait_for_function("() => document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics.technicalVisualization === 'uv-checker+wireframe'")
-                basis_combined_diagnostics = page.evaluate("document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics")
-                assert basis_combined_diagnostics["technicalVisualization"] == "uv-checker+wireframe", basis_combined_diagnostics
-                assert basis_combined_diagnostics["wireframeEdgeCount"] == 105972, basis_combined_diagnostics
-                combined_with_coefficient_hash = pixel_hash()
-                assert combined_with_coefficient_hash != checker_hash, {"checker": checker_hash, "combined": combined_with_coefficient_hash}
-                # Toggles off + coefficient reset restores the original neutral basis hash.
-                basis_uv_checker.uncheck()
-                basis_wireframe.uncheck()
-                page.locator("#reset-basis-lab").click()
-                page.wait_for_function("() => { const d = document.querySelector('#portrait-webgl').__sportsFaceWebglDiagnostics; return d.activeCoefficients.every((value) => value === 0) && d.technicalVisualization === 'none'; }")
-                basis_restored_hash = pixel_hash()
-                assert basis_restored_hash == neutral_hash, {"neutral": neutral_hash, "basis_restored": basis_restored_hash}
-                print(f"{entry} Basis Lab technical visualization: coefficient={coefficient_hash} checker={checker_hash} combined={combined_with_coefficient_hash} restored={basis_restored_hash}")
-            else:
-                assert page.locator("#portrait").is_visible(), f"{entry}: Basis Lab fallback must show the 2D canvas"
-            print(f"{entry} {check_gnm_player(page, entry, asset_requests)}")
-            print(f"PASS {entry} default renderer: Canvas 2D visible")
-            print(f"{entry} {result}")
+            print(entry, check_gnm_player(page, entry, requests))
+            with page.expect_download() as download:
+                page.locator("#download-png").click()
+            assert download.value.suggested_filename.endswith(".png")
+            code = page.locator("#face-code").input_value()
+            page.locator("#new-player").click()
+            page.locator("#face-code").fill(code)
+            page.locator("#load-code").click()
+            assert page.locator("#face-code").input_value() == code
+            page.wait_for_function("!document.querySelector('#download-png').disabled")
+            assert not errors, errors
             context.close()
-        assert not page_errors, page_errors
-        console_errors = [message for message in messages if message.startswith("error:")]
-        assert not console_errors, console_errors
-        if messages:
-            print(f"console messages: {messages}")
+            print(entry, check_offscreen_fallbacks(browser, entry))
+            for failure in ("webgl", "asset"):
+                context = browser.new_context()
+                if failure == "webgl":
+                    context.add_init_script("""const original = HTMLCanvasElement.prototype.getContext;
+                    HTMLCanvasElement.prototype.getContext = function(type, ...args) {
+                      return type === 'webgl2' ? null : original.call(this, type, ...args);
+                    };""")
+                else:
+                    context.route("**/gnm-player-generator.bin", lambda route: route.fulfill(status=200, body=b"invalid"))
+                page = context.new_page()
+                errors = []
+                page.on("pageerror", lambda error: errors.append(str(error)))
+                page.goto(f"http://127.0.0.1:8080/{entry}")
+                page.wait_for_load_state("networkidle")
+                page.wait_for_function("document.querySelector('#render-status').textContent.includes('No se puede')")
+                assert not page.locator(PLAYER_CANVAS).is_visible()
+                assert page.locator("#download-png").is_disabled()
+                assert page.locator("#portrait, #portrait-webgl").count() == 0
+                assert not errors, errors
+                print(entry, failure, "PASS explicit error, no fallback, export disabled")
+                context.close()
         browser.close()
     return 0
 

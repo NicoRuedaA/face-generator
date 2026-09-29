@@ -1,109 +1,22 @@
+import { execFileSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
 const root = path.resolve(new URL("..", import.meta.url).pathname);
-const manifestPath = path.join(root, "docs", "release-manifest-v040.json");
-const operationalFiles = [
-  "tools/gnm/build_runtime_pack.py",
-  "tools/gnm/test_build_runtime_pack.py",
-  "tools/gnm/test_gnm_quality.py",
-  "tools/gnm/compare_gnm_quality_scales.py",
-  "tools/gnm/test_compare_gnm_quality_scales.py",
-  "tools/gnm/run_gnm_scale_comparison.py",
-  "tools/gnm/test_audit_gnm_landmarks.py",
-  "tools/gnm/audit_gnm_landmarks.py",
-  "tools/gnm/capture_acceptance_gallery.py",
-  "tools/gnm/export_gnm_glb.py",
-  "tools/gnm/validate_gnm_glb.py",
-  "tools/gnm/test_gnm_glb.py",
-  "tools/gnm/build_gnm_morph_targets.py",
-  "tools/gnm/validate_gnm_morph_targets.py",
-  "tools/gnm/test_gnm_morph_targets.py",
-  "tools/gnm/capture_webgl_ab.py",
-  "tools/gnm/validate_webgl_ab.py",
-  "tools/gnm/validate_official_bundle.py",
-  "tools/gnm/test_official_bundle.py",
-  "tools/gnm/import_official_gnm_npz.py",
-  "tools/gnm/validate_official_gnm_asset.py",
-  "tools/gnm/test_official_gnm_asset.py",
-  "tools/gnm/optimize_official_gnm_glb.py",
-  "tools/gnm/validate_official_gnm_render.py",
-  "tools/gnm/test_official_gnm_render.py",
-  "tools/gnm/diagnose_official_gnm_basis.py",
-  "tools/gnm/test_official_gnm_basis.py",
-  "tools/gnm/work/gnm-official-basis-diagnostic.json",
-  "tools/gnm/build_official_basis_lab.py",
-  "tools/gnm/validate_official_basis_lab.py",
-  "tools/gnm/test_official_basis_lab.py",
-  "tools/gnm/analyze_official_gnm_semantics.py",
-  "tools/gnm/test_official_gnm_semantics.py",
-  "tools/gnm/calibration_dataset.py",
-  "tools/gnm/test_calibration_dataset.py",
-  "tools/gnm/validate_gnm_calibration.py",
-  "tools/gnm/test_gnm_calibration.py",
-  "tools/gnm/canonical_asset.py",
-  "tools/gnm/test_canonical_asset.py",
-  "tools/gnm/build_player_generator.py",
-  "tools/gnm/validate_player_generator.py",
-  "tools/gnm/test_player_generator.py",
-  "tools/gnm/capture_player_gallery.py",
-  "tools/gnm/work/gnm-player-generator.bin",
-  "tools/gnm/work/gnm-player-generator.json",
-  "tools/gnm/work/gnm-official-basis-lab.bin",
-  "tools/gnm/work/gnm-official-basis-lab.json",
-  "tools/gnm/work/gnm-official-semantic-evidence.json",
-  "tools/gnm/work/gnm-calibration-dataset.json",
-  "tools/gnm/work/gnm-calibration-validation.json",
-  "tests/morphology.test.mjs",
-  "tests/technical-visualization.test.mjs",
-  "tests/gnm-player.test.mjs",
-  "tests/browser_smoke.py",
-  "src/webgl-renderer.js",
-  "src/gnm-player-model.js",
-  "src/gnm-player-renderer.js",
-  "src/render-router.js",
-  "src/app.js",
-  "src/app.bundle.js",
-  "scripts/build-offline-bundle.mjs",
-  "index.html",
-  "index.module.html",
-  "styles.css",
-  "tools/gnm/work/head-morph.glb",
-  "tools/gnm/work/gnm-official-head-render.glb",
-  "tools/gnm/work/gnm-official-head-render.json",
-  "tools/gnm/work/official-render-bundle.json",
-  "tools/gnm/work/LICENSE-GNM.txt",
-  "tools/gnm/README.md",
-  "README.md",
-  "docs/PHASE3_MORPHOLOGY_GNM.md",
-  "docs/ACCEPTANCE_GNM_QUALITY.md",
-  "docs/ACCEPTANCE_GNM_LANDMARKS.md",
-  "docs/ACCEPTANCE_GNM_GALLERY.md",
-  "docs/ACCEPTANCE_GNM_GLB.md",
-  "docs/ACCEPTANCE_GNM_WEBGL_AB.md",
-  "docs/ACCEPTANCE_GNM_OFFICIAL_BUNDLE.md",
-  "docs/ACCEPTANCE_GNM_3D_PLAYER.md",
-  "docs/gnm-3d-player/manifest.json",
-  "docs/ACCEPTANCE_V040.md",
-  "CHANGELOG.md",
-  "package.json",
-  "scripts/refresh-release-manifest.mjs",
-  "scripts/refresh-checksums.mjs",
-  "tools/gnm/work/official-bundle.example.json",
-  "docs/gnm-quality-scale-comparison.json",
-];
-
-function sha256(filePath) {
-  return crypto.createHash("sha256").update(fs.readFileSync(path.join(root, filePath))).digest("hex");
-}
-
-const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-manifest.keyHashes = Object.fromEntries(
-  Object.keys(manifest.keyHashes).map((filePath) => [filePath, sha256(filePath)]),
-);
-manifest.operationalFiles = Object.fromEntries(
-  operationalFiles.map((filePath) => [filePath, sha256(filePath)]),
-);
-fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
-console.log(`Updated ${manifestPath} with ${operationalFiles.length} operational file hashes.`);
+const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard", "-z"], { cwd: root, encoding: "utf8" })
+  .split("\0").filter((file) => /^(src\/|scripts\/|tests\/|tools\/gnm\/[^/]+\.py$)/.test(file) && fs.existsSync(path.join(root, file)));
+files.push("index.html", "index.module.html", "styles.css", "package.json", "README.md", "THIRD_PARTY_NOTICES.md",
+  ...["gnm-official-head-render.glb", "gnm-player-generator.bin", "gnm-player-generator.json", "LICENSE-GNM.txt"].map((file) => `tools/gnm/work/${file}`));
+const manifest = {
+  schema: "sports-face-release-manifest/v1",
+  version: "0.4.0",
+  releaseId: "sports-face-gnm-3d-player-only",
+  renderers: ["sports/gnm-3d-player-v1"],
+  defaultRenderer: "sports/gnm-3d-player-v1",
+  requires: ["HTTP", "WebGL2"],
+  fallbackRenderer: null,
+  operationalFiles: Object.fromEntries([...new Set(files)].sort().map((file) => [file, crypto.createHash("sha256").update(fs.readFileSync(path.join(root, file))).digest("hex")])),
+};
+fs.writeFileSync(path.join(root, "docs/release-manifest-v040.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+console.log(`Updated 3D player release manifest (${files.length} operational files).`);
