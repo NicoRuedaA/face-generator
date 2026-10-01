@@ -12,7 +12,7 @@
   ],
   "fallbackRenderer": null,
   "operationalFiles": {
-    "README.md": "32eed1775ad81b6223648ddc6fe0fea86ca99c284752f44db8406ee75055a419",
+    "README.md": "df873948b3bb0239db6780a55a93858448291291b13d0dff1f70f01924b97256",
     "THIRD_PARTY_NOTICES.md": "0d4ebcaa036e07cef0d37165b6ce71256a2277fdc994b51b7b432249e474c441",
     "index.html": "9ae496ad727e277e897189707eb8def8980d3840d83b917e869d2701ec20a58c",
     "index.module.html": "18b5a9e903e2162943250ad45f6cb441297dc18c3ddcf5de01bc73d70e5a8013",
@@ -46,7 +46,7 @@
     "tests/model.test.mjs": "4d039c487452f9ceae3b82a9d0bb830c6281e1bb5b7d778c3241f57d470db976",
     "tests/rendering.test.mjs": "2213e3161d8ef17c71e0a28aea17f51d57422e677a6afb5ed99851a58f243759",
     "tools/gnm/build_player_generator.py": "d8ca4c02c66c750c0339125fcfe7d07d6fa3b84533e62206961924a204c3b64e",
-    "tools/gnm/canonical_asset.py": "b66abaaddd4ad678e80fde7abee458b47ee7ae27b2ef18304bdf8524f07c239a",
+    "tools/gnm/canonical_asset.py": "81896925e148d9407daa21a1afd51beb9703052774bda1061c3cd98ea3364fbe",
     "tools/gnm/capture_hair_pattern.py": "547359f646e701d5214754f673576712a3da248d43160f834654f155998a36a9",
     "tools/gnm/capture_hairstyle_prototype.py": "cf6c2b36237e1aae88220cb1e39040981999fc6b97a0cc8fb89c85cacb371fc5",
     "tools/gnm/capture_player_details.py": "d013798f4129efbaa071465310bfcb33097b82f6dc1e4302ecfffa39aefc0353",

@@ -70,7 +70,7 @@ npm run refresh:release
 npm run refresh:checksums
 ```
 
-The browser smoke needs `uv`, Python, Playwright and Chromium (`CHROMIUM_PATH` can override `/usr/bin/chromium`). The npm browser command uses the installed webapp-testing server helper; alternatively start `npm run serve` and run `python3 tests/browser_smoke.py` in an environment with Playwright.
+There is no CI: run these checks locally before pushing. The browser smoke needs `uv`, Python, Playwright and Chromium (`CHROMIUM_PATH` can override `/usr/bin/chromium`). The npm browser command uses the installed webapp-testing server helper; alternatively start `npm run serve` and run `python3 tests/browser_smoke.py` in an environment with Playwright.
 
 To regenerate the screenshots, keep `npm run serve` running and use `tools/gnm/capture_player_gallery.py` (gallery) or `tools/gnm/capture_realism_closeups.py --output <png> [--mode ...]` (close-ups, lighting, eyes, post effects, hair and grooming). The [GNM tools guide](tools/gnm/README.md) lists every mode.
 

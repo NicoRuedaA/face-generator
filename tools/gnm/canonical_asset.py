@@ -2,8 +2,7 @@
 """Detect whether the archived canonical official GNM GLB is materialized.
 
 The canonical `gnm-official-head.glb` (138,998,408 bytes) is tracked with Git
-LFS. A checkout without LFS (for example the GitHub Pages workflow, which uses
-`actions/checkout` without `lfs: true`) only contains the small pointer file.
+LFS. A checkout without LFS objects only contains the small pointer file.
 Tests that regenerate evidence from the canonical asset use this helper to
 distinguish three cases explicitly instead of crashing on a bad GLB header:
 

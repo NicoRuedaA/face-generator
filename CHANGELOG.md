@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased — local-only verification
+
+- Remove the GitHub Pages deployment workflow. There is no CI: run `npm test` and `npm run test:browser-smoke` locally before pushing.
+
 ## Unreleased — strand beards and eyebrows (realism v2, part D)
 
 - Replace the painted brows, painted beard and short beard/brow ribbons with generated strands that walk the deformed skin (straightest geodesics across its triangles), so they follow every identity and expression and never go under the skin.
